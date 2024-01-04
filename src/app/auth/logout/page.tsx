@@ -8,7 +8,7 @@ const Logout = () => {
     useEffect(() => {
         const logout = async () => {
             try {
-                const result = await axios_instance.get('/logout');
+                const result = await axios_instance.get('/auth/logout');
                 console.log(result.data);
                 router.push('/');
             } catch (error: any) {

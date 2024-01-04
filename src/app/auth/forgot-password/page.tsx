@@ -16,7 +16,7 @@ const ForgotPassword = () => {
 
         try {
             if (email) {
-                const result1 = await axios_instance.post(`/is-registered`, {
+                const result1 = await axios_instance.post(`/auth/is-registered`, {
                     email,
                 });
 
@@ -24,7 +24,7 @@ const ForgotPassword = () => {
                     console.log("Email not registered")
                     router.push(`/auth/signup`);
                 } else {
-                    const result2 = await axios_instance.post(`/send-otp`, {
+                    const result2 = await axios_instance.post(`/auth/send-otp`, {
                         email,
                     });
 

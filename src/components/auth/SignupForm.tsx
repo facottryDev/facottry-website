@@ -17,7 +17,7 @@ export const SignupForm = () => {
 
         try {
             if (email) {
-                const result1 = await axios_instance.post(`/is-registered`, {
+                const result1 = await axios_instance.post(`/auth/is-registered`, {
                     email,
                 });
 
@@ -25,7 +25,7 @@ export const SignupForm = () => {
                     console.log("Email already registered")
                     router.push(`/auth/login`);
                 } else {
-                    const result2 = await axios_instance.post(`/send-otp`, {
+                    const result2 = await axios_instance.post(`/auth/send-otp`, {
                         email,
                     });
 
