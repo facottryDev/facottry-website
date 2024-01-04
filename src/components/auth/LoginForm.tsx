@@ -30,7 +30,7 @@ export const LoginForm = () => {
         e.preventDefault();
 
         try {
-            const result = await axios_instance.post('/auth/login', {
+            const result = await axios_instance.post('/login', {
                 email: e.currentTarget.email.value,
                 password: e.currentTarget.password.value,
                 remember_me: true,

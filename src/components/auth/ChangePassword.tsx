@@ -21,11 +21,11 @@ export const ChangePassword = () => {
             if (email) {
                 let result = null;
                 if(pathname === '/auth/forgot-password/change-password') {
-                    result = await axios_instance.post(`/auth/forgot`, {
+                    result = await axios_instance.post(`/forgot`, {
                         password
                     });
                 } else{
-                    result = await axios_instance.post(`/auth/register`, {
+                    result = await axios_instance.post(`/register`, {
                         password
                     });
                 }
