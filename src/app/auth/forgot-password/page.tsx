@@ -5,7 +5,7 @@ import logo_1_dark from '@/assets/logo_dark_1.svg'
 import logo_1 from '@/assets/logo_1.svg'
 import Link from "next/link"
 import { useRouter } from 'next/navigation'
-import { axios_instance } from "@/lib/helpers"
+import { axios_auth } from "@/lib/helpers"
 
 const ForgotPassword = () => {
     const router = useRouter();
@@ -16,7 +16,7 @@ const ForgotPassword = () => {
 
         try {
             if (email) {
-                const result1 = await axios_instance.post(`/auth/is-registered`, {
+                const result1 = await axios_auth.post(`/auth/is-registered`, {
                     email,
                 });
 
@@ -24,7 +24,7 @@ const ForgotPassword = () => {
                     console.log("Email not registered")
                     router.push(`/auth/signup`);
                 } else {
-                    const result2 = await axios_instance.post(`/auth/send-otp`, {
+                    const result2 = await axios_auth.post(`/auth/send-otp`, {
                         email,
                     });
 

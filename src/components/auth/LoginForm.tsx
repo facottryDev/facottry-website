@@ -7,7 +7,7 @@ import GoogleIcon from '@/assets/Google.svg'
 import Link from "next/link"
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import { useRouter } from 'next/navigation'
-import { axios_instance } from "@/lib/helpers"
+import { axios_auth } from "@/lib/helpers"
 
 export const LoginForm = () => {
     const router = useRouter();
@@ -16,7 +16,7 @@ export const LoginForm = () => {
     useEffect(() => {
         const isAuth = async () => {
           try {
-            await axios_instance.get('/');
+            await axios_auth.get('/');
             router.push('/');
           } catch (error: any) {
             console.log(error);
@@ -30,7 +30,7 @@ export const LoginForm = () => {
         e.preventDefault();
 
         try {
-            const result = await axios_instance.post('/auth/login', {
+            const result = await axios_auth.post('/auth/login', {
                 email: e.currentTarget.email.value,
                 password: e.currentTarget.password.value,
                 remember_me: true,

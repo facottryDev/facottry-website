@@ -5,7 +5,7 @@ import logo_1_dark from '@/assets/logo_dark_1.svg'
 import logo_1 from '@/assets/logo_1.svg'
 import Link from "next/link"
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import { axios_instance } from "@/lib/helpers"
+import { axios_auth } from "@/lib/helpers"
 
 export const VerifyOTP = () => {
     const router = useRouter();
@@ -21,7 +21,7 @@ export const VerifyOTP = () => {
 
         try {
             if (email) {
-                const result = await axios_instance.post(`/auth/verify-otp`, {
+                const result = await axios_auth.post(`/auth/verify-otp`, {
                     email, otp
                 });
 

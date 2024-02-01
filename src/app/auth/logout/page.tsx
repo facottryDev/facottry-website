@@ -1,14 +1,14 @@
 'use client'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { axios_instance } from "@/lib/helpers"
+import { axios_auth } from "@/lib/helpers"
 
 const Logout = () => {
     const router = useRouter();
     useEffect(() => {
         const logout = async () => {
             try {
-                const result = await axios_instance.get('/auth/logout');
+                const result = await axios_auth.get('/auth/logout');
                 console.log(result.data);
                 router.push('/');
             } catch (error: any) {
