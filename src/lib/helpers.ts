@@ -1,9 +1,5 @@
 import axios from "axios";
 
-export const isAuth = async () => {
-  
-};
-
 const axios_auth = axios.create({
   baseURL: process.env.NEXT_PUBLIC_AUTH_BASE_URL,
 });

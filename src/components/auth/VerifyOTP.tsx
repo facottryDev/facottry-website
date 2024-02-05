@@ -21,7 +21,7 @@ export const VerifyOTP = () => {
 
         try {
             if (email) {
-                const result = await axios_auth.post(`/auth/verify-otp`, {
+                const result = await axios_auth.post(`/verify-otp`, {
                     email, otp
                 });
 

@@ -18,7 +18,7 @@ export const ResetPassword = () => {
 
         try {
             if (email) {
-                const result = await axios_auth.post(`/auth/register`, {
+                const result = await axios_auth.post(`/register`, {
                     email, password
                 });
 
