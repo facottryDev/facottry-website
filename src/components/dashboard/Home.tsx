@@ -7,7 +7,7 @@ import { AiOutlinePlus } from 'react-icons/ai';
 import { Accordion } from "../common/Accordion"
 import demo_image from '@/assets/player_theme demo.jpg'
 import UserDropdown from "../common/UserDropdown"
-import { axios_instance } from "@/lib/helpers"
+import { axios_auth } from "@/lib/helpers"
 import { useRouter } from 'next/navigation'
 
 const ConfigList = ['lg.json', 'sony.json', 'samsung.json', 'mi.json', 'oneplus.json', 'oppo.json', 'vivo.json']
@@ -45,7 +45,7 @@ const Dashboard = () => {
   useEffect(() => {
     const isAuth = async () => {
       try {
-        await axios_instance.get('/');
+        await axios_auth.get('/');
         setIsLoading(false);
       } catch (error: any) {
         console.log(error);

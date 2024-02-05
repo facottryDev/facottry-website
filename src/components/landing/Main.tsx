@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { axios_instance } from "@/lib/helpers"
+import { axios_auth } from "@/lib/helpers"
 import ContactForm from "../common/ContactForm"
 import { Hero } from "./Hero"
 import NavBar from "./NavBar"
@@ -11,7 +11,7 @@ export const LandingPage = () => {
   useEffect(() => {
     const isAuth = async () => {
       try {
-        await axios_instance.get('/');
+        await axios_auth.get('/');
         setIsLoggedin(true);
       } catch (error: any) {
         console.log(error);

@@ -5,7 +5,7 @@ import { Quickstart } from "./Quickstart"
 import { Installation } from "./Installation"
 import { Configuration } from "./Configuration"
 import { Usage } from "./Usage"
-import { axios_instance } from "@/lib/helpers"
+import { axios_auth } from "@/lib/helpers"
 
 const tabs = [
     {
@@ -34,7 +34,7 @@ const Documentation = () => {
     useEffect(() => {
         const isAuth = async () => {
             try {
-                await axios_instance.get('/');
+                await axios_auth.get('/');
                 setIsLoggedin(true);
             } catch (error: any) {
                 console.log(error);

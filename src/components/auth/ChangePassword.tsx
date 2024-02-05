@@ -5,7 +5,7 @@ import logo_1_dark from '@/assets/logo_dark_1.svg'
 import logo_1 from '@/assets/logo_1.svg'
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { axios_instance } from "@/lib/helpers"
+import { axios_auth } from "@/lib/helpers"
 
 export const ChangePassword = () => {
     const router = useRouter();
@@ -21,16 +21,16 @@ export const ChangePassword = () => {
             if (email) {
                 let result = null;
                 if(pathname === '/auth/forgot-password/change-password') {
-                    result = await axios_instance.post(`/forgot`, {
+                    result = await axios_auth.post(`/forgot`, {
                         password
                     });
                 } else{
-                    result = await axios_instance.post(`/register`, {
+                    result = await axios_auth.post(`/register`, {
                         password
                     });
                 }
 
-                if (result.status === 200) router.push(`/auth/login`);
+                if (result.status === 200) router.push(`/login`);
             } else {
                 console.log("Email is required");
             }

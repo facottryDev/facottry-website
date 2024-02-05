@@ -5,7 +5,7 @@ import logo_1_dark from '@/assets/logo_dark_1.svg'
 import logo_1 from '@/assets/logo_1.svg'
 import GoogleIcon from '@/assets/Google.svg'
 import Link from "next/link"
-import { axios_instance } from "@/lib/helpers"
+import { axios_auth } from "@/lib/helpers"
 import { useRouter } from 'next/navigation'
 
 export const SignupForm = () => {
@@ -17,7 +17,7 @@ export const SignupForm = () => {
 
         try {
             if (email) {
-                const result1 = await axios_instance.post(`/is-registered`, {
+                const result1 = await axios_auth.post(`/is-registered`, {
                     email,
                 });
 
@@ -25,7 +25,7 @@ export const SignupForm = () => {
                     console.log("Email already registered")
                     router.push(`/auth/login`);
                 } else {
-                    const result2 = await axios_instance.post(`/send-otp`, {
+                    const result2 = await axios_auth.post(`/send-otp`, {
                         email,
                     });
 

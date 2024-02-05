@@ -5,7 +5,7 @@ import logo_1_dark from '@/assets/logo_dark_1.svg'
 import logo_1 from '@/assets/logo_1.svg'
 import Link from "next/link"
 import { useRouter, useSearchParams } from 'next/navigation'
-import { axios_instance } from "@/lib/helpers"
+import { axios_auth } from "@/lib/helpers"
 
 export const ResetPassword = () => {
     const router = useRouter();
@@ -18,7 +18,7 @@ export const ResetPassword = () => {
 
         try {
             if (email) {
-                const result = await axios_instance.post(`/register`, {
+                const result = await axios_auth.post(`/register`, {
                     email, password
                 });
 
