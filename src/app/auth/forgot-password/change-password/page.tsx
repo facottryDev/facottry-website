@@ -1,4 +1,5 @@
-import { ChangePassword } from "@/components/auth/ChangePassword"
+import { ChangePassword } from "../../ChangePassword"
+
 
 const page = async () => {
     return (

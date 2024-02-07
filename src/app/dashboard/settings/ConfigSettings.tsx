@@ -1,6 +1,6 @@
 'use client'
 
-import Table from "../common/ConfigSettingTable";
+import Table from "../../../components/dashboard/ConfigSettingTable";
 
 const columns: TableColumn[] = [
   "Config Name",

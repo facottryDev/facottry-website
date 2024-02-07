@@ -1,5 +1,5 @@
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
-import { ToggleButton } from "./ToggleButton";
+import { ToggleButton } from "../global/ToggleButton";
 
 interface TableProps {
   columns: TableColumn[];
