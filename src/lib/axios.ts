@@ -10,6 +10,7 @@ const axios_server = axios.create({
 
 axios_auth.defaults.withCredentials = true;
 axios_auth.defaults.headers.post["Content-Type"] = "application/json";
+
 axios_server.defaults.withCredentials = true;
 axios_server.defaults.headers.post["Content-Type"] = "application/json";
 

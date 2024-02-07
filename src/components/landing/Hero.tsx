@@ -1,7 +1,7 @@
 import React from 'react'
 import hero_illustration from '@/assets/hero_illustration.svg'
 import Image from 'next/image'
-import Button from "../common/ButtonGradient"
+import Button from "../global/ButtonGradient"
 
 export const Hero = ({ isLoggedin }: { isLoggedin: boolean }) => {
 

@@ -5,7 +5,7 @@ import logo_1_dark from '@/assets/logo_dark_1.svg'
 import logo_1 from '@/assets/logo_1.svg'
 import Link from "next/link"
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import { axios_auth } from "@/lib/helpers"
+import { axios_auth } from "@/lib/axios"
 
 export const VerifyOTP = () => {
     const router = useRouter();
@@ -29,7 +29,7 @@ export const VerifyOTP = () => {
                     if(pathname === '/auth/forgot-password/verify') {
                         router.push(`/auth/forgot-password/change-password?email=${email}`);
                     } else {
-                        router.push(`/auth/signup/change-password?email=${email}`);
+                        router.push(`/auth/signup/create-password?email=${email}`);
                     }
                 }
             } else {

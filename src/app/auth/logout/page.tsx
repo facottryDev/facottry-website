@@ -1,7 +1,7 @@
 'use client'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { axios_auth } from "@/lib/helpers"
+import { axios_auth } from "@/lib/axios"
 
 const Logout = () => {
     const router = useRouter();

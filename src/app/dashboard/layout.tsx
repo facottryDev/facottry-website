@@ -1,5 +1,5 @@
 'use client'
-import { axios_auth } from "@/lib/helpers";
+import { axios_auth } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 

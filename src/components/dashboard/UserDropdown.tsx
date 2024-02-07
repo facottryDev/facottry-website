@@ -10,7 +10,7 @@ function classNames(...classes: string[]) {
 
 const options = [
     { href: '/dashboard/settings', label: 'Profile' },
-    { href: '/auth/signout', label: 'Logout' }
+    { href: '/auth/logout', label: 'Logout' }
 ]
 
 const UserDropdown = ({ title }: { title: string }) => {
