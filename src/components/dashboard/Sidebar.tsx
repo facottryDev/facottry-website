@@ -1,9 +1,10 @@
 import React from 'react';
-import { FiHome, FiBarChart2, FiFileText, FiShoppingCart, FiDollarSign, FiPhone, FiSettings } from 'react-icons/fi';
+import { FiHome, FiBarChart2, FiFileText, FiShoppingCart, FiDollarSign, FiPhone, FiSettings, FiClipboard } from 'react-icons/fi';
 import Link from 'next/link';
 import Image from 'next/image'
 import logo_2 from '@/assets/logo_2.svg'
 import logo_dark_2 from '@/assets/logo_dark_2.svg'
+import { IoMdArrowDropdown } from "react-icons/io";
 
 const SidebarButton = ({ href, label, icon, target }: {
   href: string;
@@ -51,6 +52,17 @@ const Sidebar = () => {
       </div>
 
       <hr className="mt-4 w-full" />
+
+      <div>
+        <button>
+          <a className="flex items-center font-bold p-3 text-primary transition">
+            <span className="mr-3 text-xl">
+              <FiClipboard />
+            </span>
+            Project <span className="ml-2"><IoMdArrowDropdown /></span>
+          </a>
+        </button>
+      </div>
     </div>
   );
 };
