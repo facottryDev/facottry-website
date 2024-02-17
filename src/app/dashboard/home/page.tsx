@@ -4,6 +4,7 @@ import Sidebar from "@/components/dashboard/Sidebar"
 import ToggleSwitch from "@/components/global/ToggleTheme"
 import UserDropdown from "@/components/dashboard/UserDropdown"
 import { Accordion } from "@/components/dashboard/Accordion"
+import Filters from "@/components/dashboard/Filters"
 
 const PlayerThemes = [
   {
@@ -16,6 +17,16 @@ const PlayerThemes = [
     desc: 'Black and white theme',
     image: demo_image
   },
+  {
+    name: 'Config 003',
+    desc: 'Black and red theme',
+    image: demo_image
+  },
+  {
+    name: 'Config 004',
+    desc: 'Black and gray theme',
+    image: demo_image
+  }
 ]
 
 const HomeThemes = [
@@ -29,6 +40,16 @@ const HomeThemes = [
     desc: 'Black and white theme',
     image: demo_image
   },
+  {
+    name: 'Config 003',
+    desc: 'Black and red theme',
+    image: demo_image
+  },
+  {
+    name: 'Config 004',
+    desc: 'Black and gray theme',
+    image: demo_image
+  }
 ]
 
 const Dashboard = () => {
@@ -55,13 +76,12 @@ const Dashboard = () => {
 
         <div className="flex flex-col justify-between mt-8 space-x-8">
           {/* Filters */}
-          <div>
-          </div>
+          <Filters />
 
           {/* Theme Selector Panel */}
-          <div className="w-full max-w-[60vw] h-fit p-8 space-y-4 bg-white rounded-lg dark:bg-darkblue">
+          <div className="flex flex-col md:flex-row gap-4">
             <Accordion title="Player" themes={PlayerThemes} />
-            <Accordion title="Home" themes={HomeThemes} />
+            <Accordion title="App" themes={HomeThemes} />
           </div>
         </div>
       </div>

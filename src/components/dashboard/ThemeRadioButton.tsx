@@ -19,7 +19,7 @@ export default function RadioButton({ themes }: Props) {
             <div className="mx-auto w-full">
                 <RadioGroup value={selected} onChange={setSelected}>
                     <RadioGroup.Label className="sr-only">Themes</RadioGroup.Label>
-                    <div className="space-y-2">
+                    <div className="lg:grid grid-cols-2 lg:gap-4">
                         {themes.map((theme) => (
                             <RadioGroup.Option
                                 key={theme.name}
