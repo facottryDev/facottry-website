@@ -1,35 +1,30 @@
 'use client'
-import { useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
 import Image from 'next/image'
 
 type Props = {
-    themes: {
-        name: string,
-        desc: string,
-        image: any;
-    }[],
+    options: any[],
+    onThemeChange: (theme: any) => void,
+    theme: any
 }
 
-export default function RadioButton({ themes }: Props) {
-    const [selected, setSelected] = useState(themes[0])
-
+export default function RadioButton({ options, theme, onThemeChange }: Props) {
     return (
         <div className="w-fit max-w-xl m-auto">
             <div className="mx-auto w-full">
-                <RadioGroup value={selected} onChange={setSelected}>
+                <RadioGroup value={theme} onChange={onThemeChange}>
                     <RadioGroup.Label className="sr-only">Themes</RadioGroup.Label>
                     <div className="lg:grid grid-cols-2 lg:gap-4">
-                        {themes.map((theme) => (
+                        {options.map((option) => (
                             <RadioGroup.Option
-                                key={theme.name}
-                                value={theme}
+                                key={option.name}
+                                value={option}
                                 className={({ active, checked }) =>
                                     `${active
                                         ? 'ring-2 ring-white ring-opacity-60 ring-offset-2 ring-offset-sky-300'
                                         : ''
                                     }
-                  ${checked ? 'bg-primary600 dark:bg-primary800 text-white' : 'bg-white dark:bg-darkblue'}
+                  ${checked ? 'bg-primary600 dark:bg-primary800 text-white' : 'bg-white dark:bg-darkblue border rounded-lg'}
                     relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none mb-4 `
                                 }
                             >
@@ -43,16 +38,13 @@ export default function RadioButton({ themes }: Props) {
                                                             as="p"
                                                             className={`font-bold text-lg ${checked ? 'text-white' : 'text-gray-900'} dark:text-white`}
                                                         >
-                                                            {theme.name}
+                                                            {option.configID}
                                                         </RadioGroup.Label>
                                                         <RadioGroup.Description
                                                             as="span"
                                                             className={`inline ${checked ? 'text-sky-100 dark:text-slate-200' : 'text-gray-500'
                                                                 } `}
                                                         >
-                                                            <span>
-                                                                {theme.desc}
-                                                            </span>
                                                         </RadioGroup.Description>
                                                     </div>
                                                 </div>
@@ -72,7 +64,7 @@ export default function RadioButton({ themes }: Props) {
                                                 )}
                                             </div>
 
-                                            <Image src={theme.image} alt="user" width={1000} height={1000} className="mt-2 rounded-xl" />
+                                            <Image src={option.demo_url} alt="user" width={1000} height={1000} className="mt-2 rounded-xl" />
                                         </div>
                                     </>
                                 )}
