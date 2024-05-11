@@ -48,3 +48,8 @@ type playerConfig = {
   updatedAt: string;
   demo_url: string;
 };
+
+type mapping = {
+  appConfig: any,
+  playerConfig: any,
+}

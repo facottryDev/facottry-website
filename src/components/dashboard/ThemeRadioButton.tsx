@@ -38,13 +38,14 @@ export default function RadioButton({ options, theme, onThemeChange }: Props) {
                                                             as="p"
                                                             className={`font-bold text-lg ${checked ? 'text-white' : 'text-gray-900'} dark:text-white`}
                                                         >
-                                                            {option.configID}
+                                                            {option.name}
                                                         </RadioGroup.Label>
                                                         <RadioGroup.Description
                                                             as="span"
                                                             className={`inline ${checked ? 'text-sky-100 dark:text-slate-200' : 'text-gray-500'
                                                                 } `}
                                                         >
+                                                            {option.desc}
                                                         </RadioGroup.Description>
                                                     </div>
                                                 </div>

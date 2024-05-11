@@ -14,7 +14,7 @@ const Filter = ({}: Props) => {
                 value={filters.country}
                 onChange={(e) => setFilters({ ...filters, country: e.target.value })}
             >
-                <option value="">Country</option>
+                <option value="" className="font-semibold">Country</option>
                 <option value="IN">India</option>
                 <option value="US">USA</option>
             </select>
@@ -25,7 +25,7 @@ const Filter = ({}: Props) => {
                 value={filters.subscription}
                 onChange={(e) => setFilters({ ...filters, subscription: e.target.value })}
             >
-                <option value="">Subscription</option>
+                <option value="" className="font-semibold">Subscription</option>
                 <option value="FREE">Free</option>
                 <option value="PAID">Paid</option>
             </select>
@@ -36,7 +36,7 @@ const Filter = ({}: Props) => {
                 value={filters.os}
                 onChange={(e) => setFilters({ ...filters, os: e.target.value })}
             >
-                <option value="">OS</option>
+                <option value="" className="font-semibold">OS</option>
                 <option value="LG">LG</option>
                 <option value="SAMSUNG">Samsung</option>
             </select>
@@ -47,7 +47,7 @@ const Filter = ({}: Props) => {
                 value={filters.osver}
                 onChange={(e) => setFilters({ ...filters, osver: e.target.value })}
             >
-                <option value="">OS Version</option>
+                <option value="" className="font-semibold">OS Version</option>
                 <option value="1.0">1.0</option>
                 <option value="1.0">1.1</option>
             </select>

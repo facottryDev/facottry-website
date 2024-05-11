@@ -3,10 +3,11 @@ import Sidebar from "@/components/dashboard/Sidebar"
 import ToggleSwitch from "@/components/global/ToggleTheme"
 import UserDropdown from "@/components/dashboard/UserDropdown"
 import RadioButton from "@/components/dashboard/ThemeRadioButton"
-import { useEffect, useState } from "react"
-import { axios_config } from "@/lib/axios"
+import { use, useEffect, useState } from "react"
+import { axios_config, axios_user } from "@/lib/axios"
 import { activeProjectStore, filterStore } from "@/lib/store";
 import Filter from "@/components/dashboard/Filter"
+import Image from "next/image"
 
 const Dashboard = () => {
   const [appConfigs, setAppConfigs] = useState<appConfig[]>();
@@ -14,57 +15,70 @@ const Dashboard = () => {
   const [filters] = filterStore(state => [state.filter]);
   const [selectedApp, setSelectedApp] = useState<appConfig>();
   const [selectedPlayer, setSelectedPlayer] = useState<playerConfig>();
+  const [mapping, setMapping] = useState<mapping>();
   const activeProjectID = activeProjectStore(state => state.projectID);
 
+  //Use Effect to fetch app and player configs
+  const fetchConfigs = async () => {
+    try {
+      const appConfigs = await axios_config.get('/get-app-configs', { params: { projectID: activeProjectID } });
+      const playerConfigs = await axios_config.get('/get-player-configs', { params: { projectID: activeProjectID } });
+      setAppConfigs(appConfigs.data);
+      setPlayerConfigs(playerConfigs.data);
+    } catch (error) { console.error(error) }
+  }
 
   useEffect(() => {
-    const fetchConfigs = async () => {
-      try {
-        const appConfigs = await axios_config.get('/get-app-configs', { params: { projectID: activeProjectID } });
-        const playerConfigs = await axios_config.get('/get-player-configs', { params: { projectID: activeProjectID } });
-        setAppConfigs(appConfigs.data);
-        setPlayerConfigs(playerConfigs.data);
-      } catch (error) { console.error(error) }
-    }
-
     fetchConfigs();
   }, [activeProjectID])
 
-  const handleSubmit = () => {
-    if (!filters.country || !filters.subscription || !filters.os || !filters.osver) {
-      alert('Please select all filters');
-      return;
-    }
+  //Use Effect to fetch active mapping
+  const getMapping = async () => {
+    try {
+      const mapping = await axios_user.get('/get-mapping', {
+        params: {
+          projectID: activeProjectID,
+          nocache: false,
+          country: filters.country,
+          subscription: filters.subscription,
+          os: filters.os,
+          osver: filters.osver,
+        }
+      });
 
+      setMapping(mapping.data);
+    } catch (error) {
+      console.error(error)
+      setMapping(undefined);
+    }
+  }
+
+  useEffect(() => {
+    getMapping();
+  }, [filters, activeProjectID])
+
+  // Function to handle update of mapping
+  const handleSubmit = async () => {
     if (!selectedApp || !selectedPlayer) {
       alert('Please select a theme for both App and Player');
       return;
     }
 
-    console.log(selectedApp, selectedPlayer)
-
-    const appConfig = {
-      configID: selectedApp.configID,
-      params: selectedApp.params,
-      demo_url: selectedApp.demo_url,
-    }
-
-    const playerConfig = {
-      configID: selectedPlayer.configID,
-      params: selectedPlayer.params,
-      demo_url: selectedPlayer.demo_url,
-    }
-
     const data = {
-      appConfig,
-      playerConfig,
-      filters
+      projectID: activeProjectID,
+      appConfig: selectedApp,
+      playerConfig: selectedPlayer,
+      filter: filters
     }
 
     try {
-      console.log(data)
-      alert('Submitted Successfully');
-    } catch (error) { console.error(error) }
+      await axios_config.post('/create-mapping', data);
+      getMapping();
+      alert('Mapping created successfully!')
+    } catch (error) {
+      console.error(error)
+      alert('Error in creating mapping!')
+    }
   }
 
   return (
@@ -91,21 +105,49 @@ const Dashboard = () => {
           {/* Filters */}
           <Filter />
 
-          {/* Theme Selector Panel */}
-          <div className="flex flex-col md:flex-row gap-6 justify-around">
-            <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
-              <p className="font-bold text-lg">App Configs</p>
-              {appConfigs && (
-                <RadioButton options={appConfigs} theme={selectedApp} onThemeChange={setSelectedApp} />
-              )}
-            </section>
+          {/* Active Configs */}
+          <div className="mb-8 p-4 bg-white flex flex-col justify-center items-center border rounded-md">
+            <h1 className="text-lg font-bold">Active Configs</h1>
+            {mapping && (
+              <div className="flex gap-8 p-2">
+                <div className="bg-primary600 rounded-md text-white border p-6 w-full max-w-sm">
+                  <p className="text-lg font-bold">App Config</p>
+                  <p>Name: {mapping?.appConfig?.name}</p>
+                  <p>Description: {mapping?.appConfig?.desc}</p>
+                  <Image src={mapping?.appConfig.demo_url} alt="user" width={200} height={200} className="mt-2 rounded-xl" />
+                </div>
 
-            <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
-              <p className="font-bold text-lg">Player Configs</p>
-              {playerConfigs && (
-                <RadioButton options={playerConfigs} theme={selectedPlayer} onThemeChange={setSelectedPlayer} />
-              )}
-            </section>
+                <div className="bg-primary600 rounded-md text-white border p-6 w-full max-w-sm">
+                  <p className="text-lg font-bold">Player Config</p>
+                  <p>Name: {mapping?.playerConfig?.name}</p>
+                  <p>Description: {mapping?.playerConfig?.desc}</p>
+                  <Image src={mapping?.playerConfig.demo_url} alt="user" width={200} height={200} className="mt-2 rounded-xl" />
+                </div>
+              </div>
+            )}
+            {!mapping && <p className="mt-2">No active configs found</p>}
+          </div>
+
+          <hr className="w-full mb-8" />
+
+          {/* Theme Selector Panel */}
+          <div className="flex flex-col items-center">
+            <h1 className="text-lg font-bold mb-8">Update Configs</h1>
+            <div className="flex flex-col md:flex-row gap-6 justify-around">
+              <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
+                <p className="font-bold text-lg">App Configs</p>
+                {appConfigs && (
+                  <RadioButton options={appConfigs} theme={selectedApp} onThemeChange={setSelectedApp} />
+                )}
+              </section>
+
+              <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
+                <p className="font-bold text-lg">Player Configs</p>
+                {playerConfigs && (
+                  <RadioButton options={playerConfigs} theme={selectedPlayer} onThemeChange={setSelectedPlayer} />
+                )}
+              </section>
+            </div>
           </div>
 
           <button className="px-4 py-2 mt-5 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={handleSubmit}>Submit</button>
