@@ -81,6 +81,21 @@ const Dashboard = () => {
     }
   }
 
+  const handleDelete = async () => {
+    try {
+      await axios_config.post('/delete-mapping', {
+        projectID: activeProjectID,
+        filter: filters
+      });
+
+      alert('Mapping deleted successfully!')
+      setMapping(undefined);
+    } catch (error) {
+      console.error(error)
+      alert('Error in deleting mapping!')
+    }
+  }
+
   return (
     <div className="flex w-screen min-h-screen bg-bggray dark:bg-darkblue300">
       <Sidebar />
@@ -107,7 +122,12 @@ const Dashboard = () => {
 
           {/* Active Configs */}
           <div className="mb-8 p-4 bg-white flex flex-col justify-center items-center border rounded-md">
-            <h1 className="text-lg font-bold">Active Configs</h1>
+            <div className="flex gap-10 items-center w-full justify-between px-4 py-2">
+              <h1 className="text-lg font-bold">Active Configs</h1>
+              {mapping && (
+                <button className="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600" onClick={handleDelete}>Delete</button>
+              )}
+            </div>
             {mapping && (
               <div className="flex gap-8 p-2">
                 <div className="bg-primary600 rounded-md text-white border p-6 w-full max-w-sm">
