@@ -1,35 +1,42 @@
 'use client'
-import { useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
 import Image from 'next/image'
+import { FiTrash } from "react-icons/fi"
+import { axios_config } from "@/lib/axios"
 
 type Props = {
-    themes: {
-        name: string,
-        desc: string,
-        image: any;
-    }[],
+    options: any[],
+    onThemeChange: (theme: any) => void,
+    theme: any
 }
 
-export default function RadioButton({ themes }: Props) {
-    const [selected, setSelected] = useState(themes[0])
+export default function RadioButton({ options, theme, onThemeChange }: Props) {
+    const handleDelete = async (configID: string) => {
+        try {
+            await axios_config.delete(`/delete-config?configID=${configID}`);
+            alert("Theme deleted successfully");
+            window.location.reload();
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <div className="w-fit max-w-xl m-auto">
             <div className="mx-auto w-full">
-                <RadioGroup value={selected} onChange={setSelected}>
+                <RadioGroup value={theme} onChange={onThemeChange}>
                     <RadioGroup.Label className="sr-only">Themes</RadioGroup.Label>
                     <div className="lg:grid grid-cols-2 lg:gap-4">
-                        {themes.map((theme) => (
+                        {options.map((option) => (
                             <RadioGroup.Option
-                                key={theme.name}
-                                value={theme}
+                                key={option.name}
+                                value={option}
                                 className={({ active, checked }) =>
                                     `${active
                                         ? 'ring-2 ring-white ring-opacity-60 ring-offset-2 ring-offset-sky-300'
                                         : ''
                                     }
-                  ${checked ? 'bg-primary600 dark:bg-primary800 text-white' : 'bg-white dark:bg-darkblue'}
+                  ${checked ? 'bg-primary600 dark:bg-primary800 text-white' : 'bg-white dark:bg-darkblue border rounded-lg'}
                     relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none mb-4 `
                                 }
                             >
@@ -37,24 +44,30 @@ export default function RadioButton({ themes }: Props) {
                                     <>
                                         <div className="flex flex-col justify-center w-full">
                                             <div className="flex w-full items-center justify-between">
-                                                <div className="flex items-center">
+                                                <div className="flex w-full justify-between items-center px-2">
                                                     <div className="text-sm">
                                                         <RadioGroup.Label
                                                             as="p"
                                                             className={`font-bold text-lg ${checked ? 'text-white' : 'text-gray-900'} dark:text-white`}
                                                         >
-                                                            {theme.name}
+                                                            {option.name}
                                                         </RadioGroup.Label>
                                                         <RadioGroup.Description
                                                             as="span"
                                                             className={`inline ${checked ? 'text-sky-100 dark:text-slate-200' : 'text-gray-500'
                                                                 } `}
                                                         >
-                                                            <span>
-                                                                {theme.desc}
-                                                            </span>
+                                                            {option.desc}
                                                         </RadioGroup.Description>
+                                                        {checked && (
+                                                            <div className="text-xs text-white bg-primary600 dark:bg-primary800 rounded-full px-2 py-1 ml-2">
+                                                                {JSON.stringify(option.params)}
+                                                            </div>
+                                                        )}
                                                     </div>
+                                                    <button className="ml-2 p-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition-all" onClick={() => handleDelete(option.configID)}>
+                                                        <FiTrash />
+                                                    </button>
                                                 </div>
                                                 {checked && (
                                                     <div className="shrink-0 text-white">
@@ -72,7 +85,7 @@ export default function RadioButton({ themes }: Props) {
                                                 )}
                                             </div>
 
-                                            <Image src={theme.image} alt="user" width={1000} height={1000} className="mt-2 rounded-xl" />
+                                            <Image src={option.demo_url} alt="user" width={1000} height={1000} className="mt-2 rounded-xl" />
                                         </div>
                                     </>
                                 )}

@@ -1,10 +1,11 @@
+'use client'
 import React from 'react';
-import { FiHome, FiBarChart2, FiFileText, FiShoppingCart, FiDollarSign, FiPhone, FiSettings, FiClipboard } from 'react-icons/fi';
+import { FiHome, FiBarChart2, FiFileText, FiShoppingCart, FiDollarSign, FiPhone, FiSettings } from 'react-icons/fi';
 import Link from 'next/link';
 import Image from 'next/image'
 import logo_2 from '@/assets/logo_2.svg'
 import logo_dark_2 from '@/assets/logo_dark_2.svg'
-import { IoMdArrowDropdown } from "react-icons/io";
+import { projectStore, activeProjectStore } from "@/lib/store";
 
 const SidebarButton = ({ href, label, icon, target }: {
   href: string;
@@ -19,6 +20,10 @@ const SidebarButton = ({ href, label, icon, target }: {
 );
 
 const Sidebar = () => {
+  const allProjects = projectStore(state => state.projects);
+  const activeProjectID = activeProjectStore(state => state.projectID);
+  const setActiveProject = activeProjectStore(state => state.setActiveProject);
+
   return (
     <div className="hidden md:block bg-white p-8 pl-5 dark:bg-darkblue">
       <Link href={'/'} className="flex gap-2 items-center mb-8">
@@ -53,15 +58,22 @@ const Sidebar = () => {
 
       <hr className="mt-4 w-full" />
 
-      <div>
-        <button>
-          <a className="flex items-center font-bold p-3 text-primary transition">
-            <span className="mr-3 text-xl">
-              <FiClipboard />
-            </span>
-            Project <span className="ml-2"><IoMdArrowDropdown /></span>
-          </a>
-        </button>
+      <div className="mt-4">
+        <select
+          id="project"
+          name="project"
+          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+          onChange={(e) => {
+            setActiveProject(e.target.value);
+          }}
+          value={activeProjectID}
+        >
+          {allProjects.map((item) => (
+            <option key={item.projectID} value={item.projectID}>
+              {item.name}
+            </option>
+          ))}
+        </select>
       </div>
     </div>
   );

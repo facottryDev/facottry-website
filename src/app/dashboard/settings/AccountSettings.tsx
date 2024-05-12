@@ -1,22 +1,77 @@
 'use client'
 import { PiUserCircleFill } from 'react-icons/pi'
+import { userStore } from '@/lib/store'
+import { axios_auth } from "@/lib/axios"
+import Image from "next/image"
 
 export default function AccountSettings() {
+    const user = userStore(state => state.user)
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+
+        try {
+            const formData = new FormData(e.currentTarget)
+            const data = Object.fromEntries(formData.entries())
+
+            let body = {};
+
+            if(data.name){
+                const isValidName = (name: string) => {
+                    const nameRegex = /^[a-zA-Z\s]+$/;
+                    return nameRegex.test(name);
+                };
+    
+                if (!isValidName(String(data.name))) {
+                    throw new Error('Invalid name');
+                }
+
+                body = { ...body, name: data.name };
+            }
+
+            if(data.mobile){
+                const isValidMobile = (mobile: string) => {
+                    const mobileRegex = /^[0-9]{10}$/;
+                    return mobileRegex.test(mobile);
+                };
+    
+                if (!isValidMobile(String(data.mobile))) {
+                    throw new Error('Invalid mobile number');
+                }
+
+                body = { ...body, mobile: data.mobile };
+            }
+
+            if(data.address){
+                body = { ...body, address: data.address };
+            }
+
+            axios_auth.patch('/update-user', body);
+            alert('User updated successfully')
+            window.location.reload();
+        } catch (error) {
+            console.error(error)
+            alert('Error updating user')
+        }
+    }
+
     return (
-        <form className="p-4 bg-white rounded-lg dark:bg-darkblue">
+        <form className="p-4 bg-white rounded-lg dark:bg-darkblue" onSubmit={handleSubmit}>
             <div className="pb-6 border-b border-gray-900/10 dark:border-gray-500">
                 <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-slate-200">Account Settings</h2>
                 <p className="mt-1 text-sm leading-6 text-gray-600 dark:text-slate-400">Edit your information below</p>
 
-                <div className="mt-8 col-span-full">
-                    <label htmlFor="photo" className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
-                        Photo
-                    </label>
-                    <div className="flex items-center mt-2 gap-x-3">
-                        <PiUserCircleFill className="w-12 h-12 text-gray-300" aria-hidden="true" />
+                <div className="flex mt-8 items-center justify-around">
+                    <div className="col-span-full flex flex-col items-center">
+
+                        <div className="flex flex-col items-center mt-2 gap-x-3">
+                            {!user.profilePic ? (<PiUserCircleFill className="w-12 h-12 text-gray-300" aria-hidden="true" />) : (
+                                <Image src={user.profilePic} alt="Profile Picture" width={150} height={150} className="rounded-full" />
+                            )}
+                        </div>
                         <button
                             type="button"
-                            className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                            className="mt-4 rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                         >
                             Change
                         </button>
@@ -24,105 +79,61 @@ export default function AccountSettings() {
                 </div>
 
                 <div className="grid grid-cols-1 mt-10 gap-x-6 gap-y-8 sm:grid-cols-6">
+
                     <div className="sm:col-span-3">
-                        <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
-                            First name
+                        <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
+                            Email address
                         </label>
-                        <div className="mt-2">
-                            <input
-                                type="text"
-                                name="first-name"
-                                id="first-name"
-                                autoComplete="given-name"
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 pl-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 dark:placeholder:text-slate-200"
-                            />
-                        </div>
+                        <input
+                            type="email"
+                            name="email"
+                            id="email"
+                            disabled
+                            placeholder={user.email}
+                            className="block mt-2 w-full rounded-md border-0 py-1.5 text-gray-900 pl-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 dark:placeholder:text-slate-200"
+                        />
                     </div>
 
                     <div className="sm:col-span-3">
-                        <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
-                            Last name
+                        <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
+                            Name
                         </label>
-                        <div className="mt-2">
-                            <input
-                                type="text"
-                                name="last-name"
-                                id="last-name"
-                                autoComplete="family-name"
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 pl-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="sm:col-span-3">
-                        <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
-                            Country
-                        </label>
-                        <div className="mt-2">
-                            <input
-                                id="country"
-                                name="country"
-                                autoComplete="country-name"
-                                className="pl-1 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 sm:max-w-xs sm:text-sm sm:leading-6"
-                            />
-                        </div>
+                        <input
+                            type="text"
+                            name="name"
+                            id="name"
+                            placeholder={user.name}
+                            autoComplete="name"
+                            className="block mt-2 w-full rounded-md border-0 py-1.5 text-gray-900 pl-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 dark:placeholder:text-slate-200"
+                        />
                     </div>
 
                     <div className="col-span-full">
-                        <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
-                            Street address
+                        <label htmlFor="address" className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
+                            Address
                         </label>
                         <div className="mt-2">
-                            <input
-                                type="text"
-                                name="street-address"
-                                id="street-address"
-                                autoComplete="street-address"
+                            <textarea
+                                name="address"
+                                id="address"
+                                autoComplete="address"
+                                placeholder={user.address}
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 pl-2 focus:ring-inset sm:text-sm sm:leading-6"
                             />
                         </div>
                     </div>
 
-                    <div className="sm:col-span-2 sm:col-start-1">
-                        <label htmlFor="city" className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
-                            City
+                    <div className="sm:col-span-3 sm:col-start-1">
+                        <label htmlFor="mobile" className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
+                            Mobile
                         </label>
                         <div className="mt-2">
                             <input
                                 type="text"
-                                name="city"
-                                id="city"
-                                autoComplete="address-level2"
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 pl-2 focus:ring-inset sm:text-sm sm:leading-6"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="sm:col-span-2">
-                        <label htmlFor="region" className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
-                            State
-                        </label>
-                        <div className="mt-2">
-                            <input
-                                type="text"
-                                name="region"
-                                id="region"
-                                autoComplete="address-level1"
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 pl-2 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="sm:col-span-2">
-                        <label htmlFor="postal-code" className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
-                            ZIP / Postal code
-                        </label>
-                        <div className="mt-2">
-                            <input
-                                type="text"
-                                name="postal-code"
-                                id="postal-code"
-                                autoComplete="postal-code"
+                                name="mobile"
+                                id="mobile"
+                                autoComplete="phone"
+                                placeholder={user.mobile}
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 pl-2 focus:ring-inset sm:text-sm sm:leading-6"
                             />
                         </div>
