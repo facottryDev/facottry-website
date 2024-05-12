@@ -89,7 +89,7 @@ const BuyFeatures = () => {
 
                     <div className="flex items-center gap-6">
                         <ToggleSwitch />
-                        <UserDropdown title="Kartik" />
+                        <UserDropdown />
                     </div>
                 </nav>
 
