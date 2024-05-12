@@ -1,6 +1,8 @@
 'use client'
 import { RadioGroup } from '@headlessui/react'
 import Image from 'next/image'
+import { FiTrash } from "react-icons/fi"
+import { axios_config } from "@/lib/axios"
 
 type Props = {
     options: any[],
@@ -9,6 +11,16 @@ type Props = {
 }
 
 export default function RadioButton({ options, theme, onThemeChange }: Props) {
+    const handleDelete = async (configID: string) => {
+        try {
+            await axios_config.delete(`/delete-config?configID=${configID}`);
+            alert("Theme deleted successfully");
+            window.location.reload();
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <div className="w-fit max-w-xl m-auto">
             <div className="mx-auto w-full">
@@ -32,7 +44,7 @@ export default function RadioButton({ options, theme, onThemeChange }: Props) {
                                     <>
                                         <div className="flex flex-col justify-center w-full">
                                             <div className="flex w-full items-center justify-between">
-                                                <div className="flex items-center">
+                                                <div className="flex w-full justify-between items-center px-2">
                                                     <div className="text-sm">
                                                         <RadioGroup.Label
                                                             as="p"
@@ -47,7 +59,15 @@ export default function RadioButton({ options, theme, onThemeChange }: Props) {
                                                         >
                                                             {option.desc}
                                                         </RadioGroup.Description>
+                                                        {checked && (
+                                                            <div className="text-xs text-white bg-primary600 dark:bg-primary800 rounded-full px-2 py-1 ml-2">
+                                                                {JSON.stringify(option.params)}
+                                                            </div>
+                                                        )}
                                                     </div>
+                                                    <button className="ml-2 p-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition-all" onClick={() => handleDelete(option.configID)}>
+                                                        <FiTrash />
+                                                    </button>
                                                 </div>
                                                 {checked && (
                                                     <div className="shrink-0 text-white">

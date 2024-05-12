@@ -53,3 +53,18 @@ type mapping = {
   appConfig: any,
   playerConfig: any,
 }
+
+type User = {
+  email: string;
+  name: string;
+  address: string;
+  mobile: string;
+  profilePic: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type UserStore = {
+  user: User;
+  setUser: (user: User) => void;
+};

@@ -20,13 +20,26 @@ export const filterStore = create(
   persist<FilterStore>(
     (set) => ({
       filter: {
-        country: '',
-        subscription: '',
-        os: '',
-        osver: '',
+        country: "",
+        subscription: "",
+        os: "",
+        osver: "",
       },
       setFilter: (filter: Filter) => set({ filter }),
     }),
     { name: "filterSelection" }
   )
 );
+
+export const userStore = create<UserStore>((set) => ({
+  user: {
+    email: "user@gmail.com",
+    name: "User",
+    address: "",
+    mobile: "",
+    profilePic: "",
+    createdAt: "",
+    updatedAt: "",
+  },
+  setUser: (user: User) => set({ user }),
+}));

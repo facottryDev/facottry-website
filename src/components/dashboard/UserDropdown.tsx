@@ -3,6 +3,7 @@ import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import Link from "next/link";
 import { BsChevronDown } from "react-icons/bs";
+import { userStore } from "@/lib/store";
 
 function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
@@ -13,14 +14,17 @@ const options = [
     { href: '/auth/logout', label: 'Logout' }
 ]
 
-const UserDropdown = ({ title }: { title: string }) => {
+const UserDropdown = () => {
+    const user = userStore(state => state.user);
+    console.log(user)
+
     return (
         <Menu as="div" className="relative inline-block text-left">
             <div>
                 <Menu.Button
                     className="flex items-center gap-2 text-sm transition-all rounded-lg font-semibold"
                 >
-                    {title}
+                    {user.name || user.email}
                     <BsChevronDown />
                 </Menu.Button>
             </div>
