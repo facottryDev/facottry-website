@@ -184,7 +184,7 @@ const Dashboard = () => {
           {/* Filters */}
           <Filter />
 
-          {/* Active Configs */}
+          {/* Active Mapping */}
           <div className="mb-8 p-4 bg-white flex flex-col justify-center items-center border rounded-md">
             <div className="flex gap-10 items-center w-full justify-between px-4 py-2">
               <h1 className="text-lg font-bold">Active Mapping</h1>
@@ -194,20 +194,24 @@ const Dashboard = () => {
             </div>
             {mapping && (
               <div className="flex gap-8 p-2">
-                <div className="bg-primary600 rounded-md text-white border p-6 w-full max-w-sm text-sm">
+                <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full min-w-[300px] max-w-sm">
                   <p className="text-lg font-bold mb-2">App Config</p>
-                  <p className="font-semibold">{mapping?.appConfig?.name}</p>
-                  <p>{mapping?.appConfig?.desc}</p>
-                  <p>{JSON.stringify(mapping?.appConfig?.params)}</p>
-                  <Image src={mapping?.appConfig?.demo_url} alt="user" width={200} height={200} className="mt-2 rounded-xl" />
+                  <div>
+                    <p className="font-semibold">{mapping?.appConfig?.name}</p>
+                    <p>{mapping?.appConfig?.desc}</p>
+                    <p>{JSON.stringify(mapping?.appConfig?.params, null, 1)}</p>
+                  </div>
+                  <Image src={mapping?.appConfig?.demo_url} alt="user" width={500} height={500} className="mt-2 rounded-xl" />
                 </div>
 
-                <div className="bg-primary600 rounded-md text-white border p-6 w-full max-w-sm text-sm">
+                <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full min-w-[300px] max-w-sm">
                   <p className="text-lg font-bold mb-2">Player Config</p>
-                  <p className="font-semibold">{mapping?.playerConfig?.name}</p>
-                  <p>{mapping?.playerConfig?.desc}</p>
-                  <p>{JSON.stringify(mapping?.playerConfig?.params)}</p>
-                  <Image src={mapping?.playerConfig?.demo_url} alt="user" width={200} height={200} className="mt-2 rounded-xl" />
+                  <div>
+                    <p className="font-semibold">{mapping?.playerConfig?.name}</p>
+                    <p>{mapping?.playerConfig?.desc}</p>
+                    <p>{JSON.stringify(mapping?.playerConfig?.params, null, 1)}</p>
+                  </div>
+                  <Image src={mapping?.playerConfig?.demo_url} alt="user" width={500} height={500} className="mt-2 rounded-xl" />
                 </div>
               </div>
             )}
