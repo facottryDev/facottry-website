@@ -3,11 +3,12 @@ import Sidebar from "@/components/dashboard/Sidebar"
 import ToggleSwitch from "@/components/global/ToggleTheme"
 import UserDropdown from "@/components/dashboard/UserDropdown"
 import RadioButton from "@/components/dashboard/ThemeRadioButton"
-import { use, useEffect, useState } from "react"
-import { axios_config, axios_user } from "@/lib/axios"
+import { useEffect, useState } from "react"
+import { axios_config } from "@/lib/axios"
 import { activeProjectStore, filterStore } from "@/lib/store";
 import Filter from "@/components/dashboard/Filter"
 import Image from "next/image"
+import { fetchConfigs, fetchMapping } from "@/lib/fetch"
 
 const Dashboard = () => {
   const [appConfigs, setAppConfigs] = useState<appConfig[]>();
@@ -16,40 +17,44 @@ const Dashboard = () => {
   const [selectedApp, setSelectedApp] = useState<appConfig>();
   const [selectedPlayer, setSelectedPlayer] = useState<playerConfig>();
   const [mapping, setMapping] = useState<mapping>();
+  const [updateScreen, setUpdateScreen] = useState<boolean>(false);
+
   const activeProjectID = activeProjectStore(state => state.projectID);
 
-  //Use Effect to fetch app and player configs
-  const fetchConfigs = async () => {
-    try {
-      const appConfigs = await axios_config.get('/get-app-configs', { params: { projectID: activeProjectID } });
-      const playerConfigs = await axios_config.get('/get-player-configs', { params: { projectID: activeProjectID } });
-      setAppConfigs(appConfigs.data);
-      setPlayerConfigs(playerConfigs.data);
-    } catch (error) { console.error(error) }
+  // Fetching & updating Configs
+  const getConfigs = async () => {
+    const configs = await fetchConfigs(activeProjectID);
+
+    if (configs.status >= 300) {
+      setAppConfigs(undefined);
+      setPlayerConfigs(undefined);
+      console.log(configs);
+      return;
+    } else {
+      setAppConfigs(configs.appConfigs);
+      setPlayerConfigs(configs.playerConfigs);
+    }
   }
 
   useEffect(() => {
-    fetchConfigs();
-  }, [activeProjectID])
+    getConfigs();
+  }, [activeProjectID, updateScreen])
 
-  //Use Effect to fetch active mapping
+  // Fetching & updating Mapping
   const getMapping = async () => {
-    try {
-      const mapping = await axios_user.get('/get-mapping', {
-        params: {
-          projectID: activeProjectID,
-          nocache: false,
-          country: filters.country,
-          subscription: filters.subscription,
-          os: filters.os,
-          osver: filters.osver,
-        }
-      });
+    const res = await fetchMapping(activeProjectID, filters, true);
 
-      setMapping(mapping.data);
-    } catch (error) {
-      console.error(error)
+    if (res.status >= 300) {
       setMapping(undefined);
+      console.log(res.data);
+      return;
+    } else {
+      const mapping = {
+        appConfig: res.data.appConfig,
+        playerConfig: res.data.playerConfig
+      }
+
+      setMapping(mapping);
     }
   }
 
@@ -58,7 +63,7 @@ const Dashboard = () => {
   }, [filters, activeProjectID])
 
   // Function to handle update of mapping
-  const handleSubmit = async () => {
+  const handleUpdateMapping = async () => {
     if (!selectedApp || !selectedPlayer) {
       alert('Please select a theme for both App and Player');
       return;
@@ -81,7 +86,8 @@ const Dashboard = () => {
     }
   }
 
-  const handleDelete = async () => {
+  // Function to handle delete of mapping
+  const handleMappingDelete = async () => {
     try {
       await axios_config.post('/delete-mapping', {
         projectID: activeProjectID,
@@ -89,13 +95,14 @@ const Dashboard = () => {
       });
 
       alert('Mapping deleted successfully!')
-      setMapping(undefined);
+      getMapping();
     } catch (error) {
       console.error(error)
       alert('Error in deleting mapping!')
     }
   }
 
+  // Function to handle creation of new App Config
   const handleCreateApp = async (e: any) => {
     e.preventDefault();
 
@@ -116,7 +123,7 @@ const Dashboard = () => {
       }
 
       await axios_config.post('/add-app-config', data);
-      fetchConfigs();
+      getConfigs();
       alert('App Config created successfully!')
     } catch (error: any) {
       console.error(error.response)
@@ -124,6 +131,7 @@ const Dashboard = () => {
     }
   }
 
+  // Function to handle creation of new Player Config
   const handleCreatePlayer = async (e: any) => {
     e.preventDefault();
 
@@ -144,7 +152,7 @@ const Dashboard = () => {
       }
 
       await axios_config.post('/add-player-config', data);
-      fetchConfigs();
+      getConfigs();
       alert('Player Config created successfully!')
     } catch (error: any) {
       console.error(error.response)
@@ -181,7 +189,7 @@ const Dashboard = () => {
             <div className="flex gap-10 items-center w-full justify-between px-4 py-2">
               <h1 className="text-lg font-bold">Active Mapping</h1>
               {mapping && (
-                <button className="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600" onClick={handleDelete}>Delete</button>
+                <button className="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600" onClick={handleMappingDelete}>Delete</button>
               )}
             </div>
             {mapping && (
@@ -191,7 +199,7 @@ const Dashboard = () => {
                   <p className="font-semibold">{mapping?.appConfig?.name}</p>
                   <p>{mapping?.appConfig?.desc}</p>
                   <p>{JSON.stringify(mapping?.appConfig?.params)}</p>
-                  <Image src={mapping?.appConfig.demo_url} alt="user" width={200} height={200} className="mt-2 rounded-xl" />
+                  <Image src={mapping?.appConfig?.demo_url} alt="user" width={200} height={200} className="mt-2 rounded-xl" />
                 </div>
 
                 <div className="bg-primary600 rounded-md text-white border p-6 w-full max-w-sm text-sm">
@@ -199,7 +207,7 @@ const Dashboard = () => {
                   <p className="font-semibold">{mapping?.playerConfig?.name}</p>
                   <p>{mapping?.playerConfig?.desc}</p>
                   <p>{JSON.stringify(mapping?.playerConfig?.params)}</p>
-                  <Image src={mapping?.playerConfig.demo_url} alt="user" width={200} height={200} className="mt-2 rounded-xl" />
+                  <Image src={mapping?.playerConfig?.demo_url} alt="user" width={200} height={200} className="mt-2 rounded-xl" />
                 </div>
               </div>
             )}
@@ -215,19 +223,19 @@ const Dashboard = () => {
               <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
                 <p className="font-bold text-lg">App Configs</p>
                 {appConfigs && (
-                  <RadioButton options={appConfigs} theme={selectedApp} onThemeChange={setSelectedApp} />
+                  <RadioButton getConfigs={getConfigs} options={appConfigs} theme={selectedApp} onThemeChange={setSelectedApp} />
                 )}
               </section>
 
               <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
                 <p className="font-bold text-lg">Player Configs</p>
                 {playerConfigs && (
-                  <RadioButton options={playerConfigs} theme={selectedPlayer} onThemeChange={setSelectedPlayer} />
+                  <RadioButton getConfigs={getConfigs} options={playerConfigs} theme={selectedPlayer} onThemeChange={setSelectedPlayer} />
                 )}
               </section>
             </div>
 
-            <button className="px-4 py-2 mt-5 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={handleSubmit}>Submit</button>
+            <button className="px-4 py-2 mt-5 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={handleUpdateMapping}>Submit</button>
           </div>
 
           <hr className="w-full m-8" />
@@ -254,7 +262,7 @@ const Dashboard = () => {
                 <h1 className="font-semibold">Create Player Config</h1>
                 <label htmlFor="playerConfigName" className="mt-4">Name *</label>
                 <input id="playerConfigName" name="playerConfigName" required type="text" className="w-full p-2 border rounded-md" />
-                
+
                 <label htmlFor="playerConfigDesc" className="mt-2">Description</label>
                 <input type="text" id="playerConfigDesc" name="playerConfigDesc" className="w-full p-2 border rounded-md" />
 

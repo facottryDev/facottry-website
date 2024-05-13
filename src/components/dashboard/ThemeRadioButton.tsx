@@ -3,19 +3,25 @@ import { RadioGroup } from '@headlessui/react'
 import Image from 'next/image'
 import { FiTrash } from "react-icons/fi"
 import { axios_config } from "@/lib/axios"
+import { fetchConfigs } from "@/lib/fetch"
+import { activeProjectStore } from "@/lib/store"
 
 type Props = {
     options: any[],
     onThemeChange: (theme: any) => void,
     theme: any
+    getConfigs: () => void
 }
 
-export default function RadioButton({ options, theme, onThemeChange }: Props) {
+export default function RadioButton({ getConfigs, options, theme, onThemeChange }: Props) {
+    const activeProjectID = activeProjectStore(state => state.projectID);
+
     const handleDelete = async (configID: string) => {
         try {
             await axios_config.delete(`/delete-config?configID=${configID}`);
             alert("Theme deleted successfully");
-            window.location.reload();
+            fetchConfigs(activeProjectID);
+            getConfigs();
         } catch (error) {
             console.log(error)
         }
@@ -60,8 +66,8 @@ export default function RadioButton({ options, theme, onThemeChange }: Props) {
                                                             {option.desc}
                                                         </RadioGroup.Description>
                                                         {checked && (
-                                                            <div className="text-xs text-white bg-primary600 dark:bg-primary800 rounded-full px-2 py-1 ml-2">
-                                                                {JSON.stringify(option.params)}
+                                                            <div className="text-xs text-white bg-primary600 dark:bg-primary800 rounded-full ">
+                                                                {JSON.stringify(option.params, null, 2)}
                                                             </div>
                                                         )}
                                                     </div>

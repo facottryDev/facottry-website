@@ -4,7 +4,7 @@ import UserDropdown from "@/components/dashboard/UserDropdown";
 import AccountSettings from "./AccountSettings";
 import Sidebar from "@/components/dashboard/Sidebar";
 import React, { useState } from 'react';
-import ConfigSettings from "./ConfigSettings";
+import CompanySettings from "./CompanySettings";
 import SecuritySettings from "./SecuritySettings";
 
 const tabs = [
@@ -13,8 +13,8 @@ const tabs = [
         label: 'Account',
     },
     {
-        name: 'config',
-        label: 'Config',
+        name: 'company',
+        label: 'Company',
     },
     {
         name: 'security',
@@ -59,7 +59,7 @@ const Settings = () => {
 
                 <div className="mt-8">
                     {selectedTab === 'account' && <AccountSettings />}
-                    {selectedTab === 'config' && <ConfigSettings />}
+                    {selectedTab === 'company' && <CompanySettings />}
                     {selectedTab === 'security' && <SecuritySettings />}
                 </div>
             </div>

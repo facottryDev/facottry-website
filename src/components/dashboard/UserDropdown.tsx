@@ -16,7 +16,6 @@ const options = [
 
 const UserDropdown = () => {
     const user = userStore(state => state.user);
-    console.log(user)
 
     return (
         <Menu as="div" className="relative inline-block text-left">

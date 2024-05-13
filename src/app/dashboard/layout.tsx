@@ -18,11 +18,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             try {
                 const user = await axios_auth.get('/get-user');
                 setUser(user.data);
-                const admin_projects = await axios_admin.get('/get-admin-projects');
 
+                try {
+                    await axios_admin.get('/is-admin');
+                } catch (error) {
+                    router.push('/onboarding/personal');
+                }
+
+                const admin_projects = await axios_admin.get('/get-admin-projects');
                 setProjects(admin_projects.data);
 
-                if(activeProjectID === '') {
+                if (activeProjectID === '') {
                     setActiveProject(admin_projects.data[0].projectID);
                 }
 

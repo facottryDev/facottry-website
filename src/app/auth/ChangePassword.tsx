@@ -30,7 +30,7 @@ export const ChangePassword = () => {
                     });
                 }
 
-                if (result.status === 200) router.push(`/login`);
+                if (result.status === 200) router.push(`/auth/login`);
             } else {
                 console.log("Email is required");
             }
