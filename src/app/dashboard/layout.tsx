@@ -21,19 +21,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
                 try {
                     await axios_admin.get('/is-admin');
-                } catch (error) {
+
+                    const admin_projects = await axios_admin.get('/get-admin-projects');
+                    setProjects(admin_projects.data);
+
+                    if (activeProject.projectID === '') {
+                        setActiveProject(admin_projects.data[0]);
+                    }
+                } catch (error: any) {
                     router.push('/onboarding/personal');
-                }
-
-                const admin_projects = await axios_admin.get('/get-admin-projects');
-                setProjects(admin_projects.data);
-
-                if (activeProject.projectID === '') {
-                    setActiveProject(admin_projects.data[0]);
                 }
 
                 setIsLoading(false);
             } catch (error: any) {
+                setIsLoading(false);
                 console.log(error);
                 router.push('/');
             }

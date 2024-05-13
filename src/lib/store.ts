@@ -35,6 +35,7 @@ export const userStore = create<UserStore>((set) => ({
     name: "User",
     address: "",
     mobile: "",
+    companyID: "",
     profilePic: "",
     createdAt: "",
     updatedAt: "",

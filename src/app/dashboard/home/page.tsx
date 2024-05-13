@@ -188,7 +188,7 @@ const Dashboard = () => {
           <div className="mb-8 p-4 bg-white flex flex-col justify-center items-center border rounded-md">
             <div className="flex gap-10 items-center w-full justify-between px-4 py-2">
               <h1 className="text-lg font-bold">Active Mapping</h1>
-              {mapping && (userRole === 'owner' || userRole === 'editor') && (
+              {mapping && userRole && (userRole === 'owner' || userRole === 'editor') && (
                 <button className="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600" onClick={handleMappingDelete}>Delete</button>
               )}
             </div>
@@ -219,7 +219,7 @@ const Dashboard = () => {
           </div>
 
           {/* Update Configs */}
-          {(userRole === 'owner' || userRole === 'editor') && (
+          {userRole && (userRole === 'owner' || userRole === 'editor') && (
             <div className="flex flex-col items-center">
               <hr className="w-full mb-8" />
               <h1 className="text-lg font-bold mb-8">Update Mapping</h1>
@@ -244,7 +244,7 @@ const Dashboard = () => {
           )}
 
           {/* Add New Config */}
-          {(userRole === 'owner' || userRole === 'editor') && (
+          {userRole && (userRole === 'owner' || userRole === 'editor') && (
             <div className="flex flex-col items-center justify-center">
               <hr className="w-full m-8" />
               <h1 className="font-bold text-lg">Create New Configs</h1>

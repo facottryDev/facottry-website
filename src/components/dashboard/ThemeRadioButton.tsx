@@ -72,7 +72,7 @@ export default function RadioButton({ userRole, getConfigs, options, theme, onTh
                                                             </div>
                                                         )}
                                                     </div>
-                                                    {(userRole === 'editor' || userRole === 'owner') && (
+                                                    {userRole && (userRole === 'editor' || userRole === 'owner') && (
                                                         <button className="ml-2 p-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition-all" onClick={() => handleDelete(option.configID)}>
                                                             <FiTrash />
                                                         </button>
