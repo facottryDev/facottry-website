@@ -18,7 +18,9 @@ type Project = {
 
 type ProjectStore = {
   projects: Project[];
+  activeProject: Project;
   setProjects: (projects: Project[]) => void;
+  setActiveProject: (activeProject: Project) => void;
 };
 
 type ActiveProjectStore = {

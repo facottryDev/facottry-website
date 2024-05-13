@@ -5,7 +5,7 @@ import UserDropdown from "@/components/dashboard/UserDropdown"
 import RadioButton from "@/components/dashboard/ThemeRadioButton"
 import { useEffect, useState } from "react"
 import { axios_config } from "@/lib/axios"
-import { activeProjectStore, filterStore } from "@/lib/store";
+import { projectStore, filterStore } from "@/lib/store";
 import Filter from "@/components/dashboard/Filter"
 import Image from "next/image"
 import { fetchConfigs, fetchMapping } from "@/lib/fetch"
@@ -17,13 +17,13 @@ const Dashboard = () => {
   const [selectedApp, setSelectedApp] = useState<appConfig>();
   const [selectedPlayer, setSelectedPlayer] = useState<playerConfig>();
   const [mapping, setMapping] = useState<mapping>();
-  const [updateScreen, setUpdateScreen] = useState<boolean>(false);
 
-  const activeProjectID = activeProjectStore(state => state.projectID);
+  const activeProject = projectStore(state => state.activeProject);
+  const userRole = activeProject.role;
 
   // Fetching & updating Configs
   const getConfigs = async () => {
-    const configs = await fetchConfigs(activeProjectID);
+    const configs = await fetchConfigs(activeProject.projectID);
 
     if (configs.status >= 300) {
       setAppConfigs(undefined);
@@ -38,11 +38,11 @@ const Dashboard = () => {
 
   useEffect(() => {
     getConfigs();
-  }, [activeProjectID, updateScreen])
+  }, [activeProject])
 
   // Fetching & updating Mapping
   const getMapping = async () => {
-    const res = await fetchMapping(activeProjectID, filters, true);
+    const res = await fetchMapping(activeProject.projectID, filters, true);
 
     if (res.status >= 300) {
       setMapping(undefined);
@@ -60,7 +60,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     getMapping();
-  }, [filters, activeProjectID])
+  }, [filters, activeProject])
 
   // Function to handle update of mapping
   const handleUpdateMapping = async () => {
@@ -70,7 +70,7 @@ const Dashboard = () => {
     }
 
     const data = {
-      projectID: activeProjectID,
+      projectID: activeProject.projectID,
       appConfig: selectedApp,
       playerConfig: selectedPlayer,
       filter: filters
@@ -90,7 +90,7 @@ const Dashboard = () => {
   const handleMappingDelete = async () => {
     try {
       await axios_config.post('/delete-mapping', {
-        projectID: activeProjectID,
+        projectID: activeProject.projectID,
         filter: filters
       });
 
@@ -116,7 +116,7 @@ const Dashboard = () => {
 
     try {
       const data = {
-        projectID: activeProjectID,
+        projectID: activeProject.projectID,
         name: e.target.appConfigName.value,
         desc: e.target.appConfigDesc.value,
         params: JSON.parse(e.target.appConfigParams.value)
@@ -145,7 +145,7 @@ const Dashboard = () => {
 
     try {
       const data = {
-        projectID: activeProjectID,
+        projectID: activeProject.projectID,
         name: e.target.playerConfigName.value,
         desc: e.target.playerConfigDesc.value,
         params: JSON.parse(e.target.playerConfigParams.value)
@@ -188,7 +188,7 @@ const Dashboard = () => {
           <div className="mb-8 p-4 bg-white flex flex-col justify-center items-center border rounded-md">
             <div className="flex gap-10 items-center w-full justify-between px-4 py-2">
               <h1 className="text-lg font-bold">Active Mapping</h1>
-              {mapping && (
+              {mapping && (userRole === 'owner' || userRole === 'editor') && (
                 <button className="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600" onClick={handleMappingDelete}>Delete</button>
               )}
             </div>
@@ -196,7 +196,7 @@ const Dashboard = () => {
               <div className="flex gap-8 p-2">
                 <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full min-w-[300px] max-w-sm">
                   <p className="text-lg font-bold mb-2">App Config</p>
-                  <div>
+                  <div className="w-full">
                     <p className="font-semibold">{mapping?.appConfig?.name}</p>
                     <p>{mapping?.appConfig?.desc}</p>
                     <p>{JSON.stringify(mapping?.appConfig?.params, null, 1)}</p>
@@ -206,7 +206,7 @@ const Dashboard = () => {
 
                 <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full min-w-[300px] max-w-sm">
                   <p className="text-lg font-bold mb-2">Player Config</p>
-                  <div>
+                  <div className="w-full">
                     <p className="font-semibold">{mapping?.playerConfig?.name}</p>
                     <p>{mapping?.playerConfig?.desc}</p>
                     <p>{JSON.stringify(mapping?.playerConfig?.params, null, 1)}</p>
@@ -218,65 +218,66 @@ const Dashboard = () => {
             {!mapping && <p className="mt-2">No active mapping found</p>}
           </div>
 
-          <hr className="w-full mb-8" />
-
           {/* Update Configs */}
-          <div className="flex flex-col items-center">
-            <h1 className="text-lg font-bold mb-8">Update Mapping</h1>
-            <div className="flex flex-col md:flex-row gap-6 justify-around">
-              <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
-                <p className="font-bold text-lg">App Configs</p>
-                {appConfigs && (
-                  <RadioButton getConfigs={getConfigs} options={appConfigs} theme={selectedApp} onThemeChange={setSelectedApp} />
-                )}
-              </section>
+          {(userRole === 'owner' || userRole === 'editor') && (
+            <div className="flex flex-col items-center">
+              <hr className="w-full mb-8" />
+              <h1 className="text-lg font-bold mb-8">Update Mapping</h1>
+              <div className="flex flex-col md:flex-row gap-6 justify-around">
+                <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
+                  <p className="font-bold text-lg">App Configs</p>
+                  {appConfigs && (
+                    <RadioButton userRole={userRole} getConfigs={getConfigs} options={appConfigs} theme={selectedApp} onThemeChange={setSelectedApp} />
+                  )}
+                </section>
 
-              <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
-                <p className="font-bold text-lg">Player Configs</p>
-                {playerConfigs && (
-                  <RadioButton getConfigs={getConfigs} options={playerConfigs} theme={selectedPlayer} onThemeChange={setSelectedPlayer} />
-                )}
-              </section>
+                <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
+                  <p className="font-bold text-lg">Player Configs</p>
+                  {playerConfigs && (
+                    <RadioButton userRole={userRole} getConfigs={getConfigs} options={playerConfigs} theme={selectedPlayer} onThemeChange={setSelectedPlayer} />
+                  )}
+                </section>
+              </div>
+
+              <button className="px-4 py-2 mt-5 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={handleUpdateMapping}>Submit</button>
             </div>
-
-            <button className="px-4 py-2 mt-5 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={handleUpdateMapping}>Submit</button>
-          </div>
-
-          <hr className="w-full m-8" />
+          )}
 
           {/* Add New Config */}
-          <div className="flex flex-col items-center justify-center">
-            <h1 className="font-bold text-lg">Create New Configs</h1>
-            <div className="flex gap-10 mt-8">
-              <form className="flex flex-col bg-white p-10" onSubmit={handleCreateApp}>
-                <h1 className="font-semibold">Create App Config</h1>
-                <label htmlFor="appConfigName" className="mt-4">Name *</label>
-                <input id="appConfigName" name="appConfigName" required type="text" className="w-full p-2 border rounded-md" />
+          {(userRole === 'owner' || userRole === 'editor') && (
+            <div className="flex flex-col items-center justify-center">
+              <hr className="w-full m-8" />
+              <h1 className="font-bold text-lg">Create New Configs</h1>
+              <div className="flex gap-10 mt-8">
+                <form className="flex flex-col bg-white p-10" onSubmit={handleCreateApp}>
+                  <h1 className="font-semibold">Create App Config</h1>
+                  <label htmlFor="appConfigName" className="mt-4">Name *</label>
+                  <input id="appConfigName" name="appConfigName" required type="text" className="w-full p-2 border rounded-md" />
 
-                <label htmlFor="appConfigDesc" className="mt-2">Description</label>
-                <input type="text" id="appConfigDesc" name="appConfigDesc" className="w-full p-2 border rounded-md" />
+                  <label htmlFor="appConfigDesc" className="mt-2">Description</label>
+                  <input type="text" id="appConfigDesc" name="appConfigDesc" className="w-full p-2 border rounded-md" />
 
-                <label htmlFor="appConfigParams" className="mt-2">Params (JSON)*</label>
-                <textarea id="appConfigParams" name="appConfigParams" required className="w-full p-2 border rounded-md" rows={4}></textarea>
+                  <label htmlFor="appConfigParams" className="mt-2">Params (JSON)*</label>
+                  <textarea id="appConfigParams" name="appConfigParams" required className="w-full p-2 border rounded-md" rows={4}></textarea>
 
-                <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
-              </form>
+                  <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
+                </form>
 
-              <form className="flex flex-col bg-white p-10" onSubmit={handleCreatePlayer}>
-                <h1 className="font-semibold">Create Player Config</h1>
-                <label htmlFor="playerConfigName" className="mt-4">Name *</label>
-                <input id="playerConfigName" name="playerConfigName" required type="text" className="w-full p-2 border rounded-md" />
+                <form className="flex flex-col bg-white p-10" onSubmit={handleCreatePlayer}>
+                  <h1 className="font-semibold">Create Player Config</h1>
+                  <label htmlFor="playerConfigName" className="mt-4">Name *</label>
+                  <input id="playerConfigName" name="playerConfigName" required type="text" className="w-full p-2 border rounded-md" />
 
-                <label htmlFor="playerConfigDesc" className="mt-2">Description</label>
-                <input type="text" id="playerConfigDesc" name="playerConfigDesc" className="w-full p-2 border rounded-md" />
+                  <label htmlFor="playerConfigDesc" className="mt-2">Description</label>
+                  <input type="text" id="playerConfigDesc" name="playerConfigDesc" className="w-full p-2 border rounded-md" />
 
-                <label htmlFor="playerConfigParams" className="mt-2">Params (JSON)*</label>
-                <textarea id="appConfigParams" name="playerConfigParams" required className="w-full p-2 border rounded-md" rows={4}></textarea>
+                  <label htmlFor="playerConfigParams" className="mt-2">Params (JSON)*</label>
+                  <textarea id="appConfigParams" name="playerConfigParams" required className="w-full p-2 border rounded-md" rows={4}></textarea>
 
-                <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
-              </form>
-            </div>
-          </div>
+                  <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
+                </form>
+              </div>
+            </div>)}
         </div>
       </div>
     </div>

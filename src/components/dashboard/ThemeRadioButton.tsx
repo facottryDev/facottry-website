@@ -4,17 +4,18 @@ import Image from 'next/image'
 import { FiTrash } from "react-icons/fi"
 import { axios_config } from "@/lib/axios"
 import { fetchConfigs } from "@/lib/fetch"
-import { activeProjectStore } from "@/lib/store"
+import { projectStore } from "@/lib/store"
 
 type Props = {
     options: any[],
     onThemeChange: (theme: any) => void,
-    theme: any
-    getConfigs: () => void
+    theme: any,
+    getConfigs: () => void,
+    userRole: string,
 }
 
-export default function RadioButton({ getConfigs, options, theme, onThemeChange }: Props) {
-    const activeProjectID = activeProjectStore(state => state.projectID);
+export default function RadioButton({ userRole, getConfigs, options, theme, onThemeChange }: Props) {
+    const activeProjectID = projectStore(state => state.activeProject.projectID);
 
     const handleDelete = async (configID: string) => {
         try {
@@ -71,9 +72,11 @@ export default function RadioButton({ getConfigs, options, theme, onThemeChange 
                                                             </div>
                                                         )}
                                                     </div>
-                                                    <button className="ml-2 p-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition-all" onClick={() => handleDelete(option.configID)}>
-                                                        <FiTrash />
-                                                    </button>
+                                                    {(userRole === 'editor' || userRole === 'owner') && (
+                                                        <button className="ml-2 p-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition-all" onClick={() => handleDelete(option.configID)}>
+                                                            <FiTrash />
+                                                        </button>
+                                                    )}
                                                 </div>
                                                 {checked && (
                                                     <div className="shrink-0 text-white">

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image'
 import logo_2 from '@/assets/logo_2.svg'
 import logo_dark_2 from '@/assets/logo_dark_2.svg'
-import { projectStore, activeProjectStore } from "@/lib/store";
+import { projectStore } from "@/lib/store";
 
 const SidebarButton = ({ href, label, icon, target }: {
   href: string;
@@ -21,8 +21,16 @@ const SidebarButton = ({ href, label, icon, target }: {
 
 const Sidebar = () => {
   const allProjects = projectStore(state => state.projects);
-  const activeProjectID = activeProjectStore(state => state.projectID);
-  const setActiveProject = activeProjectStore(state => state.setActiveProject);
+  const activeProject = projectStore(state => state.activeProject);
+  const setActiveProject = projectStore(state => state.setActiveProject);
+
+  const handleProjectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const projectID = e.target.value;
+    const project = allProjects.find((item) => item.projectID === projectID);
+    if (project) {
+      setActiveProject(project);
+    }
+  }
 
   return (
     <div className="hidden md:block bg-white p-8 pl-5 dark:bg-darkblue">
@@ -63,10 +71,8 @@ const Sidebar = () => {
           id="project"
           name="project"
           className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-          onChange={(e) => {
-            setActiveProject(e.target.value);
-          }}
-          value={activeProjectID}
+          onChange={handleProjectChange}
+          value={activeProject.projectID}
         >
           {allProjects.map((item) => (
             <option key={item.projectID} value={item.projectID}>
@@ -74,6 +80,28 @@ const Sidebar = () => {
             </option>
           ))}
         </select>
+
+        <div className="bg-primary700 p-4 rounded-md mt-4 text-sm flex flex-col gap-2 text-white">
+          <span>
+            <h3 className="font-bold">Project ID: </h3>
+            <p>{activeProject.projectID}</p>
+          </span>
+
+          <span>
+            <h3 className="font-bold">Project Name: </h3>
+            <p>{activeProject.name}</p>
+          </span>
+
+          <span>
+            <h3 className="font-bold">Project Type: </h3>
+            <p>{activeProject.type}</p>
+          </span>
+
+          <span>
+            <h3 className="font-bold">Project Role: </h3>
+            <p>{activeProject.role}</p>
+          </span>
+        </div>
       </div>
     </div>
   );

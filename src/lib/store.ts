@@ -3,18 +3,16 @@ import { persist } from "zustand/middleware";
 
 export const projectStore = create<ProjectStore>((set) => ({
   projects: [],
+  activeProject: {
+    projectID: "",
+    companyID: "",
+    name: "",
+    type: "",
+    role: "",
+  },
   setProjects: (projects) => set({ projects }),
+  setActiveProject: (activeProject: Project) => {set({ activeProject })}
 }));
-
-export const activeProjectStore = create(
-  persist<ActiveProjectStore>(
-    (set) => ({
-      projectID: "",
-      setActiveProject: (id) => set({ projectID: id }),
-    }),
-    { name: "activeProject" }
-  )
-);
 
 export const filterStore = create(
   persist<FilterStore>(

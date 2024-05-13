@@ -1,5 +1,5 @@
 "use client";
-import { axios_config, axios_user } from "@/lib/axios";
+import { axios_admin, axios_config, axios_user } from "@/lib/axios";
 
 export const fetchConfigs = async (projectID: string) => {
   try {
@@ -39,6 +39,18 @@ export const fetchMapping = async (
     });
 
     return mapping;
+  } catch (error: any) {
+    return error.response;
+  }
+};
+
+export const fetchProjectByID = async (projectID: string) => {
+  try {
+    const project = await axios_admin.get("/get-project-details", {
+      params: { projectID },
+    });
+
+    return project;
   } catch (error: any) {
     return error.response;
   }

@@ -2,15 +2,15 @@
 import { axios_auth, axios_admin } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { projectStore, activeProjectStore, userStore } from "@/lib/store";
+import { projectStore, userStore } from "@/lib/store";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
 
     const setProjects = projectStore(state => state.setProjects);
-    const activeProjectID = activeProjectStore(state => state.projectID);
-    const setActiveProject = activeProjectStore(state => state.setActiveProject);
+    const activeProject = projectStore(state => state.activeProject);
+    const setActiveProject = projectStore(state => state.setActiveProject);
     const setUser = userStore(state => state.setUser);
 
     useEffect(() => {
@@ -28,8 +28,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 const admin_projects = await axios_admin.get('/get-admin-projects');
                 setProjects(admin_projects.data);
 
-                if (activeProjectID === '') {
-                    setActiveProject(admin_projects.data[0].projectID);
+                if (activeProject.projectID === '') {
+                    setActiveProject(admin_projects.data[0]);
                 }
 
                 setIsLoading(false);
