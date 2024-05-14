@@ -12,8 +12,6 @@ export const VerifyOTP = () => {
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
-    console.log(pathname)
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const email = searchParams.get('email');
@@ -26,6 +24,7 @@ export const VerifyOTP = () => {
                 });
 
                 if (result.status === 200) {
+                    alert("OTP verified successfully");
                     if(pathname === '/auth/forgot-password/verify') {
                         router.push(`/auth/forgot-password/change-password?email=${email}`);
                     } else {
@@ -38,6 +37,7 @@ export const VerifyOTP = () => {
 
         } catch (error: any) {
             console.log(error);
+            alert(error.response.data);
         }
     }
 

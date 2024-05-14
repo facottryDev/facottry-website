@@ -1,34 +1,33 @@
 'use client'
 import Image from "next/image"
-import React from 'react'
+import React, { useState } from 'react'
 import logo_1_dark from '@/assets/logo_dark_1.svg'
 import logo_1 from '@/assets/logo_1.svg'
 import Link from "next/link"
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { axios_auth } from "@/lib/axios"
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 
 const ResetPassword = () => {
     const router = useRouter();
-    const searchParams = useSearchParams();
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const email = searchParams.get('email');
-        const password = e.currentTarget.password.value;
+
+        const currentPassword = e.currentTarget.currpassword.value;
+        const newPassword = e.currentTarget.newpass.value;
 
         try {
-            if (email) {
-                const result = await axios_auth.post(`/register`, {
-                    email, password
-                });
+            await axios_auth.post(`/reset`, {
+                currentPassword, newPassword
+            });
 
-                if (result.status === 200) router.push(`/auth/login`);
-            } else {
-                console.log("Email is required");
-            }
-
+            alert("Success");
+            router.push(`/auth/login`);
         } catch (error: any) {
-            console.log(error);
+            console.log(error.response.data);
+            alert(error.response.data);
         }
     }
 
@@ -47,19 +46,24 @@ const ResetPassword = () => {
                         Change Your Password
                     </h1>
                     <form onSubmit={handleSubmit} className="flex flex-col">
-                        <div className="mb-4">
-                            <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Current Password</label>
-                            <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter Current Password" />
+                        <div className="mb-4 relative">
+                            <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Current Password</label>
+                            <input type={isPasswordVisible ? "text" : "password"} name="currpassword" id="currpassword" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter Current Password" />
+
+                            <div onClick={() => {
+                                setIsPasswordVisible((prevState) => !prevState);
+                            }} className="cursor-pointer absolute right-3 bottom-2 text-slate-400 dark:text-slate-400">
+                                {isPasswordVisible ? (
+                                    <AiOutlineEyeInvisible fontSize='1.4rem' />
+                                ) : (
+                                    <AiOutlineEye fontSize='1.4rem' />
+                                )}
+                            </div>
                         </div>
 
                         <div className="mb-4">
-                            <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">New Password</label>
-                            <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter New Password" />
-                        </div>
-
-                        <div className="mb-4">
-                            <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm Password</label>
-                            <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Confirm New Password" />
+                            <label htmlFor="newpass" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">New Password</label>
+                            <input type="password" name="newpass" id="newpass" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter New Password" />
                         </div>
 
                         <button type="submit" className="mb-2 w-full bg-primary bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 dark:bg-slate-400 dark:hover:bg-slate-300 transition-all text-white hover:bg-primary/80 dark:text-black">Submit</button>
