@@ -1,18 +1,21 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export const projectStore = create<ProjectStore>((set) => ({
-  projects: [],
-  activeProject: {
-    projectID: "",
-    companyID: "",
-    name: "",
-    type: "",
-    role: "",
-  },
-  setProjects: (projects) => set({ projects }),
-  setActiveProject: (activeProject: Project) => {set({ activeProject })}
-}));
+type FilterStore = {
+  filter: Filter | null;
+  setFilter: (filter: Filter | null) => void;
+};
+
+type UserStore = {
+  user: User | null;
+  company: Company | null;
+  activeProject: Project | null;
+  projects: Project[];
+  setUser: (user: User | null) => void;
+  setCompany: (company: Company | null) => void;
+  setActiveProject: (activeProject: Project | null) => void;
+  setProjects: (projects: Project[]) => void;
+};
 
 export const filterStore = create(
   persist<FilterStore>(
@@ -23,22 +26,20 @@ export const filterStore = create(
         os: "",
         osver: "",
       },
-      setFilter: (filter: Filter) => set({ filter }),
+      setFilter: (filter) => set({ filter }),
     }),
     { name: "filterSelection" }
   )
 );
 
 export const userStore = create<UserStore>((set) => ({
-  user: {
-    email: "user@gmail.com",
-    name: "User",
-    address: "",
-    mobile: "",
-    companyID: "",
-    profilePic: "",
-    createdAt: "",
-    updatedAt: "",
-  },
-  setUser: (user: User) => set({ user }),
+  user: null,
+  company: null,
+  projects: [],
+  activeProject: null,
+
+  setUser: (user) => set({ user }),
+  setCompany: (company) => set({ company }),
+  setProjects: (projects) => set({ projects }),
+  setActiveProject: (activeProject) => set({ activeProject }),
 }));

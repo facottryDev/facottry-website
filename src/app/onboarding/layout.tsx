@@ -2,31 +2,33 @@
 import { axios_auth, axios_admin } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { projectStore, activeProjectStore, userStore } from "@/lib/store";
+import { userStore } from "@/lib/store";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
-    
+
     const setUser = userStore(state => state.setUser);
+    const setCompany = userStore(state => state.setCompany);
 
     useEffect(() => {
         const isAuth = async () => {
             try {
-                const user = await axios_auth.get('/get-user');
+                const { data } = await axios_auth.get('/get-user');
+                setUser(data);
 
                 try {
-                    await axios_admin.get('/is-admin');
-                    router.push('/dashboard/home');
-                } catch (error) {
-                    console.log('Welcome to Onboarding!');
+                    await axios_admin.get('/get-admin');
+                    return router.push("/dashboard/home");
+                } catch (error: any) {
+                    console.log(error.response.data);
+                    setCompany(error.response.data.company);
                 }
 
-                setUser(user.data);
                 setIsLoading(false);
             } catch (error: any) {
-                console.log(error);
-                router.push('/');
+                console.log(error.response.data);
+                router.push("/");
             }
         }
 

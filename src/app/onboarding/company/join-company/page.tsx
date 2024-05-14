@@ -5,6 +5,7 @@ import logo_1 from '@/assets/logo_1.svg'
 import Link from "next/link"
 import { useRouter } from 'next/navigation'
 import { axios_admin } from "@/lib/axios"
+import { useEffect } from "react"
 
 const LoginForm = () => {
     const router = useRouter();
@@ -23,7 +24,6 @@ const LoginForm = () => {
         } catch (error: any) {
             console.log(error.response)
             alert(error.response.data.message)
-            router.push('/')
         }
     }
 
@@ -51,11 +51,11 @@ const LoginForm = () => {
                         <button type="submit" className="mb-4 w-full bg-primary bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 dark:bg-slate-400 dark:hover:bg-slate-300 transition-all text-white hover:bg-primary/80 dark:text-black">Submit</button>
 
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                            Don't have a company? <Link href="/onboarding/create-company" className="font-semibold text-primary-600 hover:underline dark:text-primary-500">Click Here</Link>
+                            Don't have a company? <Link href="/onboarding/company/create-company" className="font-semibold text-primary-600 hover:underline dark:text-primary-500">Click Here</Link>
                         </p>
 
                         <div className="w-full flex justify-center -mb-2 mt-4">
-                            <Link href="/onboarding/personal" className="font-bold dark:text-gray-400 hover:underline text-primary600">Go Back</Link>
+                            <Link href="/onboarding/home" className="font-bold dark:text-gray-400 hover:underline text-primary600">Go Back</Link>
                         </div>
                     </form>
                 </div>

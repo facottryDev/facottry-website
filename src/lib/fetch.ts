@@ -1,7 +1,11 @@
 "use client";
 import { axios_admin, axios_config, axios_user } from "@/lib/axios";
 
-export const fetchConfigs = async (projectID: string) => {
+export const fetchConfigs = async (projectID: string | undefined) => {
+  if(projectID === undefined) {
+    return { appConfigs: [], playerConfigs: [] };
+  }
+
   try {
     const appConfigs = await axios_config.get("/get-app-configs", {
       params: { projectID },
@@ -17,23 +21,22 @@ export const fetchConfigs = async (projectID: string) => {
 };
 
 export const fetchMapping = async (
-  projectID: string,
-  filter: {
-    country: string;
-    subscription: string;
-    os: string;
-    osver: string;
-  },
+  projectID: string | undefined,
+  filter: Filter | null,
   nocache: boolean
 ) => {
   try {
+    if(projectID === undefined) {
+      return { data: [] };
+    }
+
     const mapping = await axios_user.get("/get-mapping", {
       params: {
         projectID,
-        country: filter.country,
-        subscription: filter.subscription,
-        os: filter.os,
-        osver: filter.osver,
+        country: filter?.country || "",
+        subscription: filter?.subscription || "",
+        os: filter?.os || "",
+        osver: filter?.osver || "",
         nocache,
       },
     });

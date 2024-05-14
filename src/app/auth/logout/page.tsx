@@ -2,14 +2,15 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { axios_auth } from "@/lib/axios"
-import { projectStore, filterStore, userStore } from "@/lib/store"
+import { filterStore, userStore } from "@/lib/store"
 
 const Logout = () => {
     const router = useRouter();
-    const setProjects = projectStore(state => state.setProjects);
-    const setActiveProject = projectStore(state => state.setActiveProject);
     const setFilter = filterStore(state => state.setFilter);
     const setUser = userStore(state => state.setUser);
+    const setCompany = userStore(state => state.setCompany);
+    const setProjects = userStore(state => state.setProjects);
+    const setActiveProject = userStore(state => state.setActiveProject);
 
     useEffect(() => {
         const logout = async () => {
@@ -17,27 +18,14 @@ const Logout = () => {
                 await axios_auth.get('/logout');
                 
                 setProjects([]);
-                setActiveProject({
-                    projectID: "",
-                    companyID: "",
-                    name: "",
-                    type: "",
-                    role: "",
-                });
+                setActiveProject(null);
+                setUser(null);
+                setCompany(null);
                 setFilter({
                     country: "",
                     subscription: "",
                     os: "",
                     osver: "",
-                });
-                setUser({
-                    email: "",
-                    name: "",
-                    address: "",
-                    mobile: "",
-                    profilePic: "",
-                    createdAt: "",
-                    updatedAt: "",
                 });
 
                 router.push('/auth/login');

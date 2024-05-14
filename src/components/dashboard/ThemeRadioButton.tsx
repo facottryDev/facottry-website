@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { FiTrash } from "react-icons/fi"
 import { axios_config } from "@/lib/axios"
 import { fetchConfigs } from "@/lib/fetch"
-import { projectStore } from "@/lib/store"
+import { userStore } from "@/lib/store"
 
 type Props = {
     options: any[],
@@ -15,7 +15,7 @@ type Props = {
 }
 
 export default function RadioButton({ userRole, getConfigs, options, theme, onThemeChange }: Props) {
-    const activeProjectID = projectStore(state => state.activeProject.projectID);
+    const activeProjectID = userStore(state => state.activeProject.projectID);
 
     const handleDelete = async (configID: string) => {
         try {

@@ -5,7 +5,7 @@ import UserDropdown from "@/components/dashboard/UserDropdown"
 import RadioButton from "@/components/dashboard/ThemeRadioButton"
 import { useEffect, useState } from "react"
 import { axios_config } from "@/lib/axios"
-import { projectStore, filterStore } from "@/lib/store";
+import { userStore, filterStore } from "@/lib/store";
 import Filter from "@/components/dashboard/Filter"
 import Image from "next/image"
 import { fetchConfigs, fetchMapping } from "@/lib/fetch"
@@ -18,12 +18,12 @@ const Dashboard = () => {
   const [selectedPlayer, setSelectedPlayer] = useState<playerConfig>();
   const [mapping, setMapping] = useState<mapping>();
 
-  const activeProject = projectStore(state => state.activeProject);
-  const userRole = activeProject.role;
+  const activeProject = userStore(state => state.activeProject);
+  const userRole = activeProject?.role;
 
   // Fetching & updating Configs
   const getConfigs = async () => {
-    const configs = await fetchConfigs(activeProject.projectID);
+    const configs = await fetchConfigs(activeProject?.projectID);
 
     if (configs.status >= 300) {
       setAppConfigs(undefined);
@@ -42,7 +42,7 @@ const Dashboard = () => {
 
   // Fetching & updating Mapping
   const getMapping = async () => {
-    const res = await fetchMapping(activeProject.projectID, filters, true);
+    const res = await fetchMapping(activeProject?.projectID, filters, true);
 
     if (res.status >= 300) {
       setMapping(undefined);
@@ -70,11 +70,13 @@ const Dashboard = () => {
     }
 
     const data = {
-      projectID: activeProject.projectID,
+      projectID: activeProject?.projectID,
       appConfig: selectedApp,
       playerConfig: selectedPlayer,
       filter: filters
     }
+
+    if (!data.projectID) return alert('No active project found!');
 
     try {
       await axios_config.post('/create-mapping', data);
@@ -88,9 +90,14 @@ const Dashboard = () => {
 
   // Function to handle delete of mapping
   const handleMappingDelete = async () => {
+    if (!activeProject) {
+      alert('No active project found!');
+      return;
+    }
+
     try {
       await axios_config.post('/delete-mapping', {
-        projectID: activeProject.projectID,
+        projectID: activeProject?.projectID,
         filter: filters
       });
 
@@ -116,11 +123,13 @@ const Dashboard = () => {
 
     try {
       const data = {
-        projectID: activeProject.projectID,
+        projectID: activeProject?.projectID,
         name: e.target.appConfigName.value,
         desc: e.target.appConfigDesc.value,
         params: JSON.parse(e.target.appConfigParams.value)
       }
+
+      if (!data.projectID) return alert('No active project found!');
 
       await axios_config.post('/add-app-config', data);
       getConfigs();
@@ -145,11 +154,13 @@ const Dashboard = () => {
 
     try {
       const data = {
-        projectID: activeProject.projectID,
+        projectID: activeProject?.projectID,
         name: e.target.playerConfigName.value,
         desc: e.target.playerConfigDesc.value,
         params: JSON.parse(e.target.playerConfigParams.value)
       }
+
+      if (!data.projectID) return alert('No active project found!');
 
       await axios_config.post('/add-player-config', data);
       getConfigs();
@@ -185,38 +196,40 @@ const Dashboard = () => {
           <Filter />
 
           {/* Active Mapping */}
-          <div className="mb-8 p-4 bg-white flex flex-col justify-center items-center border rounded-md">
-            <div className="flex gap-10 items-center w-full justify-between px-4 py-2">
-              <h1 className="text-lg font-bold">Active Mapping</h1>
-              {mapping && userRole && (userRole === 'owner' || userRole === 'editor') && (
-                <button className="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600" onClick={handleMappingDelete}>Delete</button>
-              )}
-            </div>
-            {mapping && (
-              <div className="flex gap-8 p-2">
-                <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full min-w-[300px] max-w-sm">
-                  <p className="text-lg font-bold mb-2">App Config</p>
-                  <div className="w-full">
-                    <p className="font-semibold">{mapping?.appConfig?.name}</p>
-                    <p>{mapping?.appConfig?.desc}</p>
-                    <p>{JSON.stringify(mapping?.appConfig?.params, null, 1)}</p>
-                  </div>
-                  <Image src={mapping?.appConfig?.demo_url} alt="user" width={500} height={500} className="mt-2 rounded-xl" />
-                </div>
-
-                <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full min-w-[300px] max-w-sm">
-                  <p className="text-lg font-bold mb-2">Player Config</p>
-                  <div className="w-full">
-                    <p className="font-semibold">{mapping?.playerConfig?.name}</p>
-                    <p>{mapping?.playerConfig?.desc}</p>
-                    <p>{JSON.stringify(mapping?.playerConfig?.params, null, 1)}</p>
-                  </div>
-                  <Image src={mapping?.playerConfig?.demo_url} alt="user" width={500} height={500} className="mt-2 rounded-xl" />
-                </div>
+          {activeProject && (
+            <div className="mb-8 p-4 bg-white flex flex-col justify-center items-center border rounded-md">
+              <div className="flex gap-10 items-center w-full justify-between px-4 py-2">
+                <h1 className="text-lg font-bold">Active Mapping</h1>
+                {mapping && userRole && (userRole === 'owner' || userRole === 'editor') && (
+                  <button className="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600" onClick={handleMappingDelete}>Delete</button>
+                )}
               </div>
-            )}
-            {!mapping && <p className="mt-2">No active mapping found</p>}
-          </div>
+              {mapping && (
+                <div className="flex gap-8 p-2">
+                  <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full min-w-[300px] max-w-sm">
+                    <p className="text-lg font-bold mb-2">App Config</p>
+                    <div className="w-full">
+                      <p className="font-semibold">{mapping?.appConfig?.name}</p>
+                      <p>{mapping?.appConfig?.desc}</p>
+                      <p>{JSON.stringify(mapping?.appConfig?.params, null, 1)}</p>
+                    </div>
+                    <Image src={mapping?.appConfig?.demo_url} alt="user" width={500} height={500} className="mt-2 rounded-xl" />
+                  </div>
+
+                  <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full min-w-[300px] max-w-sm">
+                    <p className="text-lg font-bold mb-2">Player Config</p>
+                    <div className="w-full">
+                      <p className="font-semibold">{mapping?.playerConfig?.name}</p>
+                      <p>{mapping?.playerConfig?.desc}</p>
+                      <p>{JSON.stringify(mapping?.playerConfig?.params, null, 1)}</p>
+                    </div>
+                    <Image src={mapping?.playerConfig?.demo_url} alt="user" width={500} height={500} className="mt-2 rounded-xl" />
+                  </div>
+                </div>
+              )}
+              {!mapping && <p className="mt-2">No active mapping found</p>}
+            </div>
+          )}
 
           {/* Update Configs */}
           {userRole && (userRole === 'owner' || userRole === 'editor') && (

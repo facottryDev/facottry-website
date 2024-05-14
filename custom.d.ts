@@ -1,41 +1,11 @@
 type TableColumn = any;
 type TableRow = any;
 
-type Filter = {
-  country: string;
-  subscription: string;
-  os: string;
-  osver: string;
-};
-
-type Project = {
-  projectID: string;
-  companyID: string;
-  name: string;
-  type: string;
-  role: string;
-};
-
-type ProjectStore = {
-  projects: Project[];
-  activeProject: Project;
-  setProjects: (projects: Project[]) => void;
-  setActiveProject: (activeProject: Project) => void;
-};
-
-type ActiveProjectStore = {
-  projectID: string;
-  setActiveProject: (id: string) => void;
-};
-
-type FilterStore = {
-  filter: Filter;
-  setFilter: (filter: Filter) => void;
-};
-
 type appConfig = {
   configID: string;
   projectID: string;
+  name: string;
+  desc: string;
   params: string;
   createdAt: string;
   updatedAt: string;
@@ -45,6 +15,8 @@ type appConfig = {
 type playerConfig = {
   configID: string;
   projectID: string;
+  name: string;
+  desc: string;
   params: string;
   createdAt: string;
   updatedAt: string;
@@ -52,9 +24,16 @@ type playerConfig = {
 };
 
 type mapping = {
-  appConfig: any,
-  playerConfig: any,
-}
+  appConfig: any;
+  playerConfig: any;
+};
+
+type Filter = {
+  country: string;
+  subscription: string;
+  os: string;
+  osver: string;
+};
 
 type User = {
   email: string;
@@ -66,7 +45,25 @@ type User = {
   updatedAt: string;
 };
 
-type UserStore = {
-  user: User;
-  setUser: (user: User) => void;
+type Company = {
+  companyID: string;
+  name: string;
+  address: string;
+  role: "owner" | "employee";
+  joinRequests: string[];
+  activeInvites: string[];
+  owners: string[];
+  employees: string[];
+};
+
+type Project = {
+  projectID: string;
+  name: string;
+  type: string;
+  role: "owner" | "editor" | "viewer";
+  joinRequests: string[];
+  activeInvites: string[];
+  owners: string[];
+  editors: string[];
+  viewers: string[];
 };
