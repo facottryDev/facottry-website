@@ -3,11 +3,12 @@ import Sidebar from "@/components/dashboard/Sidebar"
 import ToggleSwitch from "@/components/global/ToggleTheme"
 import UserDropdown from "@/components/dashboard/UserDropdown"
 import RadioButton from "@/components/dashboard/ThemeRadioButton"
-import { use, useEffect, useState } from "react"
-import { axios_config, axios_user } from "@/lib/axios"
-import { activeProjectStore, filterStore } from "@/lib/store";
+import { useEffect, useState } from "react"
+import { axios_config } from "@/lib/axios"
+import { userStore, filterStore } from "@/lib/store";
 import Filter from "@/components/dashboard/Filter"
 import Image from "next/image"
+import { fetchConfigs, fetchMapping } from "@/lib/fetch"
 
 const Dashboard = () => {
   const [appConfigs, setAppConfigs] = useState<appConfig[]>();
@@ -16,60 +17,66 @@ const Dashboard = () => {
   const [selectedApp, setSelectedApp] = useState<appConfig>();
   const [selectedPlayer, setSelectedPlayer] = useState<playerConfig>();
   const [mapping, setMapping] = useState<mapping>();
-  const activeProjectID = activeProjectStore(state => state.projectID);
 
-  //Use Effect to fetch app and player configs
-  const fetchConfigs = async () => {
-    try {
-      const appConfigs = await axios_config.get('/get-app-configs', { params: { projectID: activeProjectID } });
-      const playerConfigs = await axios_config.get('/get-player-configs', { params: { projectID: activeProjectID } });
-      setAppConfigs(appConfigs.data);
-      setPlayerConfigs(playerConfigs.data);
-    } catch (error) { console.error(error) }
+  const activeProject = userStore(state => state.activeProject);
+  const userRole = activeProject?.role;
+
+  // Fetching & updating Configs
+  const getConfigs = async () => {
+    const configs = await fetchConfigs(activeProject?.projectID);
+
+    if (configs.status >= 300) {
+      setAppConfigs(undefined);
+      setPlayerConfigs(undefined);
+      console.log(configs);
+      return;
+    } else {
+      setAppConfigs(configs.appConfigs);
+      setPlayerConfigs(configs.playerConfigs);
+    }
   }
 
   useEffect(() => {
-    fetchConfigs();
-  }, [activeProjectID])
+    getConfigs();
+  }, [activeProject])
 
-  //Use Effect to fetch active mapping
+  // Fetching & updating Mapping
   const getMapping = async () => {
-    try {
-      const mapping = await axios_user.get('/get-mapping', {
-        params: {
-          projectID: activeProjectID,
-          nocache: false,
-          country: filters.country,
-          subscription: filters.subscription,
-          os: filters.os,
-          osver: filters.osver,
-        }
-      });
+    const res = await fetchMapping(activeProject?.projectID, filters, true);
 
-      setMapping(mapping.data);
-    } catch (error) {
-      console.error(error)
+    if (res.status >= 300) {
       setMapping(undefined);
+      console.log(res.data);
+      return;
+    } else {
+      const mapping = {
+        appConfig: res.data.appConfig,
+        playerConfig: res.data.playerConfig
+      }
+
+      setMapping(mapping);
     }
   }
 
   useEffect(() => {
     getMapping();
-  }, [filters, activeProjectID])
+  }, [filters, activeProject])
 
   // Function to handle update of mapping
-  const handleSubmit = async () => {
+  const handleUpdateMapping = async () => {
     if (!selectedApp || !selectedPlayer) {
       alert('Please select a theme for both App and Player');
       return;
     }
 
     const data = {
-      projectID: activeProjectID,
+      projectID: activeProject?.projectID,
       appConfig: selectedApp,
       playerConfig: selectedPlayer,
       filter: filters
     }
+
+    if (!data.projectID) return alert('No active project found!');
 
     try {
       await axios_config.post('/create-mapping', data);
@@ -81,21 +88,28 @@ const Dashboard = () => {
     }
   }
 
-  const handleDelete = async () => {
+  // Function to handle delete of mapping
+  const handleMappingDelete = async () => {
+    if (!activeProject) {
+      alert('No active project found!');
+      return;
+    }
+
     try {
       await axios_config.post('/delete-mapping', {
-        projectID: activeProjectID,
+        projectID: activeProject?.projectID,
         filter: filters
       });
 
       alert('Mapping deleted successfully!')
-      setMapping(undefined);
+      getMapping();
     } catch (error) {
       console.error(error)
       alert('Error in deleting mapping!')
     }
   }
 
+  // Function to handle creation of new App Config
   const handleCreateApp = async (e: any) => {
     e.preventDefault();
 
@@ -109,14 +123,16 @@ const Dashboard = () => {
 
     try {
       const data = {
-        projectID: activeProjectID,
+        projectID: activeProject?.projectID,
         name: e.target.appConfigName.value,
         desc: e.target.appConfigDesc.value,
         params: JSON.parse(e.target.appConfigParams.value)
       }
 
+      if (!data.projectID) return alert('No active project found!');
+
       await axios_config.post('/add-app-config', data);
-      fetchConfigs();
+      getConfigs();
       alert('App Config created successfully!')
     } catch (error: any) {
       console.error(error.response)
@@ -124,6 +140,7 @@ const Dashboard = () => {
     }
   }
 
+  // Function to handle creation of new Player Config
   const handleCreatePlayer = async (e: any) => {
     e.preventDefault();
 
@@ -137,14 +154,16 @@ const Dashboard = () => {
 
     try {
       const data = {
-        projectID: activeProjectID,
+        projectID: activeProject?.projectID,
         name: e.target.playerConfigName.value,
         desc: e.target.playerConfigDesc.value,
         params: JSON.parse(e.target.playerConfigParams.value)
       }
 
+      if (!data.projectID) return alert('No active project found!');
+
       await axios_config.post('/add-player-config', data);
-      fetchConfigs();
+      getConfigs();
       alert('Player Config created successfully!')
     } catch (error: any) {
       console.error(error.response)
@@ -176,95 +195,102 @@ const Dashboard = () => {
           {/* Filters */}
           <Filter />
 
-          {/* Active Configs */}
-          <div className="mb-8 p-4 bg-white flex flex-col justify-center items-center border rounded-md">
-            <div className="flex gap-10 items-center w-full justify-between px-4 py-2">
-              <h1 className="text-lg font-bold">Active Mapping</h1>
-              {mapping && (
-                <button className="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600" onClick={handleDelete}>Delete</button>
-              )}
-            </div>
-            {mapping && (
-              <div className="flex gap-8 p-2">
-                <div className="bg-primary600 rounded-md text-white border p-6 w-full max-w-sm text-sm">
-                  <p className="text-lg font-bold mb-2">App Config</p>
-                  <p className="font-semibold">{mapping?.appConfig?.name}</p>
-                  <p>{mapping?.appConfig?.desc}</p>
-                  <p>{JSON.stringify(mapping?.appConfig?.params)}</p>
-                  <Image src={mapping?.appConfig.demo_url} alt="user" width={200} height={200} className="mt-2 rounded-xl" />
-                </div>
-
-                <div className="bg-primary600 rounded-md text-white border p-6 w-full max-w-sm text-sm">
-                  <p className="text-lg font-bold mb-2">Player Config</p>
-                  <p className="font-semibold">{mapping?.playerConfig?.name}</p>
-                  <p>{mapping?.playerConfig?.desc}</p>
-                  <p>{JSON.stringify(mapping?.playerConfig?.params)}</p>
-                  <Image src={mapping?.playerConfig.demo_url} alt="user" width={200} height={200} className="mt-2 rounded-xl" />
-                </div>
+          {/* Active Mapping */}
+          {activeProject && (
+            <div className="mb-8 p-4 bg-white flex flex-col justify-center items-center border rounded-md">
+              <div className="flex gap-10 items-center w-full justify-between px-4 py-2">
+                <h1 className="text-lg font-bold">Active Mapping</h1>
+                {mapping && userRole && (userRole === 'owner' || userRole === 'editor') && (
+                  <button className="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600" onClick={handleMappingDelete}>Delete</button>
+                )}
               </div>
-            )}
-            {!mapping && <p className="mt-2">No active mapping found</p>}
-          </div>
+              {mapping && (
+                <div className="flex gap-8 p-2">
+                  <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full min-w-[300px] max-w-sm">
+                    <p className="text-lg font-bold mb-2">App Config</p>
+                    <div className="w-full">
+                      <p className="font-semibold">{mapping?.appConfig?.name}</p>
+                      <p>{mapping?.appConfig?.desc}</p>
+                      <p>{JSON.stringify(mapping?.appConfig?.params, null, 1)}</p>
+                    </div>
+                    <Image src={mapping?.appConfig?.demo_url} alt="user" width={500} height={500} className="mt-2 rounded-xl" />
+                  </div>
 
-          <hr className="w-full mb-8" />
+                  <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full min-w-[300px] max-w-sm">
+                    <p className="text-lg font-bold mb-2">Player Config</p>
+                    <div className="w-full">
+                      <p className="font-semibold">{mapping?.playerConfig?.name}</p>
+                      <p>{mapping?.playerConfig?.desc}</p>
+                      <p>{JSON.stringify(mapping?.playerConfig?.params, null, 1)}</p>
+                    </div>
+                    <Image src={mapping?.playerConfig?.demo_url} alt="user" width={500} height={500} className="mt-2 rounded-xl" />
+                  </div>
+                </div>
+              )}
+              {!mapping && <p className="mt-2">No active mapping found</p>}
+            </div>
+          )}
 
           {/* Update Configs */}
-          <div className="flex flex-col items-center">
-            <h1 className="text-lg font-bold mb-8">Update Mapping</h1>
-            <div className="flex flex-col md:flex-row gap-6 justify-around">
-              <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
-                <p className="font-bold text-lg">App Configs</p>
-                {appConfigs && (
-                  <RadioButton options={appConfigs} theme={selectedApp} onThemeChange={setSelectedApp} />
-                )}
-              </section>
+          {userRole && (userRole === 'owner' || userRole === 'editor') && (
+            <div className="flex flex-col items-center">
+              <hr className="w-full mb-8" />
+              <h1 className="text-lg font-bold mb-8">Update Mapping</h1>
+              <div className="flex flex-col md:flex-row gap-6 justify-around">
+                <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
+                  <p className="font-bold text-lg">App Configs</p>
+                  {appConfigs && (
+                    <RadioButton userRole={userRole} getConfigs={getConfigs} options={appConfigs} theme={selectedApp} onThemeChange={setSelectedApp} />
+                  )}
+                </section>
 
-              <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
-                <p className="font-bold text-lg">Player Configs</p>
-                {playerConfigs && (
-                  <RadioButton options={playerConfigs} theme={selectedPlayer} onThemeChange={setSelectedPlayer} />
-                )}
-              </section>
+                <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
+                  <p className="font-bold text-lg">Player Configs</p>
+                  {playerConfigs && (
+                    <RadioButton userRole={userRole} getConfigs={getConfigs} options={playerConfigs} theme={selectedPlayer} onThemeChange={setSelectedPlayer} />
+                  )}
+                </section>
+              </div>
+
+              <button className="px-4 py-2 mt-5 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={handleUpdateMapping}>Submit</button>
             </div>
-
-            <button className="px-4 py-2 mt-5 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={handleSubmit}>Submit</button>
-          </div>
-
-          <hr className="w-full m-8" />
+          )}
 
           {/* Add New Config */}
-          <div className="flex flex-col items-center justify-center">
-            <h1 className="font-bold text-lg">Create New Configs</h1>
-            <div className="flex gap-10 mt-8">
-              <form className="flex flex-col bg-white p-10" onSubmit={handleCreateApp}>
-                <h1 className="font-semibold">Create App Config</h1>
-                <label htmlFor="appConfigName" className="mt-4">Name *</label>
-                <input id="appConfigName" name="appConfigName" required type="text" className="w-full p-2 border rounded-md" />
+          {userRole && (userRole === 'owner' || userRole === 'editor') && (
+            <div className="flex flex-col items-center justify-center">
+              <hr className="w-full m-8" />
+              <h1 className="font-bold text-lg">Create New Configs</h1>
+              <div className="flex gap-10 mt-8">
+                <form className="flex flex-col bg-white p-10" onSubmit={handleCreateApp}>
+                  <h1 className="font-semibold">Create App Config</h1>
+                  <label htmlFor="appConfigName" className="mt-4">Name *</label>
+                  <input id="appConfigName" name="appConfigName" required type="text" className="w-full p-2 border rounded-md" />
 
-                <label htmlFor="appConfigDesc" className="mt-2">Description</label>
-                <input type="text" id="appConfigDesc" name="appConfigDesc" className="w-full p-2 border rounded-md" />
+                  <label htmlFor="appConfigDesc" className="mt-2">Description</label>
+                  <input type="text" id="appConfigDesc" name="appConfigDesc" className="w-full p-2 border rounded-md" />
 
-                <label htmlFor="appConfigParams" className="mt-2">Params (JSON)*</label>
-                <textarea id="appConfigParams" name="appConfigParams" required className="w-full p-2 border rounded-md" rows={4}></textarea>
+                  <label htmlFor="appConfigParams" className="mt-2">Params (JSON)*</label>
+                  <textarea id="appConfigParams" name="appConfigParams" required className="w-full p-2 border rounded-md" rows={4}></textarea>
 
-                <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
-              </form>
+                  <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
+                </form>
 
-              <form className="flex flex-col bg-white p-10" onSubmit={handleCreatePlayer}>
-                <h1 className="font-semibold">Create Player Config</h1>
-                <label htmlFor="playerConfigName" className="mt-4">Name *</label>
-                <input id="playerConfigName" name="playerConfigName" required type="text" className="w-full p-2 border rounded-md" />
-                
-                <label htmlFor="playerConfigDesc" className="mt-2">Description</label>
-                <input type="text" id="playerConfigDesc" name="playerConfigDesc" className="w-full p-2 border rounded-md" />
+                <form className="flex flex-col bg-white p-10" onSubmit={handleCreatePlayer}>
+                  <h1 className="font-semibold">Create Player Config</h1>
+                  <label htmlFor="playerConfigName" className="mt-4">Name *</label>
+                  <input id="playerConfigName" name="playerConfigName" required type="text" className="w-full p-2 border rounded-md" />
 
-                <label htmlFor="playerConfigParams" className="mt-2">Params (JSON)*</label>
-                <textarea id="appConfigParams" name="playerConfigParams" required className="w-full p-2 border rounded-md" rows={4}></textarea>
+                  <label htmlFor="playerConfigDesc" className="mt-2">Description</label>
+                  <input type="text" id="playerConfigDesc" name="playerConfigDesc" className="w-full p-2 border rounded-md" />
 
-                <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
-              </form>
-            </div>
-          </div>
+                  <label htmlFor="playerConfigParams" className="mt-2">Params (JSON)*</label>
+                  <textarea id="appConfigParams" name="playerConfigParams" required className="w-full p-2 border rounded-md" rows={4}></textarea>
+
+                  <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
+                </form>
+              </div>
+            </div>)}
         </div>
       </div>
     </div>

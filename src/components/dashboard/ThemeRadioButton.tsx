@@ -3,19 +3,27 @@ import { RadioGroup } from '@headlessui/react'
 import Image from 'next/image'
 import { FiTrash } from "react-icons/fi"
 import { axios_config } from "@/lib/axios"
+import { fetchConfigs } from "@/lib/fetch"
+import { userStore } from "@/lib/store"
 
 type Props = {
     options: any[],
     onThemeChange: (theme: any) => void,
-    theme: any
+    theme: any,
+    getConfigs: () => void,
+    userRole: string,
 }
 
-export default function RadioButton({ options, theme, onThemeChange }: Props) {
+export default function RadioButton({ userRole, getConfigs, options, theme, onThemeChange }: Props) {
+    const activeProject = userStore(state => state.activeProject);
+    const activeProjectID = activeProject?.projectID;
+
     const handleDelete = async (configID: string) => {
         try {
             await axios_config.delete(`/delete-config?configID=${configID}`);
             alert("Theme deleted successfully");
-            window.location.reload();
+            fetchConfigs(activeProjectID);
+            getConfigs();
         } catch (error) {
             console.log(error)
         }
@@ -60,14 +68,16 @@ export default function RadioButton({ options, theme, onThemeChange }: Props) {
                                                             {option.desc}
                                                         </RadioGroup.Description>
                                                         {checked && (
-                                                            <div className="text-xs text-white bg-primary600 dark:bg-primary800 rounded-full px-2 py-1 ml-2">
-                                                                {JSON.stringify(option.params)}
+                                                            <div className="text-xs text-white bg-primary600 dark:bg-primary800 rounded-full ">
+                                                                {JSON.stringify(option.params, null, 2)}
                                                             </div>
                                                         )}
                                                     </div>
-                                                    <button className="ml-2 p-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition-all" onClick={() => handleDelete(option.configID)}>
-                                                        <FiTrash />
-                                                    </button>
+                                                    {userRole && (userRole === 'editor' || userRole === 'owner') && (
+                                                        <button className="ml-2 p-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition-all" onClick={() => handleDelete(option.configID)}>
+                                                            <FiTrash />
+                                                        </button>
+                                                    )}
                                                 </div>
                                                 {checked && (
                                                     <div className="shrink-0 text-white">

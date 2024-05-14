@@ -2,15 +2,16 @@
 import { axios_auth, axios_admin } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { projectStore, activeProjectStore, userStore } from "@/lib/store";
+import { userStore } from "@/lib/store";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
 
-    const setProjects = projectStore(state => state.setProjects);
-    const activeProjectID = activeProjectStore(state => state.projectID);
-    const setActiveProject = activeProjectStore(state => state.setActiveProject);
+    const activeProject = userStore(state => state.activeProject);
+    const setCompany = userStore(state => state.setCompany);
+    const setProjects = userStore(state => state.setProjects);
+    const setActiveProject = userStore(state => state.setActiveProject);
     const setUser = userStore(state => state.setUser);
 
     useEffect(() => {
@@ -18,15 +19,31 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             try {
                 const user = await axios_auth.get('/get-user');
                 setUser(user.data);
-                const admin_projects = await axios_admin.get('/get-admin-projects');
 
-                setProjects(admin_projects.data);
+                try {
+                    const result = await axios_admin.get('/get-admin');
 
-                if(activeProjectID === '') {
-                    setActiveProject(admin_projects.data[0].projectID);
+                    const company = result.data.company;
+                    const projects = result.data.projects;
+
+                    setUser({ ...user.data, companyID: company.companyID })
+                    setProjects(projects);
+
+                    if (activeProject === null) {
+                        setActiveProject(projects[0]);
+                    }
+
+                    setIsLoading(false);
+                } catch (error: any) {
+                    console.log(error.response.data);
+
+                    if(error.response.data.code === "NO_PROJECT") {
+                        setCompany(error.response.data.company);
+                    }
+                    
+                    router.push('/onboarding');
                 }
 
-                setIsLoading(false);
             } catch (error: any) {
                 console.log(error);
                 router.push('/');
