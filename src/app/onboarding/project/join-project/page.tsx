@@ -56,7 +56,7 @@ const LoginForm = () => {
                 <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                     <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                         Join Project
-                        <p className="text-sm text-gray-500 font-light mt-2"> If you're already part of any project, ask your manager for the project ID.</p>
+                        <p className="text-sm text-gray-500 font-light mt-2"> If you&apos;re already part of any project, ask your manager for the project ID.</p>
                     </h1>
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">
@@ -67,7 +67,7 @@ const LoginForm = () => {
                         <button type="submit" className="mb-4 w-full bg-primary bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 dark:bg-slate-400 dark:hover:bg-slate-300 transition-all text-white hover:bg-primary/80 dark:text-black">Submit</button>
 
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                            Don't have a project? <Link href="/onboarding/project/create-project" className="font-semibold text-primary-600 hover:underline dark:text-primary-500">Click Here</Link>
+                            Don&apos;t have a project? <Link href="/onboarding/project/create-project" className="font-semibold text-primary-600 hover:underline dark:text-primary-500">Click Here</Link>
                         </p>
 
                         <div className="w-full flex justify-center -mb-2 mt-4">

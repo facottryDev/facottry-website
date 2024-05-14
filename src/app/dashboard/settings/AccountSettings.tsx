@@ -65,7 +65,7 @@ export default function AccountSettings() {
                     <div className="col-span-full flex flex-col items-center">
 
                         <div className="flex flex-col items-center mt-2 gap-x-3">
-                            {!user.profilePic ? (<PiUserCircleFill className="w-12 h-12 text-gray-300" aria-hidden="true" />) : (
+                            {!user?.profilePic ? (<PiUserCircleFill className="w-12 h-12 text-gray-300" aria-hidden="true" />) : (
                                 <Image src={user.profilePic} alt="Profile Picture" width={150} height={150} className="rounded-full" />
                             )}
                         </div>
@@ -89,7 +89,7 @@ export default function AccountSettings() {
                             name="email"
                             id="email"
                             disabled
-                            placeholder={user.email}
+                            placeholder={user?.email}
                             className="block mt-2 w-full rounded-md border-0 py-1.5 text-gray-900 pl-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 dark:placeholder:text-slate-200"
                         />
                     </div>
@@ -102,7 +102,7 @@ export default function AccountSettings() {
                             type="text"
                             name="name"
                             id="name"
-                            placeholder={user.name}
+                            placeholder={user?.name}
                             autoComplete="name"
                             className="block mt-2 w-full rounded-md border-0 py-1.5 text-gray-900 pl-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 dark:placeholder:text-slate-200"
                         />
@@ -117,7 +117,7 @@ export default function AccountSettings() {
                                 name="address"
                                 id="address"
                                 autoComplete="address"
-                                placeholder={user.address}
+                                placeholder={user?.address}
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 pl-2 focus:ring-inset sm:text-sm sm:leading-6"
                             />
                         </div>
@@ -133,7 +133,7 @@ export default function AccountSettings() {
                                 name="mobile"
                                 id="mobile"
                                 autoComplete="phone"
-                                placeholder={user.mobile}
+                                placeholder={user?.mobile}
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 pl-2 focus:ring-inset sm:text-sm sm:leading-6"
                             />
                         </div>

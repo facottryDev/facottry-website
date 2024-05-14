@@ -15,7 +15,8 @@ type Props = {
 }
 
 export default function RadioButton({ userRole, getConfigs, options, theme, onThemeChange }: Props) {
-    const activeProjectID = userStore(state => state.activeProject.projectID);
+    const activeProject = userStore(state => state.activeProject);
+    const activeProjectID = activeProject?.projectID;
 
     const handleDelete = async (configID: string) => {
         try {

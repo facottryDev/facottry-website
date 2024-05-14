@@ -72,7 +72,7 @@ export default function AccountSettings() {
                             name="companyid"
                             id="companyid"
                             disabled
-                            value={user.email}
+                            value={user?.email}
                             className=" block mt-2 w-full rounded-md border-0 py-1.5 text-gray-500 pl-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 dark:placeholder:text-slate-200"
                         />
                     </div>
@@ -85,7 +85,7 @@ export default function AccountSettings() {
                             type="text"
                             name="name"
                             id="name"
-                            placeholder={user.name}
+                            placeholder={user?.name}
                             autoComplete="name"
                             className="block mt-2 w-full rounded-md border-0 py-1.5 text-gray-900 pl-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 dark:placeholder:text-slate-200"
                         />
@@ -100,7 +100,7 @@ export default function AccountSettings() {
                                 name="address"
                                 id="address"
                                 autoComplete="address"
-                                placeholder={user.address}
+                                placeholder={user?.address}
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 pl-2 focus:ring-inset sm:text-sm sm:leading-6"
                             />
                         </div>
@@ -116,7 +116,7 @@ export default function AccountSettings() {
                                 name="mobile"
                                 id="mobile"
                                 autoComplete="phone"
-                                placeholder={user.mobile}
+                                placeholder={user?.mobile}
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 pl-2 focus:ring-inset sm:text-sm sm:leading-6"
                             />
                         </div>

@@ -2,8 +2,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type FilterStore = {
-  filter: Filter | null;
-  setFilter: (filter: Filter | null) => void;
+  filter: Filter;
+  setFilter: (filter: Filter) => void;
 };
 
 type UserStore = {

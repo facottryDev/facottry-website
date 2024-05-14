@@ -17,15 +17,13 @@ const options = [
 const UserDropdown = () => {
     const user = userStore(state => state.user);
 
-    console.log(user)
-
     return (
         <Menu as="div" className="relative inline-block text-left">
             <div>
                 <Menu.Button
                     className="flex items-center gap-2 text-sm transition-all rounded-lg font-semibold"
                 >
-                    {user.name || user.email}
+                    {user?.name || user?.email}
                     <BsChevronDown />
                 </Menu.Button>
             </div>

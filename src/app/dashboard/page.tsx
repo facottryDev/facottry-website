@@ -3,9 +3,9 @@ import { useRouter } from "next/navigation";
 
 type Props = {}
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   const router = useRouter();
-  router.push('/dashboard/home');
+  return router.push('/dashboard/home');
 }
 
-export default page
+export default Page
