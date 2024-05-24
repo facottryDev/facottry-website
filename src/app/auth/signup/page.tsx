@@ -22,15 +22,17 @@ const SignupForm = () => {
                 });
 
                 if (result1.data) {
-                    console.log("Email already registered")
+                    alert("Email already registered");
                     router.push(`/auth/login`);
                 } else {
                     const result2 = await axios_auth.post(`/send-otp`, {
                         email,
                     });
 
-                    if (result2.status === 200) router.push(`/auth/signup/verify?email=${email}`
-                    );
+                    if (result2.status === 200) {
+                        alert("Check your email for OTP");
+                        router.push(`/auth/signup/verify?email=${email}`);
+                    }
                 }
             } else {
                 console.log("Email is required");
@@ -38,6 +40,7 @@ const SignupForm = () => {
 
         } catch (error: any) {
             console.log(error);
+            alert("Error sending OTP");
         }
     }
 

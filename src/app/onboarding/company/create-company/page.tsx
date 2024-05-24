@@ -18,7 +18,7 @@ const LoginForm = () => {
         const data = Object.fromEntries(formData.entries())
 
         try {
-            const res = await axios_admin.post(`/add-company`, data);
+            const res = await axios_admin.post(`/company/create`, data);
 
             setCompany(res.data.company);
             alert(res.data.message);

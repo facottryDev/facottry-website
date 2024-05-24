@@ -39,7 +39,8 @@ const LoginForm = () => {
             console.log(result.data);
             router.push('/dashboard');
         } catch (error: any) {
-            console.log(error.response.data);
+            console.log(error.response);
+            alert(error.response.data);
         }
     }
 

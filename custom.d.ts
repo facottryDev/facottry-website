@@ -59,7 +59,7 @@ type Company = {
 type Project = {
   projectID: string;
   name: string;
-  type: string;
+  type: "PROD" | "DEV" | "UAT" | "TEST";
   role: "owner" | "editor" | "viewer";
   joinRequests: string[];
   activeInvites: string[];

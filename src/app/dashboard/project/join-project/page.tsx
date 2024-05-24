@@ -10,7 +10,7 @@ import { userStore } from "@/lib/store"
 
 const LoginForm = () => {
     const router = useRouter()
-    const company = userStore((state) => state.company);
+    const company = userStore(state => state.company)
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -70,7 +70,7 @@ const LoginForm = () => {
 
                         {company?.role === 'owner' && (
                             <p className="text-sm mb-4 text-gray-500 dark:text-gray-400">
-                                Don&apos;t have a project? <Link href="/onboarding/project/create-project" className="font-semibold text-primary-600 hover:underline dark:text-primary-500">Click Here</Link>
+                                Don&apos;t have a project? <Link href="/dashboard/project/create-project" className="font-semibold text-primary-600 hover:underline dark:text-primary-500">Click Here</Link>
                             </p>
                         )}
 

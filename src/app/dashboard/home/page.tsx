@@ -172,11 +172,13 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex w-screen min-h-screen bg-bggray dark:bg-darkblue300">
-      <Sidebar />
+    <div className="flex min-h-screen dark:bg-darkblue300">
+      <div>
+        <Sidebar />
+      </div>
 
       {/* Dashboard Home */}
-      <div className="flex flex-col w-full m-8">
+      <div className="flex flex-col w-full bg-bggray p-8">
         {/* Top Navbar */}
         <nav className="flex justify-between">
           <div className="flex items-center mr-10 space-x-4">
@@ -271,7 +273,9 @@ const Dashboard = () => {
                   <input type="text" id="appConfigDesc" name="appConfigDesc" className="w-full p-2 border rounded-md" />
 
                   <label htmlFor="appConfigParams" className="mt-2">Params (JSON)*</label>
-                  <textarea id="appConfigParams" name="appConfigParams" required className="w-full p-2 border rounded-md" rows={4}></textarea>
+                  <textarea id="appConfigParams" name="appConfigParams" required className="w-full p-2 border rounded-md" rows={4} defaultValue={
+                    `{"key": "value"}`
+                  }></textarea>
 
                   <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
                 </form>
@@ -285,7 +289,9 @@ const Dashboard = () => {
                   <input type="text" id="playerConfigDesc" name="playerConfigDesc" className="w-full p-2 border rounded-md" />
 
                   <label htmlFor="playerConfigParams" className="mt-2">Params (JSON)*</label>
-                  <textarea id="appConfigParams" name="playerConfigParams" required className="w-full p-2 border rounded-md" rows={4}></textarea>
+                  <textarea id="appConfigParams" name="playerConfigParams" required className="w-full p-2 border rounded-md" rows={4} defaultValue={
+                    `{"key": "value"}`
+                  }></textarea>
 
                   <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
                 </form>

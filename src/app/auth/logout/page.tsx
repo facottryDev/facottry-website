@@ -31,6 +31,7 @@ const Logout = () => {
                 router.push('/auth/login');
             } catch (error: any) {
                 console.log(error.response.data);
+                router.push('/');
             }
         }
 

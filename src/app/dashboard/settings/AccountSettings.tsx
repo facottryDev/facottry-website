@@ -61,7 +61,9 @@ export default function AccountSettings() {
                 <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-slate-200">Account Settings</h2>
                 <p className="mt-1 text-sm leading-6 text-gray-600 dark:text-slate-400">Edit your information below</p>
 
-                <div className="flex mt-8 items-center justify-around">
+                <hr className="my-4 border-gray-900/10 dark:border-gray-500" />
+
+                {/* <div className="flex mt-8 items-center justify-around">
                     <div className="col-span-full flex flex-col items-center">
 
                         <div className="flex flex-col items-center mt-2 gap-x-3">
@@ -76,10 +78,9 @@ export default function AccountSettings() {
                             Change
                         </button>
                     </div>
-                </div>
+                </div> */}
 
-                <div className="grid grid-cols-1 mt-10 gap-x-6 gap-y-8 sm:grid-cols-6">
-
+                <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div className="sm:col-span-3">
                         <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
                             Email address
@@ -89,8 +90,8 @@ export default function AccountSettings() {
                             name="email"
                             id="email"
                             disabled
-                            placeholder={user?.email}
-                            className="block mt-2 w-full rounded-md border-0 py-1.5 text-gray-900 pl-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 dark:placeholder:text-slate-200"
+                            defaultValue={user?.email}
+                            className="block mt-2 w-full rounded-md border-0 py-1.5 pl-2 shadow-sm ring-1 ring-inset ring-gray-300 text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 dark:placeholder:text-slate-200"
                         />
                     </div>
 

@@ -2,7 +2,7 @@
 import { axios_auth, axios_admin } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { userStore } from "@/lib/store";
+import { userStore, globalStore } from "@/lib/store";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(true);
@@ -13,6 +13,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const setProjects = userStore(state => state.setProjects);
     const setActiveProject = userStore(state => state.setActiveProject);
     const setUser = userStore(state => state.setUser);
+
+    const sidebar = globalStore(state => state.sidebar);
+    const setSidebar = globalStore(state => state.setSidebar);
 
     useEffect(() => {
         const isAuth = async () => {
@@ -26,11 +29,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     const company = result.data.company;
                     const projects = result.data.projects;
 
-                    setUser({ ...user.data, companyID: company.companyID })
+                    setUser({ ...user.data})
                     setProjects(projects);
+                    setCompany(company);
 
                     if (activeProject === null) {
                         setActiveProject(projects[0]);
+                    } else {
+                        const project = projects.find((project: any) => project.projectID === activeProject.projectID);
+
+                        if(project) {
+                            setActiveProject(project);
+                        } else {
+                            setActiveProject(projects[0]);
+                        }
                     }
 
                     setIsLoading(false);
@@ -57,7 +69,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         return <div> Loading... </div>
     } else {
         return (
-            <main>{children}</main>
+            <main>
+                {children}
+                
+                {/* Button to hide or show sidebar */}
+                <button className="fixed bottom-4 left-4 p-2 m-2 bg-white rounded-full shadow-md hover:bg-primary700 hover:text-white transition-all" onClick={() => {
+                    setSidebar(!sidebar);
+                }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </main>
         )
     }
 }

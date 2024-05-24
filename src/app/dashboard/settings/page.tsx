@@ -4,8 +4,13 @@ import UserDropdown from "@/components/dashboard/UserDropdown";
 import AccountSettings from "./AccountSettings";
 import Sidebar from "@/components/dashboard/Sidebar";
 import React, { useState } from 'react';
-import CompanySettings from "./CompanySettings";
+import CompanyEmployeeSettings from "./CompanyEmployeeSettings";
+import CompanyOwnerSettings from "./CompanyOwnerSettings";
 import SecuritySettings from "./SecuritySettings";
+import { userStore } from "@/lib/store";
+import ProjectOwnerSettings from "./ProjectOwnerSettings";
+import ProjectEditorSettings from "./ProjectEditorSettings";
+import ProjectViewerSettings from "./ProjectViewerSettings";
 
 const tabs = [
     {
@@ -17,19 +22,30 @@ const tabs = [
         label: 'Company',
     },
     {
+        name: 'project',
+        label: 'Project',
+    },
+    {
         name: 'security',
         label: 'Security',
     },
 ]
 
 const Settings = () => {
-    const [selectedTab, setSelectedTab] = useState('account');
+    const [selectedTab, setSelectedTab] = useState(localStorage.getItem('selectedTab') || 'account' as string);
+    const company = userStore(state => state.company);
+    const activeProject = userStore(state => state.activeProject);
+
+    // Store selectedTab in local storage
+    React.useEffect(() => {
+        localStorage.setItem('selectedTab', selectedTab);
+    }, [selectedTab]);
 
     return (
-        <section className="flex min-h-screen bg-bggray dark:bg-darkblue300">
+        <section className="flex min-h-screen dark:bg-darkblue300">
             <Sidebar />
 
-            <div className="w-full py-8 px-8 mx-auto ">
+            <div className="w-full bg-bggray p-8 mx-auto">
                 <nav className="flex justify-between">
                     <div className="flex items-center mr-10 space-x-4">
                         <h1 className="text-2xl font-bold">Settings</h1>
@@ -59,7 +75,13 @@ const Settings = () => {
 
                 <div className="mt-8">
                     {selectedTab === 'account' && <AccountSettings />}
-                    {selectedTab === 'company' && <CompanySettings />}
+                    {selectedTab === 'company' && company?.role === 'owner' && <CompanyOwnerSettings />}
+                    {selectedTab === 'company' && company?.role === 'employee' && <CompanyEmployeeSettings />}
+
+                    {selectedTab === 'project' && activeProject?.role === 'owner' && <ProjectOwnerSettings />}
+                    {selectedTab === 'project' && activeProject?.role === 'editor' && <ProjectEditorSettings />}
+                    {selectedTab === 'project' && activeProject?.role === 'viewer' && <ProjectViewerSettings />}
+                    
                     {selectedTab === 'security' && <SecuritySettings />}
                 </div>
             </div>
