@@ -42,10 +42,10 @@ const Settings = () => {
     }, [selectedTab]);
 
     return (
-        <section className="flex min-h-screen bg-bggray dark:bg-darkblue300">
+        <section className="flex min-h-screen dark:bg-darkblue300">
             <Sidebar />
 
-            <div className="w-full py-8 px-8 mx-auto ">
+            <div className="w-full bg-bggray p-8 mx-auto">
                 <nav className="flex justify-between">
                     <div className="flex items-center mr-10 space-x-4">
                         <h1 className="text-2xl font-bold">Settings</h1>

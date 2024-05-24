@@ -2,7 +2,6 @@
 import { IoExitSharp, IoTrashBin } from "react-icons/io5";
 import { userStore } from '@/lib/store'
 import { axios_admin } from "@/lib/axios"
-import Image from "next/image"
 
 export default function CompanyEmployeeSettings() {
     const company = userStore(state => state.company);
@@ -12,21 +11,53 @@ export default function CompanyEmployeeSettings() {
 
     const leaveCompany = async () => {
         try {
-            await axios_admin.post("/leave-company")
+            await axios_admin.post("/company/leave")
             userStore.setState({ company: null })
         } catch (error) {
             console.error(error)
         }
     }
 
-    const deleteCompany = async () => {
+    const deactivateCompany = async () => {
         try {
-            await axios_admin.delete("/deactivate-company")
-            userStore.setState({ company: null });
-            userStore.setState({ projects: [] });
-            userStore.setState({ activeProject: null });
+            await axios_admin.delete("/company/deactivate")
+            window.location.reload();
         } catch (error) {
             console.error(error)
+        }
+    }
+
+    const handleAcceptRequest = (request: string) => async () => {
+        console.log('hey')
+        try {
+            const result = await axios_admin.post("/company/accept-request", { email: request });
+            alert(result.data.message);
+            window.location.reload();
+        } catch (error: any) {
+            console.error(error)
+            alert(error.response.data.message)
+        }
+    }
+
+    const handleRejectRequest = (request: string) => async () => {
+        try {
+            const result = await axios_admin.post("/company/reject-request", { email: request });
+            alert(result.data.message);
+            window.location.reload();
+        } catch (error: any) {
+            console.error(error)
+            alert(error.response.data.message)
+        }
+    }
+
+    const handleRemoveEmployee = (employee: string) => async () => {
+        try {
+            const result = await axios_admin.post("/company/delete-employee", { email: employee });
+            alert(result.data.message);
+            window.location.reload();
+        } catch (error: any) {
+            console.error(error)
+            alert(error.response.data.message)
         }
     }
 
@@ -56,7 +87,7 @@ export default function CompanyEmployeeSettings() {
                 body = { ...body, address: data.address };
             }
 
-            axios_admin.post('/update-company', body);
+            axios_admin.post('/company/update', body);
             alert('Company updated successfully');
             window.location.reload();
         } catch (error) {
@@ -151,13 +182,6 @@ export default function CompanyEmployeeSettings() {
                                 <label htmlFor="companyname" className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
                                     {index + 1}. {owner}
                                 </label>
-
-                                <button
-                                    type="button"
-                                    className="flex items-center text-sm font-semibold leading-6 text-red-600 dark:text-red-400 hover:underline"
-                                >
-                                    Revoke
-                                </button>
                             </div>
                         ))}
                     </div>
@@ -179,6 +203,11 @@ export default function CompanyEmployeeSettings() {
                                 <button
                                     type="button"
                                     className="flex items-center text-sm font-semibold leading-6 text-red-600 dark:text-red-400 hover:underline"
+                                    onClick={() => {
+                                        if (window.confirm('Are you sure?')) {
+                                            handleRemoveEmployee(employee)();
+                                        }
+                                    }}
                                 >
                                     Remove
                                 </button>
@@ -206,6 +235,11 @@ export default function CompanyEmployeeSettings() {
                                     <button
                                         type="button"
                                         className="flex items-center text-sm font-semibold leading-6 text-green-600 dark:text-green-400 hover:underline"
+                                        onClick={() => {
+                                            if (window.confirm('Are you sure?')) {
+                                                handleAcceptRequest(request)();
+                                            }
+                                        }}
                                     >
                                         Accept
                                     </button>
@@ -213,6 +247,11 @@ export default function CompanyEmployeeSettings() {
                                     <button
                                         type="button"
                                         className="flex items-center text-sm font-semibold leading-6 text-red-600 dark:text-red-400 hover:underline"
+                                        onClick={() => {
+                                            if (window.confirm('Are you sure?')) {
+                                                handleRejectRequest(request)();
+                                            }
+                                        }}
                                     >
                                         Reject
                                     </button>
@@ -243,13 +282,13 @@ export default function CompanyEmployeeSettings() {
                         type="button"
                         className="flex items-center mt-4 text-sm font-semibold leading-6 text-red-600 dark:text-red-400 hover:underline"
                         onClick={() => {
-                            if (window.confirm('This action is irreversible and you will lose access to all your projects. Are you sure you want to leave the company? ')) {
-                                deleteCompany();
+                            if (window.confirm('All the projects under this company will be deactivated as well. Are you sure you want to deactivate the company? ')) {
+                                deactivateCompany();
                             }
                         }}
                     >
                         <IoTrashBin className="w-5 h-5 mr-2" />
-                        Delete Company
+                        Deactivate Company
                     </button>
                 </div>
             </div>

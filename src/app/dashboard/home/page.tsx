@@ -172,11 +172,13 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex w-screen min-h-screen bg-bggray dark:bg-darkblue300">
-      <Sidebar />
+    <div className="flex min-h-screen dark:bg-darkblue300">
+      <div>
+        <Sidebar />
+      </div>
 
       {/* Dashboard Home */}
-      <div className="flex flex-col w-full m-8">
+      <div className="flex flex-col w-full bg-bggray p-8">
         {/* Top Navbar */}
         <nav className="flex justify-between">
           <div className="flex items-center mr-10 space-x-4">

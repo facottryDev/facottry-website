@@ -10,6 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     const setUser = userStore(state => state.setUser);
     const setCompany = userStore(state => state.setCompany);
+    const setProjects = userStore(state => state.setProjects);
 
     useEffect(() => {
         const isAuth = async () => {
@@ -21,8 +22,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     await axios_admin.get('/get-admin');
                     return router.push("/dashboard/home");
                 } catch (error: any) {
-                    console.log(error.response.data);
-                    setCompany(error.response.data.company);
+                    if (error.response.data.code === "NO_PROJECT") {
+                        setProjects([]);
+                        setCompany(error.response.data.company);
+                    } else {
+                        alert("Server Error");
+                    }
                 }
 
                 setIsLoading(false);

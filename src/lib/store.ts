@@ -17,6 +17,11 @@ type UserStore = {
   setProjects: (projects: Project[]) => void;
 };
 
+type GlobalStore = {
+  sidebar: boolean;
+  setSidebar: (sidebar: boolean) => void;
+};
+
 export const filterStore = create(
   persist<FilterStore>(
     (set) => ({
@@ -46,3 +51,8 @@ export const userStore = create(
   }),
   { name: "user" })
 );
+
+export const globalStore = create(persist<GlobalStore>((set) => ({
+  sidebar: true,
+  setSidebar: (sidebar) => set({ sidebar }),
+}), { name: "global" }));

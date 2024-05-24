@@ -9,7 +9,7 @@ export default function CompanyEmployeeSettings() {
     
     const leaveCompany = async () => {
         try {
-            await axios_admin.delete("/leave-company")
+            await axios_admin.post("/company/leave")
             userStore.setState({ company: null })
         } catch (error) {
             console.error(error)

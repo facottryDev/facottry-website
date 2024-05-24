@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image'
 import logo_2 from '@/assets/logo_2.svg'
 import logo_dark_2 from '@/assets/logo_dark_2.svg'
-import { userStore } from "@/lib/store";
+import { userStore, globalStore } from "@/lib/store";
 
 const SidebarButton = ({ href, label, icon, target }: {
   href: string;
@@ -24,6 +24,7 @@ const Sidebar = () => {
   const activeProject = userStore(state => state.activeProject);
   const setActiveProject = userStore(state => state.setActiveProject);
   const company = userStore(state => state.company);
+  const sidebar = globalStore(state => state.sidebar);
 
   const handleProjectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const projectID = e.target.value;
@@ -34,7 +35,7 @@ const Sidebar = () => {
   }
 
   return (
-    <div className="hidden md:block bg-white p-8 pl-5 dark:bg-darkblue">
+    <div className={`${sidebar ? 'block' : 'hidden'} bg-white p-8 pl-5 dark:bg-darkblue`}>
       <Link href={'/'} className="flex gap-2 items-center mb-8">
         <Image
           src={logo_2}
@@ -93,6 +94,11 @@ const Sidebar = () => {
           <span>
             <h3 className="font-bold">Project ID: </h3>
             <p>{activeProject?.projectID}</p>
+          </span>
+
+          <span>
+            <h3 className="font-bold">Company: </h3>
+            <p>{company?.name}</p>
           </span>
 
           <span>
