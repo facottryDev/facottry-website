@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 type Props = {}
 
 const Page = (props: Props) => {
-  const company = userStore((state) => state.company);
+  const company = userStore(state => state.company);
+
   const router = useRouter();
-  
-  if(company?.role === 'owner') {
-    return router.push('/onboarding/project/create-project');
+  if(company?.role !== 'owner'){
+    return router.push('/dashboard/project/join-project')
   } else {
-    return router.push('/onboarding/project/join-project');
+    return router.push('/dashboard/project/create-project')
   }
 }
 

@@ -26,8 +26,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     const company = result.data.company;
                     const projects = result.data.projects;
 
-                    setUser({ ...user.data, companyID: company.companyID })
+                    setUser({ ...user.data})
                     setProjects(projects);
+                    setCompany(company);
 
                     if (activeProject === null) {
                         setActiveProject(projects[0]);

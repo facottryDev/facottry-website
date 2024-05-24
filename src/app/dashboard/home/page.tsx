@@ -271,7 +271,9 @@ const Dashboard = () => {
                   <input type="text" id="appConfigDesc" name="appConfigDesc" className="w-full p-2 border rounded-md" />
 
                   <label htmlFor="appConfigParams" className="mt-2">Params (JSON)*</label>
-                  <textarea id="appConfigParams" name="appConfigParams" required className="w-full p-2 border rounded-md" rows={4}></textarea>
+                  <textarea id="appConfigParams" name="appConfigParams" required className="w-full p-2 border rounded-md" rows={4} defaultValue={
+                    `{"key": "value"}`
+                  }></textarea>
 
                   <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
                 </form>
@@ -285,7 +287,9 @@ const Dashboard = () => {
                   <input type="text" id="playerConfigDesc" name="playerConfigDesc" className="w-full p-2 border rounded-md" />
 
                   <label htmlFor="playerConfigParams" className="mt-2">Params (JSON)*</label>
-                  <textarea id="appConfigParams" name="playerConfigParams" required className="w-full p-2 border rounded-md" rows={4}></textarea>
+                  <textarea id="appConfigParams" name="playerConfigParams" required className="w-full p-2 border rounded-md" rows={4} defaultValue={
+                    `{"key": "value"}`
+                  }></textarea>
 
                   <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
                 </form>

@@ -23,6 +23,7 @@ const Sidebar = () => {
   const allProjects = userStore(state => state.projects);
   const activeProject = userStore(state => state.activeProject);
   const setActiveProject = userStore(state => state.setActiveProject);
+  const company = userStore(state => state.company);
 
   const handleProjectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const projectID = e.target.value;
@@ -56,11 +57,11 @@ const Sidebar = () => {
 
       <div className="font-medium text-slate-700 dark:text-white">
         <SidebarButton href="/dashboard/home" label="Dashboard" icon={<FiHome />} />
-        <SidebarButton href="/dashboard/analytics" label="Analytics" icon={<FiBarChart2 />} />
+        {/* <SidebarButton href="/dashboard/analytics" label="Analytics" icon={<FiBarChart2 />} />
         <SidebarButton href="/docs" target='_blank' label="Documentation" icon={<FiFileText />} />
         <SidebarButton href="/dashboard/pricing" label="Upgrade" icon={<FiShoppingCart />} />
-        <SidebarButton href="/dashboard/buy-features" label="Buy Features" icon={<FiDollarSign />} />
-        <SidebarButton href="/dashboard/contact" label="Contact Us" icon={<FiPhone />} />
+        <SidebarButton href="/dashboard/buy-features" label="Buy Features" icon={<FiDollarSign />} /> */}
+        {/* <SidebarButton href="/dashboard/contact" label="Contact Us" icon={<FiPhone />} /> */}
         <SidebarButton href="/dashboard/settings" label="Settings" icon={<FiSettings />} />
       </div>
 
@@ -74,12 +75,19 @@ const Sidebar = () => {
           onChange={handleProjectChange}
           value={activeProject?.projectID}
         >
-          {allProjects.map((item) => (
+          {allProjects
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((item) => (
             <option key={item.projectID} value={item.projectID}>
-              {item.name}
+              {item.name} - {item.type}
             </option>
           ))}
         </select>
+
+        {/* Add new project button */}
+        <Link href="/dashboard/project" className="mt-4 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm text-center hover:bg-primary600 hover:text-white transition-all">
+            Add New Project
+          </Link>
 
         <div className="bg-primary700 p-4 rounded-md mt-4 text-sm flex flex-col gap-2 text-white">
           <span>
