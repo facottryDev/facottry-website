@@ -40,7 +40,7 @@ export const ChangePassword = () => {
 
                 if (result.status === 200) {
                     alert("Success");
-                    router.push(`/auth/login`)
+                    router.push(`/onboarding`)
                 };
             } else {
                 alert("Email is required");

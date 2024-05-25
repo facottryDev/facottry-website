@@ -2,7 +2,7 @@
 import Sidebar from "@/components/dashboard/Sidebar"
 import ToggleSwitch from "@/components/global/ToggleTheme"
 import UserDropdown from "@/components/dashboard/UserDropdown"
-import RadioButton from "@/components/dashboard/ThemeRadioButton"
+import ConfigButton from "@/components/dashboard/ThemeRadioButton"
 import { useEffect, useState } from "react"
 import { axios_config } from "@/lib/axios"
 import { userStore, filterStore } from "@/lib/store";
@@ -194,9 +194,6 @@ const Dashboard = () => {
         <hr className="w-full mt-4" />
 
         <div className="flex flex-col w-full mt-8 items-center justify-center">
-          {/* Filters */}
-          <Filter />
-
           {/* Active Mapping */}
           {activeProject && (
             <div className="mb-8 p-4 bg-white flex flex-col justify-center items-center border rounded-md">
@@ -242,14 +239,14 @@ const Dashboard = () => {
                 <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
                   <p className="font-bold text-lg">App Configs</p>
                   {appConfigs && (
-                    <RadioButton userRole={userRole} getConfigs={getConfigs} options={appConfigs} theme={selectedApp} onThemeChange={setSelectedApp} />
+                    <ConfigButton userRole={userRole} getConfigs={getConfigs} options={appConfigs} theme={selectedApp} onThemeChange={setSelectedApp} />
                   )}
                 </section>
 
                 <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
                   <p className="font-bold text-lg">Player Configs</p>
                   {playerConfigs && (
-                    <RadioButton userRole={userRole} getConfigs={getConfigs} options={playerConfigs} theme={selectedPlayer} onThemeChange={setSelectedPlayer} />
+                    <ConfigButton userRole={userRole} getConfigs={getConfigs} options={playerConfigs} theme={selectedPlayer} onThemeChange={setSelectedPlayer} />
                   )}
                 </section>
               </div>
@@ -289,7 +286,7 @@ const Dashboard = () => {
                   <input type="text" id="playerConfigDesc" name="playerConfigDesc" className="w-full p-2 border rounded-md" />
 
                   <label htmlFor="playerConfigParams" className="mt-2">Params (JSON)*</label>
-                  <textarea id="appConfigParams" name="playerConfigParams" required className="w-full p-2 border rounded-md" rows={4} defaultValue={
+                  <textarea id="playerConfigParams" name="playerConfigParams" required className="w-full p-2 border rounded-md" rows={4} defaultValue={
                     `{"key": "value"}`
                   }></textarea>
 

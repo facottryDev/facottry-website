@@ -3,6 +3,7 @@ import { axios_auth, axios_admin } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { userStore, globalStore } from "@/lib/store";
+import Filter from "@/components/dashboard/Filter";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(true);
@@ -29,7 +30,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     const company = result.data.company;
                     const projects = result.data.projects;
 
-                    setUser({ ...user.data})
+                    setUser({ ...user.data })
                     setProjects(projects);
                     setCompany(company);
 
@@ -38,7 +39,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     } else {
                         const project = projects.find((project: any) => project.projectID === activeProject.projectID);
 
-                        if(project) {
+                        if (project) {
                             setActiveProject(project);
                         } else {
                             setActiveProject(projects[0]);
@@ -49,10 +50,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 } catch (error: any) {
                     console.log(error.response.data);
 
-                    if(error.response.data.code === "NO_PROJECT") {
+                    if (error.response.data.code === "NO_PROJECT") {
                         setCompany(error.response.data.company);
                     }
-                    
+
                     router.push('/onboarding');
                 }
 
@@ -71,15 +72,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         return (
             <main>
                 {children}
-                
+
                 {/* Button to hide or show sidebar */}
-                <button className="fixed bottom-4 left-4 p-2 m-2 bg-white rounded-full shadow-md hover:bg-primary700 hover:text-white transition-all" onClick={() => {
+                <button className={`fixed bottom-4 left-4 p-2 m-2 rounded-full shadow-md hover:bg-primary600 hover:text-white transition-all ${
+                    sidebar ? 'text-white bg-primary600' : 'bg-white'
+                }`} onClick={() => {
                     setSidebar(!sidebar);
                 }}>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
+
+                <div className="fixed bottom-4 right-4 m-4">
+                    <Filter />
+                </div>
             </main>
         )
     }

@@ -28,12 +28,7 @@ type mapping = {
   playerConfig: any;
 };
 
-type Filter = {
-  country: string;
-  subscription: string;
-  os: string;
-  osver: string;
-};
+type Filter = any;
 
 type User = {
   email: string;
@@ -54,6 +49,7 @@ type Company = {
   activeInvites: string[];
   owners: string[];
   employees: string[];
+  filters: Filter;
 };
 
 type Project = {

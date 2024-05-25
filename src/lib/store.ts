@@ -25,12 +25,7 @@ type GlobalStore = {
 export const filterStore = create(
   persist<FilterStore>(
     (set) => ({
-      filter: {
-        country: "",
-        subscription: "",
-        os: "",
-        osver: "",
-      },
+      filter: [],
       setFilter: (filter) => set({ filter }),
     }),
     { name: "filterSelection" }

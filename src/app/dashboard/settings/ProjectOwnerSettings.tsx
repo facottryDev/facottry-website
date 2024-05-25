@@ -27,12 +27,14 @@ export default function ProjectOwnerSettings() {
 
     const deactivateProject = async () => {
         try {
-            await axios_admin.delete("/deactivate-project")
+            await axios_admin.post("/project/deactivate", { projectID: activeProject?.projectID });
             userStore.setState({ company: null });
             userStore.setState({ projects: [] });
             userStore.setState({ activeProject: null });
-        } catch (error) {
-            console.error(error)
+            window.location.reload();
+        } catch (error: any) {
+            console.log(error.response);
+            alert(error.response.data.message);
         }
     }
 
