@@ -5,15 +5,15 @@ import UserDropdown from "@/components/dashboard/UserDropdown"
 import ConfigButton from "@/components/dashboard/ThemeRadioButton"
 import { useEffect, useState } from "react"
 import { axios_config } from "@/lib/axios"
-import { userStore, filterStore } from "@/lib/store";
+import { userStore, activeFilterStore } from "@/lib/store";
 import Filter from "@/components/dashboard/Filter"
 import Image from "next/image"
-import { fetchConfigs, fetchMapping } from "@/lib/fetch"
+import { fetchConfigs } from "@/lib/fetch"
 
 const Dashboard = () => {
   const [appConfigs, setAppConfigs] = useState<appConfig[]>();
   const [playerConfigs, setPlayerConfigs] = useState<playerConfig[]>();
-  const [filters] = filterStore(state => [state.filter]);
+  const [activeFilter, setActiveFilter] = activeFilterStore(state => [state.activeFilter, state.setActiveFilter]);
   const [selectedApp, setSelectedApp] = useState<appConfig>();
   const [selectedPlayer, setSelectedPlayer] = useState<playerConfig>();
   const [mapping, setMapping] = useState<mapping>();
@@ -42,25 +42,23 @@ const Dashboard = () => {
 
   // Fetching & updating Mapping
   const getMapping = async () => {
-    const res = await fetchMapping(activeProject?.projectID, filters, true);
+    if (!activeProject) return;
 
-    if (res.status >= 300) {
-      setMapping(undefined);
-      console.log(res.data);
-      return;
-    } else {
-      const mapping = {
-        appConfig: res.data.appConfig,
-        playerConfig: res.data.playerConfig
-      }
+    try {
+      const mapping = await axios_config.post('/get-mapping', {
+        projectID: activeProject?.projectID,
+        filter: activeFilter
+      });
 
-      setMapping(mapping);
+      console.log(mapping);
+    } catch (error) {
+      console.log(error);
     }
   }
 
   useEffect(() => {
     getMapping();
-  }, [filters, activeProject])
+  }, [activeFilter, activeProject])
 
   // Function to handle update of mapping
   const handleUpdateMapping = async () => {
@@ -73,7 +71,7 @@ const Dashboard = () => {
       projectID: activeProject?.projectID,
       appConfig: selectedApp,
       playerConfig: selectedPlayer,
-      filter: filters
+      filter: activeFilter
     }
 
     if (!data.projectID) return alert('No active project found!');
@@ -98,7 +96,7 @@ const Dashboard = () => {
     try {
       await axios_config.post('/delete-mapping', {
         projectID: activeProject?.projectID,
-        filter: filters
+        filter: activeFilter
       });
 
       alert('Mapping deleted successfully!')
@@ -194,6 +192,8 @@ const Dashboard = () => {
         <hr className="w-full mt-4" />
 
         <div className="flex flex-col w-full mt-8 items-center justify-center">
+          <Filter />
+
           {/* Active Mapping */}
           {activeProject && (
             <div className="mb-8 p-4 bg-white flex flex-col justify-center items-center border rounded-md">

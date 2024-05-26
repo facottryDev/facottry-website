@@ -83,10 +83,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
-
-                <div className="fixed bottom-4 right-4 m-4">
-                    <Filter />
-                </div>
             </main>
         )
     }

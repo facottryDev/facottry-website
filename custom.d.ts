@@ -28,8 +28,6 @@ type mapping = {
   playerConfig: any;
 };
 
-type Filter = any;
-
 type User = {
   email: string;
   name: string;
@@ -49,7 +47,6 @@ type Company = {
   activeInvites: string[];
   owners: string[];
   employees: string[];
-  filters: Filter;
 };
 
 type Project = {
@@ -62,4 +59,7 @@ type Project = {
   owners: string[];
   editors: string[];
   viewers: string[];
+  filters: Filter;
 };
+
+type Filter = any;

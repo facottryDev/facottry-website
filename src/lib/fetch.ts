@@ -20,28 +20,6 @@ export const fetchConfigs = async (projectID: string | undefined) => {
   }
 };
 
-export const fetchMapping = async (
-  projectID: string | undefined,
-  filter: Filter | null,
-  nocache: boolean
-) => {
-  try {
-    if (projectID === undefined) {
-      return { data: [] };
-    }
-
-    const mapping = await axios_user.post("/get-mapping", {
-      projectID,
-      filter,
-      nocache,
-    });
-
-    return mapping;
-  } catch (error: any) {
-    return error.response;
-  }
-};
-
 export const fetchProjectByID = async (projectID: string) => {
   try {
     const project = await axios_admin.get("/get-project-details", {

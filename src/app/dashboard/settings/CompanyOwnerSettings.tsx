@@ -2,37 +2,12 @@
 import { IoExitSharp, IoTrashBin } from "react-icons/io5";
 import { userStore } from '@/lib/store'
 import { axios_admin } from "@/lib/axios"
-import { useState } from "react";
-import Modal from 'react-modal';
 
 export default function CompanyEmployeeSettings() {
     const company = userStore((state) => state.company);
     const setCompany = userStore((state) => state.setCompany);
     const setProjects = userStore((state) => state.setProjects);
     const setActiveProject = userStore((state) => state.setActiveProject);
-
-    const [AddFilterModal, setAddFilterModal] = useState(false);
-
-    const handleUpdateFilters = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        try {
-            const formData = new FormData(e.currentTarget);
-            const data = Object.fromEntries(formData.entries());
-
-            const filter = {
-                name: data.filterName,
-                values: String(data.filterValues).split(',').map((value: string) => value.trim())
-            };
-
-            const result = await axios_admin.post("/company/update-filters", { filter });
-            alert(result.data.message);
-            window.location.reload();
-        } catch (error: any) {
-            console.log(error);
-            alert(error.response.data);
-        }
-    }
 
     const leaveCompany = async () => {
         try {
@@ -203,71 +178,6 @@ export default function CompanyEmployeeSettings() {
                 </div>
 
                 <hr className="my-4 border-gray-900/10 dark:border-gray-500" />
-
-
-                {/* Manage Filters */}
-                <div>
-                    <label htmlFor="companyname" className="block mt-4 text-sm font-bold leading-6 text-gray-900 dark:text-slate-200">
-                        Manage Filters <button className="text-primary font-semibold ml-2" onClick={
-                            () => setAddFilterModal(true)
-                        }> Add Filter </button>
-                    </label>
-
-                    <div className="border rounded-lg p-4 items-center mt-2 gap-2 justify-between text-sm ">
-                        {company?.filters && company.filters.length > 0 ? (
-                            <div className="flex flex-col border rounded-lg p-4 mt-2 gap-2 ">
-                                {company?.filters.map((filter: Filter, index: number) => (
-                                    <div key={index} className="flex gap-2">
-                                        <h3 className="font-semibold">{filter.name}:</h3>
-                                        <div className="flex gap-1">
-                                            {filter.values.map((value: string, i: number) => (
-                                                <p className="border cursor-pointer px-1 rounded-md" key={i}>{value}</p>
-                                            ))}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <p>No filters found</p>
-                        )}
-                    </div>
-
-                    <Modal
-                        isOpen={AddFilterModal}
-                        onRequestClose={() => setAddFilterModal(false)}
-                        contentLabel="Edit Config Modal"
-                        style={
-                            {
-                                overlay: {
-                                    backgroundColor: 'rgba(0, 0, 0, 0.75)'
-                                },
-                                content: {
-                                    width: 'max-content',
-                                    height: 'max-content',
-                                    maxHeight: '80%',
-                                    margin: 'auto',
-                                    padding: '2rem',
-                                    borderRadius: '10px',
-                                    backgroundColor: 'white'
-                                }
-                            }
-                        }
-                    >
-                        <div className="flex flex-col items-center justify-center bg-white">
-                            <h1 className="font-bold text-lg">Add New Filter</h1>
-
-                            <form className="flex flex-col w-[50vw] max-w-sm bg-white " onSubmit={handleUpdateFilters}>
-                                <label htmlFor="filterName" className="mt-4">Filter Name</label>
-                                <input id="filterName" name="filterName" type="text" className="w-full p-2 mt-2 border rounded-md" required onKeyDown={(e) => e.stopPropagation()} />
-
-                                <label htmlFor="filterValues" className="mt-4">Values (Comma Separated)</label>
-                                <textarea id="filterValues" name="filterValues" className="w-full mt-2 p-2 border rounded-md" required onKeyDown={(e) => e.stopPropagation()} />
-
-                                <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Add Filter</button>
-                            </form>
-                        </div>
-                    </Modal>
-                </div>
 
                 {/* Manage Company Owners */}
                 <div>

@@ -2,11 +2,11 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { axios_auth } from "@/lib/axios"
-import { filterStore, userStore } from "@/lib/store"
+import { activeFilterStore, userStore } from "@/lib/store"
 
 const Logout = () => {
     const router = useRouter();
-    const setFilter = filterStore(state => state.setFilter);
+    const setActiveFilter = activeFilterStore(state => state.setActiveFilter);
     const setUser = userStore(state => state.setUser);
     const setCompany = userStore(state => state.setCompany);
     const setProjects = userStore(state => state.setProjects);
@@ -21,12 +21,7 @@ const Logout = () => {
                 setActiveProject(null);
                 setUser(null);
                 setCompany(null);
-                setFilter({
-                    country: "",
-                    subscription: "",
-                    os: "",
-                    osver: "",
-                });
+                setActiveFilter({});
 
                 router.push('/auth/login');
             } catch (error: any) {
