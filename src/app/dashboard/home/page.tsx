@@ -17,6 +17,7 @@ const Dashboard = () => {
   const [selectedApp, setSelectedApp] = useState<appConfig>();
   const [selectedPlayer, setSelectedPlayer] = useState<playerConfig>();
   const [mapping, setMapping] = useState<mapping>();
+  const [company, setCompany] = userStore(state => [state.company, state.setCompany]);
 
   const activeProject = userStore(state => state.activeProject);
   const userRole = activeProject?.role;
@@ -49,8 +50,8 @@ const Dashboard = () => {
         projectID: activeProject?.projectID,
         filter: activeFilter
       });
-
-      console.log(mapping);
+      
+      setMapping(mapping.data.mappings);
     } catch (error) {
       console.log(error);
     }
@@ -69,6 +70,7 @@ const Dashboard = () => {
 
     const data = {
       projectID: activeProject?.projectID,
+      companyID: company?.companyID,
       appConfig: selectedApp,
       playerConfig: selectedPlayer,
       filter: activeFilter

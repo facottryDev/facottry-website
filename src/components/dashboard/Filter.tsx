@@ -1,6 +1,5 @@
 import { activeFilterStore, userStore } from "@/lib/store";
 import React from 'react'
-import { HiOutlineFilter } from "react-icons/hi";
 
 type Props = {}
 
@@ -21,7 +20,7 @@ const Filter = ({ }: Props) => {
                             setActiveFilter({ ...activeFilter, [filter.name]: e.target.value });
                         }}
                     >
-                        <option value="">All</option>
+                        <option value="ALL">ALL</option>
                         {filter.values.map((value: any, index: number) => (
                             <option key={index} value={value}>
                                 {value}

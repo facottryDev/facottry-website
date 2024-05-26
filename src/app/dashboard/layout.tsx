@@ -2,7 +2,7 @@
 import { axios_auth, axios_admin } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { userStore, globalStore } from "@/lib/store";
+import { userStore, globalStore, activeFilterStore } from "@/lib/store";
 import Filter from "@/components/dashboard/Filter";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -14,6 +14,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const setProjects = userStore(state => state.setProjects);
     const setActiveProject = userStore(state => state.setActiveProject);
     const setUser = userStore(state => state.setUser);
+    const [activeFilter, setActiveFilter] = activeFilterStore(state => [state.activeFilter, state.setActiveFilter]);
+    
 
     const sidebar = globalStore(state => state.sidebar);
     const setSidebar = globalStore(state => state.setSidebar);
@@ -30,10 +32,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     const company = result.data.company;
                     const projects = result.data.projects;
 
+                    // set user, projects and company
                     setUser({ ...user.data })
                     setProjects(projects);
                     setCompany(company);
 
+                    // if activeProject is null, set it to first project
                     if (activeProject === null) {
                         setActiveProject(projects[0]);
                     } else {
@@ -44,6 +48,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         } else {
                             setActiveProject(projects[0]);
                         }
+                    }
+
+                    // if activeFilter is empty object, set it to default values
+                    if (Object.keys(activeFilter).length === 0) {
+                        const defaultFilter = projects[0].filters.reduce((acc: any, filter: any) => {
+                            acc[filter.name] = 'ALL';
+                            return acc;
+                        }, {});
+
+                        setActiveFilter(defaultFilter);
                     }
 
                     setIsLoading(false);
