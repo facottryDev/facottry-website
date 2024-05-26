@@ -235,7 +235,7 @@ const Dashboard = () => {
             <div className="flex flex-col items-center">
               <hr className="w-full mb-8" />
               <h1 className="text-lg font-bold mb-8">Update Mapping</h1>
-              <div className="flex flex-col md:flex-row gap-6 justify-around">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 justify-around">
                 <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
                   <p className="font-bold text-lg">App Configs</p>
                   {appConfigs && (
@@ -251,7 +251,7 @@ const Dashboard = () => {
                 </section>
               </div>
 
-              <button className="px-4 py-2 mt-5 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={handleUpdateMapping}>Submit</button>
+              <button className="px-4 py-2 mt-5 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={handleUpdateMapping}>Update Mapping</button>
             </div>
           )}
 
@@ -260,8 +260,8 @@ const Dashboard = () => {
             <div className="flex flex-col items-center justify-center">
               <hr className="w-full m-8" />
               <h1 className="font-bold text-lg">Create New Configs</h1>
-              <div className="flex gap-10 mt-8">
-                <form className="flex flex-col bg-white p-10" onSubmit={handleCreateApp}>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-8">
+                <form className="flex flex-col flex-shrink-0 bg-white p-10" onSubmit={handleCreateApp}>
                   <h1 className="font-semibold">Create App Config</h1>
                   <label htmlFor="appConfigName" className="mt-4">Name *</label>
                   <input id="appConfigName" name="appConfigName" required type="text" className="w-full p-2 border rounded-md" />
@@ -277,7 +277,7 @@ const Dashboard = () => {
                   <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
                 </form>
 
-                <form className="flex flex-col bg-white p-10" onSubmit={handleCreatePlayer}>
+                <form className="flex flex-col flex-shrink-0 bg-white p-10" onSubmit={handleCreatePlayer}>
                   <h1 className="font-semibold">Create Player Config</h1>
                   <label htmlFor="playerConfigName" className="mt-4">Name *</label>
                   <input id="playerConfigName" name="playerConfigName" required type="text" className="w-full p-2 border rounded-md" />
