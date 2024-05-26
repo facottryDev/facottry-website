@@ -206,8 +206,8 @@ const Dashboard = () => {
                 )}
               </div>
               {mapping && (
-                <div className="flex gap-8 p-2">
-                  <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full min-w-[300px] max-w-sm">
+                <div className="flex flex-col lg:flex-row gap-8 p-2">
+                  <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full  max-w-sm">
                     <p className="text-lg font-bold mb-2">App Config</p>
                     <div className="w-full">
                       <p className="font-semibold">{mapping?.appConfig?.name}</p>
@@ -217,7 +217,7 @@ const Dashboard = () => {
                     <Image src={mapping?.appConfig?.demo_url} alt="user" width={500} height={500} className="mt-2 rounded-xl" />
                   </div>
 
-                  <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full min-w-[300px] max-w-sm">
+                  <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full  max-w-sm">
                     <p className="text-lg font-bold mb-2">Player Config</p>
                     <div className="w-full">
                       <p className="font-semibold">{mapping?.playerConfig?.name}</p>

@@ -9,7 +9,7 @@ const Filter = ({ }: Props) => {
     const allFilters = activeProject?.filters || [];
 
     return (
-        <div className="bg-white border border-gray-100 w-full  rounded-lg p-10 grid grid-cols-2 lg:grid-cols-3 mb-8 2xl:grid-cols-4 gap-4 text-sm">
+        <div className="bg-white border border-gray-100 w-full  rounded-lg p-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 mb-8 2xl:grid-cols-4 gap-4 text-sm">
             {allFilters.map((filter: Filter, index: number) => (
                 <div key={index} className="flex items-center">
                     <label className="mr-2">{filter.name}</label>
