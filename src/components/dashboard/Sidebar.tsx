@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { FiHome, FiBarChart2, FiFileText, FiShoppingCart, FiDollarSign, FiPhone, FiSettings } from 'react-icons/fi';
+import { FiHome, FiPlayCircle, FiBarChart2, FiFileText, FiShoppingCart, FiDollarSign, FiPhone, FiSettings } from 'react-icons/fi';
 import Link from 'next/link';
 import Image from 'next/image'
 import logo_2 from '@/assets/logo_2.svg'
@@ -58,6 +58,7 @@ const Sidebar = () => {
 
       <div className="font-medium text-slate-700 dark:text-white">
         <SidebarButton href="/dashboard/home" label="Dashboard" icon={<FiHome />} />
+        <SidebarButton href="/dashboard/playground" label="Playground" icon={<FiPlayCircle />} />
         {/* <SidebarButton href="/dashboard/analytics" label="Analytics" icon={<FiBarChart2 />} />
         <SidebarButton href="/docs" target='_blank' label="Documentation" icon={<FiFileText />} />
         <SidebarButton href="/dashboard/pricing" label="Upgrade" icon={<FiShoppingCart />} />
@@ -77,18 +78,18 @@ const Sidebar = () => {
           value={activeProject?.projectID}
         >
           {allProjects
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map((item) => (
-            <option key={item.projectID} value={item.projectID}>
-              {item.name} - {item.type}
-            </option>
-          ))}
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((item) => (
+              <option key={item.projectID} value={item.projectID}>
+                {item.name} - {item.type}
+              </option>
+            ))}
         </select>
 
         {/* Add new project button */}
         <Link href="/dashboard/project" className="mt-4 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm text-center hover:bg-primary600 hover:text-white transition-all">
-            Add New Project
-          </Link>
+          Add New Project
+        </Link>
 
         <div className="bg-primary700 p-4 rounded-md mt-4 text-sm flex flex-col gap-2 text-white">
           <span>
