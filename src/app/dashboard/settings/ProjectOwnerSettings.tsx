@@ -294,7 +294,7 @@ export default function ProjectOwnerSettings() {
                                 {activeProject?.filters
                                     .sort((a: Filter, b: Filter) => b.priority - a.priority)
                                     .map((filter: Filter, index: number) => (
-                                        <div className="flex justify-between">
+                                        <div key={index} className="flex justify-between">
                                             <div key={index} className="flex gap-2">
                                                 <h3 className="font-semibold">{index+1}. {filter.name} ({filter.priority}):
                                                 </h3>

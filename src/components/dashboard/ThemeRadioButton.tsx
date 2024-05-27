@@ -110,8 +110,8 @@ export default function ConfigButton({ userRole, getConfigs, options, theme, onT
                 <RadioGroup value={theme} onChange={onThemeChange}>
                     <RadioGroup.Label className="sr-only">Themes</RadioGroup.Label>
                     <div className="lg:grid grid-cols-2 lg:gap-4">
-                        {options.map((option) => (
-                            <div>
+                        {options.map((option, index) => (
+                            <div key={index}>
                                 <Modal
                                     isOpen={EditConfigModal}
                                     onRequestClose={() => setEditConfigModal(false)}
