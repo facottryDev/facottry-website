@@ -1,11 +1,12 @@
 'use client'
-import { PiUserCircleFill } from 'react-icons/pi'
 import { userStore } from '@/lib/store'
 import { axios_auth } from "@/lib/axios"
-import Image from "next/image"
+import { IoTrashBin } from "react-icons/io5"
+import { useRouter } from "next/navigation"
 
 export default function AccountSettings() {
     const user = userStore(state => state.user)
+    const router = useRouter();
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -16,12 +17,12 @@ export default function AccountSettings() {
 
             let body = {};
 
-            if(data.name){
+            if (data.name) {
                 const isValidName = (name: string) => {
                     const nameRegex = /^[a-zA-Z\s]+$/;
                     return nameRegex.test(name);
                 };
-    
+
                 if (!isValidName(String(data.name))) {
                     throw new Error('Invalid name');
                 }
@@ -29,12 +30,12 @@ export default function AccountSettings() {
                 body = { ...body, name: data.name };
             }
 
-            if(data.mobile){
+            if (data.mobile) {
                 const isValidMobile = (mobile: string) => {
                     const mobileRegex = /^[0-9]{10}$/;
                     return mobileRegex.test(mobile);
                 };
-    
+
                 if (!isValidMobile(String(data.mobile))) {
                     throw new Error('Invalid mobile number');
                 }
@@ -42,7 +43,7 @@ export default function AccountSettings() {
                 body = { ...body, mobile: data.mobile };
             }
 
-            if(data.address){
+            if (data.address) {
                 body = { ...body, address: data.address };
             }
 
@@ -52,6 +53,17 @@ export default function AccountSettings() {
         } catch (error) {
             console.error(error)
             alert('Error updating user')
+        }
+    }
+
+    const deleteUser = async () => {
+        try {
+            await axios_auth.delete('/delete-user');
+            alert('User deleted successfully');
+            router.push('/auth/logout');
+        } catch (error) {
+            console.error(error);
+            alert('Error deleting user');
         }
     }
 
@@ -153,6 +165,19 @@ export default function AccountSettings() {
                     Save
                 </button>
             </div>
+
+            <button
+                type="button"
+                className="flex items-center mt-4 text-sm font-semibold leading-6 text-red-600 dark:text-red-400 hover:underline"
+                onClick={() => {
+                    if (window.confirm('Are you sure you want to delete your account?')) {
+                        deleteUser();
+                    }
+                }}
+            >
+                <IoTrashBin className="w-5 h-5 mr-2" />
+                Delete Account
+            </button>
         </form>
     )
 }

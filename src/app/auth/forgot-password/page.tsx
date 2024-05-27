@@ -1,6 +1,6 @@
 'use client'
 import Image from "next/image"
-import React from 'react'
+import { useState } from 'react'
 import logo_1_dark from '@/assets/logo_dark_1.svg'
 import logo_1 from '@/assets/logo_1.svg'
 import Link from "next/link"
@@ -8,10 +8,12 @@ import { useRouter } from 'next/navigation'
 import { axios_auth } from "@/lib/axios"
 
 const ForgotPassword = () => {
+    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true);
         const email = e.currentTarget.email.value;
 
         try {
@@ -20,23 +22,30 @@ const ForgotPassword = () => {
                     email,
                 });
 
-                if (result1.data === false) {
-                    console.log("Email not registered")
+                if (result1.data.registered === false) {
+                    setIsLoading(false);
+                    alert(result1.data.message)
                     router.push(`/auth/signup`);
                 } else {
                     const result2 = await axios_auth.post(`/send-otp`, {
                         email,
                     });
 
+                    setIsLoading(false);
+                    alert(result2.data.message);
+
                     if (result2.status === 200) router.push(`/auth/forgot-password/verify?email=${email}`
                     );
                 }
             } else {
-                console.log("Email is required");
+                alert("Email is required");
+                setIsLoading(false);
             }
 
         } catch (error: any) {
             console.log(error);
+            alert(error.response.data.message);
+            setIsLoading(false);
         }
     }
 
@@ -68,6 +77,18 @@ const ForgotPassword = () => {
                     </form>
                 </div>
             </div>
+
+            {/* Loader Icon */}
+            {isLoading && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center w-full h-screen bg-black bg-opacity-20">
+                    <div className="flex items-center justify-center  dark:bg-gray-800 p-8 w-72 h-72">
+                        <svg className="animate-spin h-14 w-14 text-primary-600 dark:text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                    </div>
+                </div>
+            )}
         </div>
 
     )

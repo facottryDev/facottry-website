@@ -2,7 +2,8 @@
 import { axios_auth, axios_admin } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { userStore, globalStore } from "@/lib/store";
+import { userStore, globalStore, activeFilterStore } from "@/lib/store";
+import Filter from "@/components/dashboard/Filter";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(true);
@@ -13,6 +14,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const setProjects = userStore(state => state.setProjects);
     const setActiveProject = userStore(state => state.setActiveProject);
     const setUser = userStore(state => state.setUser);
+    const [activeFilter, setActiveFilter] = activeFilterStore(state => [state.activeFilter, state.setActiveFilter]);
+    
 
     const sidebar = globalStore(state => state.sidebar);
     const setSidebar = globalStore(state => state.setSidebar);
@@ -29,30 +32,42 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     const company = result.data.company;
                     const projects = result.data.projects;
 
-                    setUser({ ...user.data})
+                    // set user, projects and company
+                    setUser({ ...user.data })
                     setProjects(projects);
                     setCompany(company);
 
+                    // if activeProject is null, set it to first project
                     if (activeProject === null) {
                         setActiveProject(projects[0]);
                     } else {
                         const project = projects.find((project: any) => project.projectID === activeProject.projectID);
 
-                        if(project) {
+                        if (project) {
                             setActiveProject(project);
                         } else {
                             setActiveProject(projects[0]);
                         }
                     }
 
+                    // if activeFilter is empty object, set it to default values
+                    if (Object.keys(activeFilter).length === 0) {
+                        const defaultFilter = projects[0].filters.reduce((acc: any, filter: any) => {
+                            acc[filter.name] = 'ALL';
+                            return acc;
+                        }, {});
+
+                        setActiveFilter(defaultFilter);
+                    }
+
                     setIsLoading(false);
                 } catch (error: any) {
                     console.log(error.response.data);
 
-                    if(error.response.data.code === "NO_PROJECT") {
+                    if (error.response.data.code === "NO_PROJECT") {
                         setCompany(error.response.data.company);
                     }
-                    
+
                     router.push('/onboarding');
                 }
 
@@ -71,9 +86,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         return (
             <main>
                 {children}
-                
+
                 {/* Button to hide or show sidebar */}
-                <button className="fixed bottom-4 left-4 p-2 m-2 bg-white rounded-full shadow-md hover:bg-primary700 hover:text-white transition-all" onClick={() => {
+                <button className={`fixed bottom-4 left-4 p-2 m-2 rounded-full shadow-md hover:bg-primary600 hover:text-white transition-all ${
+                    sidebar ? 'text-white bg-primary600' : 'bg-white'
+                }`} onClick={() => {
                     setSidebar(!sidebar);
                 }}>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

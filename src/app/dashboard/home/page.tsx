@@ -2,21 +2,22 @@
 import Sidebar from "@/components/dashboard/Sidebar"
 import ToggleSwitch from "@/components/global/ToggleTheme"
 import UserDropdown from "@/components/dashboard/UserDropdown"
-import RadioButton from "@/components/dashboard/ThemeRadioButton"
+import ConfigButton from "@/components/dashboard/ThemeRadioButton"
 import { useEffect, useState } from "react"
 import { axios_config } from "@/lib/axios"
-import { userStore, filterStore } from "@/lib/store";
+import { userStore, activeFilterStore } from "@/lib/store";
 import Filter from "@/components/dashboard/Filter"
 import Image from "next/image"
-import { fetchConfigs, fetchMapping } from "@/lib/fetch"
+import { fetchConfigs } from "@/lib/fetch"
 
 const Dashboard = () => {
   const [appConfigs, setAppConfigs] = useState<appConfig[]>();
   const [playerConfigs, setPlayerConfigs] = useState<playerConfig[]>();
-  const [filters] = filterStore(state => [state.filter]);
+  const [activeFilter, setActiveFilter] = activeFilterStore(state => [state.activeFilter, state.setActiveFilter]);
   const [selectedApp, setSelectedApp] = useState<appConfig>();
   const [selectedPlayer, setSelectedPlayer] = useState<playerConfig>();
   const [mapping, setMapping] = useState<mapping>();
+  const [company, setCompany] = userStore(state => [state.company, state.setCompany]);
 
   const activeProject = userStore(state => state.activeProject);
   const userRole = activeProject?.role;
@@ -42,25 +43,28 @@ const Dashboard = () => {
 
   // Fetching & updating Mapping
   const getMapping = async () => {
-    const res = await fetchMapping(activeProject?.projectID, filters, true);
+    if (!activeProject) return;
 
-    if (res.status >= 300) {
-      setMapping(undefined);
-      console.log(res.data);
-      return;
-    } else {
-      const mapping = {
-        appConfig: res.data.appConfig,
-        playerConfig: res.data.playerConfig
+    try {
+      const mapping = await axios_config.post('/get-mapping', {
+        projectID: activeProject?.projectID,
+        filter: activeFilter
+      });
+
+      if(mapping.data.code === "FOUND") {
+        setMapping(mapping.data.mappings);
+      } else {
+        setMapping(undefined);
       }
-
-      setMapping(mapping);
+    } catch (error: any) {
+      alert(error.response.data.message);
+      console.log(error);
     }
   }
 
   useEffect(() => {
     getMapping();
-  }, [filters, activeProject])
+  }, [activeFilter, activeProject])
 
   // Function to handle update of mapping
   const handleUpdateMapping = async () => {
@@ -71,9 +75,10 @@ const Dashboard = () => {
 
     const data = {
       projectID: activeProject?.projectID,
+      companyID: company?.companyID,
       appConfig: selectedApp,
       playerConfig: selectedPlayer,
-      filter: filters
+      filter: activeFilter
     }
 
     if (!data.projectID) return alert('No active project found!');
@@ -98,7 +103,7 @@ const Dashboard = () => {
     try {
       await axios_config.post('/delete-mapping', {
         projectID: activeProject?.projectID,
-        filter: filters
+        filter: activeFilter
       });
 
       alert('Mapping deleted successfully!')
@@ -194,7 +199,6 @@ const Dashboard = () => {
         <hr className="w-full mt-4" />
 
         <div className="flex flex-col w-full mt-8 items-center justify-center">
-          {/* Filters */}
           <Filter />
 
           {/* Active Mapping */}
@@ -207,8 +211,8 @@ const Dashboard = () => {
                 )}
               </div>
               {mapping && (
-                <div className="flex gap-8 p-2">
-                  <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full min-w-[300px] max-w-sm">
+                <div className="flex flex-col lg:flex-row gap-8 p-2">
+                  <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full  max-w-sm">
                     <p className="text-lg font-bold mb-2">App Config</p>
                     <div className="w-full">
                       <p className="font-semibold">{mapping?.appConfig?.name}</p>
@@ -218,7 +222,7 @@ const Dashboard = () => {
                     <Image src={mapping?.appConfig?.demo_url} alt="user" width={500} height={500} className="mt-2 rounded-xl" />
                   </div>
 
-                  <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full min-w-[300px] max-w-sm">
+                  <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full  max-w-sm">
                     <p className="text-lg font-bold mb-2">Player Config</p>
                     <div className="w-full">
                       <p className="font-semibold">{mapping?.playerConfig?.name}</p>
@@ -238,23 +242,23 @@ const Dashboard = () => {
             <div className="flex flex-col items-center">
               <hr className="w-full mb-8" />
               <h1 className="text-lg font-bold mb-8">Update Mapping</h1>
-              <div className="flex flex-col md:flex-row gap-6 justify-around">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 justify-around">
                 <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
                   <p className="font-bold text-lg">App Configs</p>
                   {appConfigs && (
-                    <RadioButton userRole={userRole} getConfigs={getConfigs} options={appConfigs} theme={selectedApp} onThemeChange={setSelectedApp} />
+                    <ConfigButton userRole={userRole} getConfigs={getConfigs} options={appConfigs} theme={selectedApp} onThemeChange={setSelectedApp} />
                   )}
                 </section>
 
                 <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
                   <p className="font-bold text-lg">Player Configs</p>
                   {playerConfigs && (
-                    <RadioButton userRole={userRole} getConfigs={getConfigs} options={playerConfigs} theme={selectedPlayer} onThemeChange={setSelectedPlayer} />
+                    <ConfigButton userRole={userRole} getConfigs={getConfigs} options={playerConfigs} theme={selectedPlayer} onThemeChange={setSelectedPlayer} />
                   )}
                 </section>
               </div>
 
-              <button className="px-4 py-2 mt-5 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={handleUpdateMapping}>Submit</button>
+              <button className="px-4 py-2 mt-5 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={handleUpdateMapping}>Update Mapping</button>
             </div>
           )}
 
@@ -263,8 +267,8 @@ const Dashboard = () => {
             <div className="flex flex-col items-center justify-center">
               <hr className="w-full m-8" />
               <h1 className="font-bold text-lg">Create New Configs</h1>
-              <div className="flex gap-10 mt-8">
-                <form className="flex flex-col bg-white p-10" onSubmit={handleCreateApp}>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-8">
+                <form className="flex flex-col flex-shrink-0 bg-white p-10" onSubmit={handleCreateApp}>
                   <h1 className="font-semibold">Create App Config</h1>
                   <label htmlFor="appConfigName" className="mt-4">Name *</label>
                   <input id="appConfigName" name="appConfigName" required type="text" className="w-full p-2 border rounded-md" />
@@ -280,7 +284,7 @@ const Dashboard = () => {
                   <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
                 </form>
 
-                <form className="flex flex-col bg-white p-10" onSubmit={handleCreatePlayer}>
+                <form className="flex flex-col flex-shrink-0 bg-white p-10" onSubmit={handleCreatePlayer}>
                   <h1 className="font-semibold">Create Player Config</h1>
                   <label htmlFor="playerConfigName" className="mt-4">Name *</label>
                   <input id="playerConfigName" name="playerConfigName" required type="text" className="w-full p-2 border rounded-md" />
@@ -289,7 +293,7 @@ const Dashboard = () => {
                   <input type="text" id="playerConfigDesc" name="playerConfigDesc" className="w-full p-2 border rounded-md" />
 
                   <label htmlFor="playerConfigParams" className="mt-2">Params (JSON)*</label>
-                  <textarea id="appConfigParams" name="playerConfigParams" required className="w-full p-2 border rounded-md" rows={4} defaultValue={
+                  <textarea id="playerConfigParams" name="playerConfigParams" required className="w-full p-2 border rounded-md" rows={4} defaultValue={
                     `{"key": "value"}`
                   }></textarea>
 

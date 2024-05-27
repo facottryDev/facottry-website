@@ -4,23 +4,32 @@ import { userStore } from '@/lib/store'
 import { axios_admin } from "@/lib/axios"
 
 export default function CompanyEmployeeSettings() {
-    const company = userStore(state => state.company);
-    const setCompany = userStore(state => state.setCompany);
-    const projects = userStore(state => state.projects);
-    const activeProject = userStore(state => state.activeProject);
+    const company = userStore((state) => state.company);
+    const setCompany = userStore((state) => state.setCompany);
+    const setProjects = userStore((state) => state.setProjects);
+    const setActiveProject = userStore((state) => state.setActiveProject);
 
     const leaveCompany = async () => {
         try {
-            await axios_admin.post("/company/leave")
-            userStore.setState({ company: null })
-        } catch (error) {
-            console.error(error)
+            await axios_admin.post("/company/leave");
+            setCompany(null);
+            setProjects([]);
+            setActiveProject(null);
+
+            window.location.reload();
+        } catch (error: any) {
+            alert(error.response.data.message);
+            console.log(error);
         }
     }
 
     const deactivateCompany = async () => {
         try {
             await axios_admin.delete("/company/deactivate")
+            setCompany(null);
+            setProjects([]);
+            setActiveProject(null);
+
             window.location.reload();
         } catch (error) {
             console.error(error)

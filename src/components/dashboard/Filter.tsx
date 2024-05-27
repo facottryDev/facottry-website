@@ -1,57 +1,58 @@
-import { filterStore } from "@/lib/store";
+import { activeFilterStore, userStore } from "@/lib/store";
 import React from 'react'
 
 type Props = {}
 
-const Filter = ({}: Props) => {
-    const [filters, setFilters] = filterStore(state => [state.filter, state.setFilter]);
+const Filter = ({ }: Props) => {
+    const [activeFilter, setActiveFilter] = activeFilterStore(state => [state.activeFilter, state.setActiveFilter]);
+    const activeProject = userStore(state => state.activeProject);
+    const allFilters = activeProject?.filters || [];
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const formData = new FormData(e.target as HTMLFormElement);
+        const newFilter: any = {};
+
+        allFilters.forEach((filter: Filter) => {
+            newFilter[filter.name] = formData.get(filter.name) as string;
+        });
+
+        setActiveFilter(newFilter);
+        alert('Filter applied');
+    }
 
     return (
-        <div className="flex justify-center rounded-lg mb-8 border p-4 w-full max-w-screen-lg">
-            {/* Country Dropdown */}
-            <select
-                className="p-2 border rounded-md mr-4"
-                value={filters.country}
-                onChange={(e) => setFilters({ ...filters, country: e.target.value })}
-            >
-                <option value="" className="font-semibold">Country</option>
-                <option value="IN">India</option>
-                <option value="US">USA</option>
-            </select>
+        <form onSubmit={handleSubmit} className="bg-white border flex flex-col items-center gap-5 border-gray-100 w-full rounded-lg p-10 mb-8 text-sm">
+            <div onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+                {allFilters
+                    .sort((a: Filter, b: Filter) => b.priority - a.priority)
+                    .map((filter: Filter, index: number) => (
+                        <div key={index} className="flex items-center">
+                            <label className="mr-2">{filter.name}</label>
+                            <select
+                                name={filter.name}
+                                id={filter.name}
+                                className="border rounded-lg px-2 py-1"
+                                defaultValue={activeFilter[filter.name]}
+                            >
+                                <option value="ALL">ALL</option>
+                                {filter.values.map((value: any, index: number) => (
+                                    <option key={index} value={value}>
+                                        {value}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    ))}
+            </div>
 
-            {/* Subscription Dropdown */}
-            <select
-                className="p-2 border rounded-md mr-4"
-                value={filters.subscription}
-                onChange={(e) => setFilters({ ...filters, subscription: e.target.value })}
+            <button
+                type="submit"
+                className="bg-primary text-white px-2 py-1 rounded-lg"
             >
-                <option value="" className="font-semibold">Subscription</option>
-                <option value="FREE">Free</option>
-                <option value="PAID">Paid</option>
-            </select>
-
-            {/* OS Dropdown */}
-            <select
-                className="p-2 border rounded-md mr-4"
-                value={filters.os}
-                onChange={(e) => setFilters({ ...filters, os: e.target.value })}
-            >
-                <option value="" className="font-semibold">OS</option>
-                <option value="LG">LG</option>
-                <option value="SAMSUNG">Samsung</option>
-            </select>
-
-            {/* OSver Dropdown */}
-            <select
-                className="p-2 border rounded-md mr-4"
-                value={filters.osver}
-                onChange={(e) => setFilters({ ...filters, osver: e.target.value })}
-            >
-                <option value="" className="font-semibold">OS Version</option>
-                <option value="1.0">1.0</option>
-                <option value="1.0">1.1</option>
-            </select>
-        </div>
+                Apply
+            </button>
+        </form>
     )
 }
 

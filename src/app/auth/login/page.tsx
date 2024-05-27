@@ -11,36 +11,38 @@ import { axios_auth } from "@/lib/axios"
 
 const LoginForm = () => {
     const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     useEffect(() => {
         const isAuth = async () => {
-          try {
-            await axios_auth.get('/');
-            router.push('/');
-          } catch (error: any) {
-            console.log(error);
-          }
+            try {
+                await axios_auth.get('/');
+                router.push('/');
+            } catch (error: any) {
+                console.log(error);
+            }
         }
-    
+
         isAuth();
-      }, [])
+    }, [])
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true);
 
         try {
-            const result = await axios_auth.post('/login', {
+            await axios_auth.post('/login', {
                 email: e.currentTarget.email.value,
                 password: e.currentTarget.password.value,
                 remember_me: true,
             });
+            setIsLoading(false);
 
-            console.log(result.data);
             router.push('/dashboard');
         } catch (error: any) {
-            console.log(error.response);
             alert(error.response.data);
+            setIsLoading(false);
         }
     }
 
@@ -96,6 +98,18 @@ const LoginForm = () => {
                     </form>
                 </div>
             </div>
+
+            {/* Loader Icon */}
+            {isLoading && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center w-full h-screen bg-black bg-opacity-20">
+                    <div className="flex items-center justify-center  dark:bg-gray-800 p-8 w-72 h-72">
+                        <svg className="animate-spin h-14 w-14 text-primary-600 dark:text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                    </div>
+                </div>
+            )}
         </div>
 
     )

@@ -2,9 +2,19 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type FilterStore = {
-  filter: Filter;
-  setFilter: (filter: Filter) => void;
+  activeFilter: Filter;
+  setActiveFilter: (item: Filter) => void;
 };
+
+export const activeFilterStore = create(
+  persist<FilterStore>(
+    (set) => ({
+      activeFilter: [],
+      setActiveFilter: (item) => set({ activeFilter: item }),
+    }),
+    { name: "activeFilter" }
+  )
+);
 
 type UserStore = {
   user: User | null;
@@ -21,21 +31,6 @@ type GlobalStore = {
   sidebar: boolean;
   setSidebar: (sidebar: boolean) => void;
 };
-
-export const filterStore = create(
-  persist<FilterStore>(
-    (set) => ({
-      filter: {
-        country: "",
-        subscription: "",
-        os: "",
-        osver: "",
-      },
-      setFilter: (filter) => set({ filter }),
-    }),
-    { name: "filterSelection" }
-  )
-);
 
 export const userStore = create(
   persist<UserStore>((set) => ({
