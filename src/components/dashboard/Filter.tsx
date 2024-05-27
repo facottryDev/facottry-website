@@ -8,28 +8,51 @@ const Filter = ({ }: Props) => {
     const activeProject = userStore(state => state.activeProject);
     const allFilters = activeProject?.filters || [];
 
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const formData = new FormData(e.target as HTMLFormElement);
+        const newFilter: any = {};
+
+        allFilters.forEach((filter: Filter) => {
+            newFilter[filter.name] = formData.get(filter.name) as string;
+        });
+
+        setActiveFilter(newFilter);
+        alert('Filter applied');
+    }
+
     return (
-        <div className="bg-white border border-gray-100 w-full  rounded-lg p-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 mb-8 2xl:grid-cols-4 gap-4 text-sm">
-            {allFilters.map((filter: Filter, index: number) => (
-                <div key={index} className="flex items-center">
-                    <label className="mr-2">{filter.name}</label>
-                    <select
-                        className="border rounded-lg px-2 py-1"
-                        value={activeFilter[filter.name]}
-                        onChange={(e) => {
-                            setActiveFilter({ ...activeFilter, [filter.name]: e.target.value });
-                        }}
-                    >
-                        <option value="ALL">ALL</option>
-                        {filter.values.map((value: any, index: number) => (
-                            <option key={index} value={value}>
-                                {value}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            ))}
-        </div>
+        <form onSubmit={handleSubmit} className="bg-white border flex flex-col items-center gap-5 border-gray-100 w-full rounded-lg p-10 mb-8 text-sm">
+            <div onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+                {allFilters
+                    .sort((a: Filter, b: Filter) => b.priority - a.priority)
+                    .map((filter: Filter, index: number) => (
+                        <div key={index} className="flex items-center">
+                            <label className="mr-2">{filter.name}</label>
+                            <select
+                                name={filter.name}
+                                id={filter.name}
+                                className="border rounded-lg px-2 py-1"
+                                defaultValue={activeFilter[filter.name]}
+                            >
+                                <option value="ALL">ALL</option>
+                                {filter.values.map((value: any, index: number) => (
+                                    <option key={index} value={value}>
+                                        {value}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    ))}
+            </div>
+
+            <button
+                type="submit"
+                className="bg-primary text-white px-2 py-1 rounded-lg"
+            >
+                Apply
+            </button>
+        </form>
     )
 }
 

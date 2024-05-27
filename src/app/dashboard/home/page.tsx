@@ -50,9 +50,14 @@ const Dashboard = () => {
         projectID: activeProject?.projectID,
         filter: activeFilter
       });
-      
-      setMapping(mapping.data.mappings);
-    } catch (error) {
+
+      if(mapping.data.code === "FOUND") {
+        setMapping(mapping.data.mappings);
+      } else {
+        setMapping(undefined);
+      }
+    } catch (error: any) {
+      alert(error.response.data.message);
       console.log(error);
     }
   }

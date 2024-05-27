@@ -45,10 +45,10 @@ export default function ConfigButton({ userRole, getConfigs, options, theme, onT
 
         try {
             JSON.parse(params);
-          } catch (error) {
+        } catch (error) {
             alert('Invalid JSON format for Params');
             return;
-          }
+        }
 
         try {
             await axios_config.post(`/update`, {
@@ -64,6 +64,43 @@ export default function ConfigButton({ userRole, getConfigs, options, theme, onT
         } catch (error: any) {
             console.log(error);
             alert(error.response.data.message);
+        }
+    }
+
+    const handleClone = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        const form = e.currentTarget.form;
+
+        if (form) {
+            const formData = new FormData(form);
+
+            const configID = formData.get('configID');
+            const name = formData.get('ConfigName');
+            const desc = formData.get('ConfigDesc');
+            const params = formData.get('ConfigParams') as string;
+
+            try {
+                JSON.parse(params);
+            } catch (error) {
+                alert('Invalid JSON format for Params');
+                return;
+            }
+
+            try {
+                await axios_config.post(`/clone`, {
+                    configID,
+                    name,
+                    desc,
+                    params: JSON.parse(params)
+                });
+                alert("Config cloned successfully");
+                fetchConfigs(activeProjectID);
+                getConfigs();
+                setEditConfigModal(false);
+            } catch (error: any) {
+                console.log(error);
+                alert(error.response.data.message);
+            }
         }
     }
 
@@ -99,7 +136,7 @@ export default function ConfigButton({ userRole, getConfigs, options, theme, onT
                                     <div className="flex flex-col items-center justify-center bg-white">
                                         <h1 className="font-bold text-lg">Edit Config</h1>
 
-                                        <form className="flex flex-col w-[50vw] max-w-sm bg-white " onSubmit={handleEdit}>
+                                        <form className="flex flex-col w-[50vw] max-w-sm bg-white" onSubmit={handleEdit}>
                                             <input type="hidden" name="configID" value={option.configID} />
 
                                             <label htmlFor="ConfigName" className="mt-4">Name *</label>
@@ -113,7 +150,10 @@ export default function ConfigButton({ userRole, getConfigs, options, theme, onT
                                                 JSON.stringify(option.params, null, 2)
                                             } onKeyDown={(e) => e.stopPropagation()} />
 
-                                            <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Save Changes</button>
+                                            <button type="submit" className="mt-4 px-4 py-2 text-white bg-primary rounded-md hover:bg-primary600"
+                                            >Save</button>
+
+                                            <button type="button" className="w-full mt-4 px-4 py-2 text-white bg-primary rounded-md hover:bg-primary00" onClick={handleClone}>Save As New Configs</button>
                                         </form>
 
                                         <button className="mt-4 px-4 text-red-500 hover:underline font-semibold" onClick={
