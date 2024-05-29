@@ -25,12 +25,12 @@ const Filter = ({ }: Props) => {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white border flex flex-col items-center gap-5 border-gray-100 w-full rounded-lg p-10 mb-8 text-sm">
-            <div onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+        <form onSubmit={handleSubmit} className="bg-white border flex flex-col items-center gap-5 border-gray-100 w-full rounded-lg p-6 mb-4 text-sm">
+            <div onSubmit={handleSubmit} className="flex gap-4 justify-between">
                 {Object.keys(allFilters).map((key, index) => {
                     return (
                         <div key={index} className="flex items-center">
-                            <label className="mr-2">{key}</label>
+                            <label className="mr-2 font-medium">{key}</label>
                             <select
                                 name={key}
                                 id={key}

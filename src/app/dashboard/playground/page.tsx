@@ -12,7 +12,7 @@ type Props = {}
 
 const Playground = (props: Props) => {
     const [activeFilter, setActiveFilter] = activeFilterStore(state => [state.activeFilter, state.setActiveFilter]);
-    const [mapping, setMapping] = useState<mapping>();
+    const [activeMapping, setActiveMapping] = useState<any>();
 
     const activeProject = userStore(state => state.activeProject);
 
@@ -20,12 +20,12 @@ const Playground = (props: Props) => {
         if (!activeProject) return;
 
         try {
-            const mapping = await axios_config.post('/get-mapping-scale', {
+            const mapping = await axios_config.post('/mapping/scale', {
                 projectID: activeProject?.projectID,
                 filter: activeFilter
             });
 
-            setMapping(mapping.data.mappings);
+            setActiveMapping(mapping.data.mappings);
         } catch (error) {
             console.log(error);
         }
@@ -63,7 +63,7 @@ const Playground = (props: Props) => {
 
                 {/* JSON viewer */}
                 <div>
-                    <JSONTree data={mapping} />
+                    <JSONTree data={activeMapping} />
                 </div>
             </div>
         </div>

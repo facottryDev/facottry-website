@@ -183,7 +183,7 @@ export default function ProjectOwnerSettings() {
     }
 
     return (
-        <div className="p-4 bg-bggray rounded-lg p-8 dark:bg-darkblue">
+        <div className="bg-bggray rounded-lg p-8 dark:bg-darkblue">
             <nav className="flex justify-between">
                 <div className="flex items-center mr-10 space-x-4">
                     <h1 className="text-2xl font-bold">Manage Project</h1>
@@ -307,17 +307,21 @@ export default function ProjectOwnerSettings() {
                     </label>
 
                     <div className="border bg-white rounded-lg p-4 items-center mt-2 gap-2 justify-between text-sm ">
-                        {activeProject?.filters && activeProject.filters.length > 0 ? (
+                        {Object.keys(activeProject?.filters).length > 0 ? (
                             <div className="flex flex-col mt-2 gap-2 ">
-                                {activeProject?.filters
-                                    .map((filter: Filter, index: number) => (
+                                {Object.keys(activeProject?.filters)
+                                    .map((key, index) => (
                                         <div key={index} className="flex justify-between">
-                                            <div key={index} className="flex gap-2">
-                                                <h3 className="font-semibold">{index + 1}. {filter.name}:
+                                            <div key={index} className="flex items-center gap-2">
+                                                <h3 className="font-semibold">{index + 1}. {key}:
                                                 </h3>
-                                                <div className="flex gap-1">
-                                                    {filter.values.map((value: string, i: number) => (
-                                                        <p className="border cursor-pointer px-1 rounded-md" key={i}>{value}</p>
+                                                <div className="flex gap-2">
+                                                    {activeProject?.filters[key].values.map((value: string, i: number) => (
+                                                        value === activeProject?.filters[key].default ? (
+                                                            <span key={i} className="px-2 py-1 text-sm text-white bg-primary rounded-md">{value}</span>
+                                                        ) : (
+                                                            <span key={i} className="px-2 py-1 text-sm text-gray-900 bg-gray-100 rounded-md">{value}</span>
+                                                        )
                                                     ))}
                                                 </div>
                                             </div>
@@ -327,7 +331,7 @@ export default function ProjectOwnerSettings() {
                                                     type="button"
                                                     className="flex items-center text-sm font-semibold leading-6 text-primary dark:text-primary400 hover:underline"
                                                     onClick={
-                                                        () => setEditFilterModal(filter.name)
+                                                        () => setEditFilterModal(key)
                                                     }
                                                 >
                                                     <IoPencilSharp className="w-5 h-5 mr-2" />
@@ -335,7 +339,7 @@ export default function ProjectOwnerSettings() {
                                                 </button>
 
                                                 <Modal
-                                                    isOpen={EditFilterModal === filter.name}
+                                                    isOpen={EditFilterModal === key}
                                                     onRequestClose={() => setEditFilterModal('')}
                                                     contentLabel="Update Filter Modal"
                                                     style={
@@ -360,14 +364,16 @@ export default function ProjectOwnerSettings() {
 
                                                         <form className="flex flex-col w-[50vw] max-w-sm bg-white " onSubmit={handleUpdateFilters}>
                                                             <label htmlFor="filterName" className="mt-4">Filter Name</label>
-                                                            <input id="filterName" readOnly value={filter.name} name="filterName" type="text" className="w-full p-2 mt-2 border rounded-md bg-gray-100" required onKeyDown={(e) => e.stopPropagation()} />
+                                                            <input id="filterName" readOnly value={key} name="filterName" type="text" className="w-full p-2 mt-2 border rounded-md bg-gray-100" required onKeyDown={(e) => e.stopPropagation()} />
 
-                                                            <label htmlFor="filterPriority" className="mt-4">Priority (Higher value = More Priority)</label>
-                                                            <input id="filterPriority" defaultValue={filter.priority} name="filterPriority" type="number" className="w-full p-2 mt-2 border rounded-md" onKeyDown={(e) => e.stopPropagation()} />
+                                                            <label htmlFor="filterDefault" className="mt-4">Default Value</label>
+                                                            <input id="filterDefault" name="filterDefault" type="text"
+                                                                defaultValue={activeProject?.filters[key].default}
+                                                                className="w-full p-2 mt-2 border rounded-md" required onKeyDown={(e) => e.stopPropagation()} />
 
                                                             <label htmlFor="filterValues" className="mt-4">Values (Comma Separated)</label>
                                                             <textarea id="filterValues" name="filterValues" defaultValue={
-                                                                filter.values.join(", ")
+                                                                activeProject?.filters[key].values.join(", ")
                                                             } className="w-full mt-2 p-2 border rounded-md" required onKeyDown={(e) => e.stopPropagation()} />
 
                                                             <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Save Changes</button>
@@ -380,7 +386,7 @@ export default function ProjectOwnerSettings() {
                                                     className="flex items-center text-sm font-semibold leading-6 text-red-600 dark:text-red-400 hover:underline"
                                                     onClick={() => {
                                                         if (window.confirm('Are you sure?')) {
-                                                            handleDeleteFilters(filter.name);
+                                                            handleDeleteFilters(key);
                                                         }
                                                     }}
 

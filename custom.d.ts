@@ -23,11 +23,6 @@ type playerConfig = {
   demo_url: string;
 };
 
-type mapping = {
-  appConfig: any;
-  playerConfig: any;
-};
-
 type User = {
   email: string;
   name: string;

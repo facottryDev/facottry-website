@@ -16,7 +16,8 @@ const Dashboard = () => {
   const [activeFilter, setActiveFilter] = activeFilterStore(state => [state.activeFilter, state.setActiveFilter]);
   const [selectedApp, setSelectedApp] = useState<appConfig>();
   const [selectedPlayer, setSelectedPlayer] = useState<playerConfig>();
-  const [mapping, setMapping] = useState<mapping>();
+  const [activeMapping, setActiveMapping] = useState<any>();
+  const [allMappings, setAllMappings] = useState<any>();
   const [company, setCompany] = userStore(state => [state.company, state.setCompany]);
 
   const activeProject = userStore(state => state.activeProject);
@@ -41,20 +42,38 @@ const Dashboard = () => {
     getConfigs();
   }, [activeProject])
 
-  // Fetching & updating Mapping
-  const getMapping = async () => {
+  // const getActiveMapping = async () => {
+  //   if (!activeProject) return;
+
+  //   try {
+  //     const mapping = await axios_config.post('/mapping/active', {
+  //       projectID: activeProject?.projectID,
+  //       filter: activeFilter
+  //     });
+
+  //     if (mapping.data.code === "FOUND") {
+  //       setActiveMapping(mapping.data.mappings);
+  //     } else {
+  //       setActiveMapping(undefined);
+  //     }
+  //   } catch (error: any) {
+  //     alert(error.response.data.message);
+  //     console.log(error);
+  //   }
+  // }
+
+  const getAllMappings = async () => {
     if (!activeProject) return;
 
     try {
-      const mapping = await axios_config.post('/get-mapping', {
-        projectID: activeProject?.projectID,
-        filter: activeFilter
+      const mapping = await axios_config.post('/mapping/all', {
+        projectID: activeProject?.projectID
       });
 
-      if(mapping.data.code === "FOUND") {
-        setMapping(mapping.data.mappings);
+      if (mapping.data.code === "FOUND") {
+        setAllMappings(mapping.data.mappings);
       } else {
-        setMapping(undefined);
+        setAllMappings(undefined);
       }
     } catch (error: any) {
       alert(error.response.data.message);
@@ -63,7 +82,7 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
-    getMapping();
+    getAllMappings();
   }, [activeFilter, activeProject])
 
   // Function to handle update of mapping
@@ -85,7 +104,7 @@ const Dashboard = () => {
 
     try {
       await axios_config.post('/create-mapping', data);
-      getMapping();
+      getAllMappings();
       alert('Mapping created successfully!')
     } catch (error) {
       console.error(error)
@@ -107,7 +126,7 @@ const Dashboard = () => {
       });
 
       alert('Mapping deleted successfully!')
-      getMapping();
+      getAllMappings();
     } catch (error) {
       console.error(error)
       alert('Error in deleting mapping!')
@@ -201,39 +220,60 @@ const Dashboard = () => {
         <div className="flex flex-col w-full mt-8 items-center justify-center">
           <Filter />
 
-          {/* Active Mapping */}
-          {activeProject && (
+          {/* {activeProject && (
             <div className="mb-8 p-4 bg-white flex flex-col justify-center items-center border rounded-md">
               <div className="flex gap-10 items-center w-full justify-between px-4 py-2">
                 <h1 className="text-lg font-bold">Active Mapping</h1>
-                {mapping && userRole && (userRole === 'owner' || userRole === 'editor') && (
+                {activeMapping && userRole && (userRole === 'owner' || userRole === 'editor') && (
                   <button className="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600" onClick={handleMappingDelete}>Delete</button>
                 )}
               </div>
-              {mapping && (
+              {activeMapping && (
                 <div className="flex flex-col lg:flex-row gap-8 p-2">
                   <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full  max-w-sm">
                     <p className="text-lg font-bold mb-2">App Config</p>
                     <div className="w-full">
-                      <p className="font-semibold">{mapping?.appConfig?.name}</p>
-                      <p>{mapping?.appConfig?.desc}</p>
-                      <p>{JSON.stringify(mapping?.appConfig?.params, null, 1)}</p>
+                      <p className="font-semibold">{activeMapping?.appConfig?.name}</p>
+                      <p>{activeMapping?.appConfig?.desc}</p>
+                      <p>{JSON.stringify(activeMapping?.appConfig?.params, null, 1)}</p>
                     </div>
-                    <Image src={mapping?.appConfig?.demo_url} alt="user" width={500} height={500} className="mt-2 rounded-xl" />
+                    <Image src={activeMapping?.appConfig?.demo_url} alt="user" width={500} height={500} className="mt-2 rounded-xl" />
                   </div>
 
                   <div className="flex flex-col items-center justify-center bg-primary600 text-white p-4 rounded-md w-full  max-w-sm">
                     <p className="text-lg font-bold mb-2">Player Config</p>
                     <div className="w-full">
-                      <p className="font-semibold">{mapping?.playerConfig?.name}</p>
-                      <p>{mapping?.playerConfig?.desc}</p>
-                      <p>{JSON.stringify(mapping?.playerConfig?.params, null, 1)}</p>
+                      <p className="font-semibold">{activeMapping?.playerConfig?.name}</p>
+                      <p>{activeMapping?.playerConfig?.desc}</p>
+                      <p>{JSON.stringify(activeMapping?.playerConfig?.params, null, 1)}</p>
                     </div>
-                    <Image src={mapping?.playerConfig?.demo_url} alt="user" width={500} height={500} className="mt-2 rounded-xl" />
+                    <Image src={activeMapping?.playerConfig?.demo_url} alt="user" width={500} height={500} className="mt-2 rounded-xl" />
                   </div>
                 </div>
               )}
-              {!mapping && <p className="mt-2">No active mapping found</p>}
+              {!activeMapping && <p className="mt-2">No active mapping found</p>}
+            </div>
+          )} */}
+          <div className="flex justify-center gap-10 items-center w-full px-4 py-2">
+            <h1 className="text-lg font-bold">All Mappings</h1>
+          </div>
+          {allMappings && (
+            <div className="mb-8 p-4 bg-white flex flex-col justify-center items-center border rounded-md overflow-scroll w-full">
+
+              <div className="flex flex-col">
+                {allMappings.map((mapping: any, index: number) => (
+                  <div key={index} className="flex gap-4">
+                    {index + 1}. {Object.keys(mapping.filter).map((key: string, index: number) => (
+                      <p key={index} className="">{key}: {mapping.filter[key]}</p>
+                    ))}
+
+                    <div className="flex gap-4 flex-shrink-0">
+                      <p className="font-semibold">{mapping.appConfig.name}</p>
+                      <p className="font-semibold">{mapping.playerConfig.name}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
