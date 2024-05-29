@@ -4,6 +4,8 @@ import { userStore } from '@/lib/store'
 import { axios_admin } from "@/lib/axios"
 import Modal from 'react-modal';
 import { useState } from "react";
+import ToggleSwitch from "@/components/global/ToggleTheme";
+import UserDropdown from "@/components/dashboard/UserDropdown";
 
 export default function ProjectOwnerSettings() {
     const company = userStore(state => state.company);
@@ -26,8 +28,14 @@ export default function ProjectOwnerSettings() {
             const filter = {
                 name: String(data.filterName).toUpperCase(),
                 values: String(data.filterValues).toUpperCase().split(',').map((value: string) => value.trim()),
-                priority: Number(data.filterPriority),
+                default: String(data.filterDefault).toUpperCase(),
             };
+
+            // Default value must be present in values
+            if (!filter.values.includes(filter.default)) {
+                alert("Default value must be present in values");
+                return;
+            }
 
             const result = await axios_admin.post("/filter/add", { filter, projectID: activeProject?.projectID });
             alert(result.data.message);
@@ -175,11 +183,21 @@ export default function ProjectOwnerSettings() {
     }
 
     return (
-        <div className="p-4 bg-bggray rounded-lg dark:bg-darkblue">
-            <div className="pb-6 dark:border-gray-500">
-                <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-slate-200">Project Settings</h2>
+        <div className="p-4 bg-bggray rounded-lg p-8 dark:bg-darkblue">
+            <nav className="flex justify-between">
+                <div className="flex items-center mr-10 space-x-4">
+                    <h1 className="text-2xl font-bold">Manage Project</h1>
+                </div>
 
-                <hr className="my-4 border-gray-900/10 dark:border-gray-500" />
+                <div className="flex items-center gap-6">
+                    <ToggleSwitch />
+                    <UserDropdown />
+                </div>
+            </nav>
+
+            <hr className="my-4 border-gray-900/10 dark:border-gray-500" />
+
+            <div className="pb-6 dark:border-gray-500">
 
                 <div className="flex flex-col">
                     <label htmlFor="companyname" className="block text-sm font-bold leading-6 text-gray-900 dark:text-slate-200">
@@ -276,8 +294,8 @@ export default function ProjectOwnerSettings() {
                                     <label htmlFor="filterName" className="mt-4">Filter Name</label>
                                     <input id="filterName" name="filterName" type="text" className="w-full p-2 mt-2 border rounded-md" required onKeyDown={(e) => e.stopPropagation()} />
 
-                                    <label htmlFor="filterPriority" className="mt-4">Priority (Higher value = More Priority)</label>
-                                    <input id="filterPriority" name="filterPriority" type="number" className="w-full p-2 mt-2 border rounded-md" defaultValue={50} required onKeyDown={(e) => e.stopPropagation()} />
+                                    <label htmlFor="filterDefault" className="mt-4">Default Value</label>
+                                    <input id="filterDefault" name="filterDefault" type="text" className="w-full p-2 mt-2 border rounded-md" required onKeyDown={(e) => e.stopPropagation()} />
 
                                     <label htmlFor="filterValues" className="mt-4">Values (Comma Separated)</label>
                                     <textarea id="filterValues" name="filterValues" className="w-full mt-2 p-2 border rounded-md" required onKeyDown={(e) => e.stopPropagation()} />
@@ -292,11 +310,10 @@ export default function ProjectOwnerSettings() {
                         {activeProject?.filters && activeProject.filters.length > 0 ? (
                             <div className="flex flex-col mt-2 gap-2 ">
                                 {activeProject?.filters
-                                    .sort((a: Filter, b: Filter) => b.priority - a.priority)
                                     .map((filter: Filter, index: number) => (
                                         <div key={index} className="flex justify-between">
                                             <div key={index} className="flex gap-2">
-                                                <h3 className="font-semibold">{index+1}. {filter.name} ({filter.priority}):
+                                                <h3 className="font-semibold">{index + 1}. {filter.name}:
                                                 </h3>
                                                 <div className="flex gap-1">
                                                     {filter.values.map((value: string, i: number) => (
