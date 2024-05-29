@@ -20,7 +20,7 @@ const Playground = (props: Props) => {
         if (!activeProject) return;
 
         try {
-            const mapping = await axios_config.post('/get-mapping', {
+            const mapping = await axios_config.post('/get-mapping-scale', {
                 projectID: activeProject?.projectID,
                 filter: activeFilter
             });

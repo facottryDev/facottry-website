@@ -175,7 +175,7 @@ export default function ProjectOwnerSettings() {
     }
 
     return (
-        <div className="p-4 bg-white rounded-lg dark:bg-darkblue">
+        <div className="p-4 bg-bggray rounded-lg dark:bg-darkblue">
             <div className="pb-6 dark:border-gray-500">
                 <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-slate-200">Project Settings</h2>
 
@@ -186,7 +186,7 @@ export default function ProjectOwnerSettings() {
                         Project Details
                     </label>
 
-                    <form className="p-5 border rounded-lg mt-2" onSubmit={updateProjectDetails}>
+                    <form className="p-5 bg-white border rounded-lg mt-2" onSubmit={updateProjectDetails}>
                         <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                             <div className="sm:col-span-3">
                                 <label htmlFor="projectID" className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
@@ -269,7 +269,7 @@ export default function ProjectOwnerSettings() {
                                 }
                             }
                         >
-                            <div className="flex flex-col items-center justify-center bg-white">
+                            <div className="flex  flex-col items-center justify-center bg-white">
                                 <h1 className="font-bold text-lg">Add New Filter</h1>
 
                                 <form className="flex flex-col w-[50vw] max-w-sm bg-white " onSubmit={handleAddFilters}>
@@ -288,9 +288,9 @@ export default function ProjectOwnerSettings() {
                         </Modal>
                     </label>
 
-                    <div className="border rounded-lg p-4 items-center mt-2 gap-2 justify-between text-sm ">
+                    <div className="border bg-white rounded-lg p-4 items-center mt-2 gap-2 justify-between text-sm ">
                         {activeProject?.filters && activeProject.filters.length > 0 ? (
-                            <div className="flex flex-col border rounded-lg p-4 mt-2 gap-2 ">
+                            <div className="flex flex-col mt-2 gap-2 ">
                                 {activeProject?.filters
                                     .sort((a: Filter, b: Filter) => b.priority - a.priority)
                                     .map((filter: Filter, index: number) => (
@@ -446,9 +446,9 @@ export default function ProjectOwnerSettings() {
                     </div>
 
                     {/* Modify User Box */}
-                    <div className="border rounded-lg p-4 items-center mt-2 gap-2 justify-between max-h-[400px] overflow-y-scroll">
+                    <div className="border bg-white rounded-lg p-4 items-center mt-2 gap-2 justify-between max-h-[400px] overflow-y-scroll">
                         {activeProject?.owners.map((item, index) => (
-                            <div key={index} className="flex justify-between">
+                            <div key={index} className="flex justify-between items-center">
                                 <h2 className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
                                     {index + 1}. {item}
                                 </h2>
@@ -457,7 +457,7 @@ export default function ProjectOwnerSettings() {
                                     <select
                                         id={item}
                                         name={item}
-                                        className="w-full bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                                        className="p-2 border bg-bggray w-full rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                                         defaultValue={"owner"}
                                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                             if (window.confirm('Are you sure?')) {
