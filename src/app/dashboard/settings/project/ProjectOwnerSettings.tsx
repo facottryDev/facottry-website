@@ -56,7 +56,7 @@ export default function ProjectOwnerSettings() {
             const filter = {
                 name: String(data.filterName).toUpperCase(),
                 values: String(data.filterValues).toUpperCase().split(',').map((value: string) => value.trim()),
-                priority: Number(data.filterPriority),
+                default: String(data.filterDefault).toUpperCase(),
             };
 
             const result = await axios_admin.post("/filter/update", { filter, projectID: activeProject?.projectID });

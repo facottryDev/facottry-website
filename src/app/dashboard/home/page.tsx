@@ -7,18 +7,20 @@ import { useEffect, useState } from "react"
 import { axios_config } from "@/lib/axios"
 import { userStore, activeFilterStore } from "@/lib/store";
 import Filter from "@/components/dashboard/Filter"
-import Image from "next/image"
 import { fetchConfigs } from "@/lib/fetch"
+import { FiPlusCircle } from "react-icons/fi"
+import Modal from 'react-modal';
+import AllMappings from "@/components/dashboard/AllMappings"
 
 const Dashboard = () => {
   const [appConfigs, setAppConfigs] = useState<appConfig[]>();
   const [playerConfigs, setPlayerConfigs] = useState<playerConfig[]>();
-  const [activeFilter, setActiveFilter] = activeFilterStore(state => [state.activeFilter, state.setActiveFilter]);
+  const [activeFilter] = activeFilterStore(state => [state.activeFilter]);
   const [selectedApp, setSelectedApp] = useState<appConfig>();
   const [selectedPlayer, setSelectedPlayer] = useState<playerConfig>();
-  const [activeMapping, setActiveMapping] = useState<any>();
   const [allMappings, setAllMappings] = useState<any>();
-  const [company, setCompany] = userStore(state => [state.company, state.setCompany]);
+  const [company] = userStore(state => [state.company]);
+  const [EditConfigModal, setEditConfigModal] = useState('');
 
   const activeProject = userStore(state => state.activeProject);
   const userRole = activeProject?.role;
@@ -158,9 +160,9 @@ const Dashboard = () => {
       await axios_config.post('/add-app-config', data);
       getConfigs();
       alert('App Config created successfully!')
+      setEditConfigModal('');
     } catch (error: any) {
-      console.error(error.response)
-      alert("Error in creating App Config")
+      alert(error.response.data.message)
     }
   }
 
@@ -189,9 +191,10 @@ const Dashboard = () => {
       await axios_config.post('/add-player-config', data);
       getConfigs();
       alert('Player Config created successfully!')
+      setEditConfigModal('');
     } catch (error: any) {
-      console.error(error.response)
-      alert("Error in creating Player Config")
+      console.log(error.response)
+      alert(error.response.data.message)
     }
   }
 
@@ -254,93 +257,133 @@ const Dashboard = () => {
               {!activeMapping && <p className="mt-2">No active mapping found</p>}
             </div>
           )} */}
-          <div className="flex justify-center gap-10 items-center w-full px-4 py-2">
-            <h1 className="text-lg font-bold">All Mappings</h1>
+          
+          {/* All Mappings */}
+          <h1 className="text-lg font-bold my-4">All Mappings</h1>
+          <div className="w-full">
+            <AllMappings allMappings={allMappings} />
           </div>
-          {allMappings && (
-            <div className="mb-8 p-4 bg-white flex flex-col justify-center items-center border rounded-md overflow-scroll w-full">
 
-              <div className="flex flex-col">
-                {allMappings.map((mapping: any, index: number) => (
-                  <div key={index} className="flex gap-4">
-                    {index + 1}. {Object.keys(mapping.filter).map((key: string, index: number) => (
-                      <p key={index} className="">{key}: {mapping.filter[key]}</p>
-                    ))}
-
-                    <div className="flex gap-4 flex-shrink-0">
-                      <p className="font-semibold">{mapping.appConfig.name}</p>
-                      <p className="font-semibold">{mapping.playerConfig.name}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Update Configs */}
+          {/* Manage Configs */}
           {userRole && (userRole === 'owner' || userRole === 'editor') && (
             <div className="flex flex-col items-center">
               <hr className="w-full mb-8" />
-              <h1 className="text-lg font-bold mb-8">Update Mapping</h1>
+              <h1 className="text-lg font-bold mb-8">Manage Configs</h1>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 justify-around">
                 <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
-                  <p className="font-bold text-lg">App Configs</p>
+                  <div className="flex items-center justify-between w-full px-3">
+                    <p className="font-bold text-lg">App Configs</p>
+                    <button className="text-primary700" onClick={
+                      () => setEditConfigModal('ac')
+                    }>
+                      <FiPlusCircle fontSize={20} />
+                    </button>
+                  </div>
                   {appConfigs && (
                     <ConfigButton userRole={userRole} getConfigs={getConfigs} options={appConfigs} theme={selectedApp} onThemeChange={setSelectedApp} />
                   )}
+
+                  <Modal
+                    isOpen={EditConfigModal === 'ac'}
+                    onRequestClose={() => setEditConfigModal('')}
+                    contentLabel="Add App Config Modal"
+                    style={
+                      {
+                        overlay: {
+                          backgroundColor: 'rgba(0, 0, 0, 0.75)'
+                        },
+                        content: {
+                          width: 'max-content',
+                          height: 'max-content',
+                          maxHeight: '80%',
+                          margin: 'auto',
+                          padding: '2rem',
+                          borderRadius: '10px',
+                          backgroundColor: 'white'
+                        }
+                      }
+                    }
+                  >
+                    <div className="flex  flex-col items-center justify-center bg-white w-full">
+                      <h1 className="font-bold text-lg">Create App Config</h1>
+
+                      <form onSubmit={handleCreateApp} className="flex flex-col w-[50vw] max-w-sm bg-white">
+                        <label htmlFor="appConfigName" className="mt-4">Name *</label>
+                        <input id="appConfigName" name="appConfigName" required type="text" className="w-full p-2 border rounded-md" />
+
+                        <label htmlFor="appConfigDesc" className="mt-2">Description</label>
+                        <input type="text" id="appConfigDesc" name="appConfigDesc" className="w-full p-2 border rounded-md" />
+
+                        <label htmlFor="appConfigParams" className="mt-2">Params (JSON)*</label>
+                        <textarea id="appConfigParams" name="appConfigParams" required className="w-full p-2 border rounded-md" rows={8} defaultValue={
+                          `{"key": "value"}`
+                        }></textarea>
+
+                        <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
+                      </form>
+                    </div>
+                  </Modal>
                 </section>
 
                 <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
-                  <p className="font-bold text-lg">Player Configs</p>
+                  <div className="flex items-center justify-between w-full px-3">
+                    <p className="font-bold text-lg">Player Configs</p>
+                    <button onClick={
+                      () => setEditConfigModal('pc')
+                    } className="text-primary700">
+                      <FiPlusCircle fontSize={20} />
+                    </button>
+                  </div>
                   {playerConfigs && (
                     <ConfigButton userRole={userRole} getConfigs={getConfigs} options={playerConfigs} theme={selectedPlayer} onThemeChange={setSelectedPlayer} />
                   )}
+
+                  <Modal
+                    isOpen={EditConfigModal === 'pc'}
+                    onRequestClose={() => setEditConfigModal('')}
+                    contentLabel="Add Player Config Modal"
+                    style={
+                      {
+                        overlay: {
+                          backgroundColor: 'rgba(0, 0, 0, 0.75)'
+                        },
+                        content: {
+                          width: 'max-content',
+                          height: 'max-content',
+                          maxHeight: '80%',
+                          margin: 'auto',
+                          padding: '2rem',
+                          borderRadius: '10px',
+                          backgroundColor: 'white'
+                        }
+                      }
+                    }
+                  >
+                    <div className="flex  flex-col items-center justify-center bg-white">
+                      <h1 className="font-bold text-lg">Create Player Config</h1>
+
+                      <form onSubmit={handleCreatePlayer} className="flex flex-col w-[50vw] max-w-sm bg-white">
+                        <label htmlFor="playerConfigName" className="mt-4">Name *</label>
+                        <input id="playerConfigName" name="playerConfigName" required type="text" className="w-full p-2 border rounded-md" />
+
+                        <label htmlFor="playerConfigDesc" className="mt-2">Description</label>
+                        <input type="text" id="playerConfigDesc" name="playerConfigDesc" className="w-full p-2 border rounded-md" />
+
+                        <label htmlFor="playerConfigParams" className="mt-2">Params (JSON)*</label>
+                        <textarea id="playerConfigParams" name="playerConfigParams" required className="w-full p-2 border rounded-md" rows={8} defaultValue={
+                          `{"key": "value"}`
+                        }></textarea>
+
+                        <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
+                      </form>
+                    </div>
+                  </Modal>
                 </section>
               </div>
 
-              <button className="px-4 py-2 mt-5 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={handleUpdateMapping}>Update Mapping</button>
+              <button className="px-4 py-2 mt-8 text-white bg-primary rounded-md hover:bg-primary600" onClick={handleUpdateMapping}>Create Mapping</button>
             </div>
           )}
-
-          {/* Add New Config */}
-          {userRole && (userRole === 'owner' || userRole === 'editor') && (
-            <div className="flex flex-col items-center justify-center">
-              <hr className="w-full m-8" />
-              <h1 className="font-bold text-lg">Create New Configs</h1>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-8">
-                <form className="flex flex-col flex-shrink-0 bg-white p-10" onSubmit={handleCreateApp}>
-                  <h1 className="font-semibold">Create App Config</h1>
-                  <label htmlFor="appConfigName" className="mt-4">Name *</label>
-                  <input id="appConfigName" name="appConfigName" required type="text" className="w-full p-2 border rounded-md" />
-
-                  <label htmlFor="appConfigDesc" className="mt-2">Description</label>
-                  <input type="text" id="appConfigDesc" name="appConfigDesc" className="w-full p-2 border rounded-md" />
-
-                  <label htmlFor="appConfigParams" className="mt-2">Params (JSON)*</label>
-                  <textarea id="appConfigParams" name="appConfigParams" required className="w-full p-2 border rounded-md" rows={4} defaultValue={
-                    `{"key": "value"}`
-                  }></textarea>
-
-                  <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
-                </form>
-
-                <form className="flex flex-col flex-shrink-0 bg-white p-10" onSubmit={handleCreatePlayer}>
-                  <h1 className="font-semibold">Create Player Config</h1>
-                  <label htmlFor="playerConfigName" className="mt-4">Name *</label>
-                  <input id="playerConfigName" name="playerConfigName" required type="text" className="w-full p-2 border rounded-md" />
-
-                  <label htmlFor="playerConfigDesc" className="mt-2">Description</label>
-                  <input type="text" id="playerConfigDesc" name="playerConfigDesc" className="w-full p-2 border rounded-md" />
-
-                  <label htmlFor="playerConfigParams" className="mt-2">Params (JSON)*</label>
-                  <textarea id="playerConfigParams" name="playerConfigParams" required className="w-full p-2 border rounded-md" rows={4} defaultValue={
-                    `{"key": "value"}`
-                  }></textarea>
-
-                  <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Create</button>
-                </form>
-              </div>
-            </div>)}
         </div>
       </div>
     </div>

@@ -18,10 +18,8 @@ const Filter = ({ }: Props) => {
             newFilter[key] = formData.get(key) as string;
         });
 
-        console.log(newFilter)
-
         setActiveFilter(newFilter);
-        alert('Filter applied');
+        window.location.reload();
     }
 
     return (
@@ -52,7 +50,7 @@ const Filter = ({ }: Props) => {
 
             <button
                 type="submit"
-                className="bg-primary text-white px-2 py-1 rounded-lg"
+                className="bg-primary text-white font-medium px-3 py-2 rounded-lg"
             >
                 Apply
             </button>
