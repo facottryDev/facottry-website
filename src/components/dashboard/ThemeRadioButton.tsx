@@ -28,7 +28,7 @@ export default function ConfigButton({ userRole, getConfigs, options, theme, onT
             alert("Config deleted successfully");
             fetchConfigs(activeProjectID);
             getConfigs();
-            setEditConfigModal(false);
+            setEditConfigModal("");
         } catch (error) {
             console.log(error)
         }
@@ -96,7 +96,7 @@ export default function ConfigButton({ userRole, getConfigs, options, theme, onT
                 alert("Config cloned successfully");
                 fetchConfigs(activeProjectID);
                 getConfigs();
-                setEditConfigModal(false);
+                setEditConfigModal("");
             } catch (error: any) {
                 console.log(error);
                 alert(error.response.data.message);
