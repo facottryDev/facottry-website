@@ -20,7 +20,7 @@ type Props = {
 export default function ConfigButton({ userRole, getConfigs, options, theme, onThemeChange }: Props) {
     const activeProject = userStore(state => state.activeProject);
     const activeProjectID = activeProject?.projectID;
-    const [EditConfigModal, setEditConfigModal] = useState(false);
+    const [EditConfigModal, setEditConfigModal] = useState("");
 
     const handleDelete = async (configID: string) => {
         try {
@@ -113,8 +113,8 @@ export default function ConfigButton({ userRole, getConfigs, options, theme, onT
                         {options.map((option, index) => (
                             <div key={index}>
                                 <Modal
-                                    isOpen={EditConfigModal}
-                                    onRequestClose={() => setEditConfigModal(false)}
+                                    isOpen={EditConfigModal === option.configID}
+                                    onRequestClose={() => setEditConfigModal("")}
                                     contentLabel="Edit Config Modal"
                                     style={
                                         {
@@ -204,7 +204,7 @@ export default function ConfigButton({ userRole, getConfigs, options, theme, onT
                                                         {userRole && (userRole === 'editor' || userRole === 'owner') && (
                                                             <button className="ml-2 p-2 rounded-full bg-primary400 text-white hover:bg-primary transition-all" onClick={
                                                                 () => {
-                                                                    setEditConfigModal(true)
+                                                                    setEditConfigModal(option.configID)
                                                                 }
                                                             }>
                                                                 <IoPencilSharp />
