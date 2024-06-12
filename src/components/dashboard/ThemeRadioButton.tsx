@@ -60,7 +60,7 @@ export default function ConfigButton({ userRole, getConfigs, options, theme, onT
             alert("Config updated successfully");
             fetchConfigs(activeProjectID);
             getConfigs();
-            setEditConfigModal(false);
+            setEditConfigModal("");
         } catch (error: any) {
             console.log(error);
             alert(error.response.data.message);
