@@ -35,13 +35,13 @@ const LoginForm = () => {
             await axios_auth.post('/login', {
                 email: e.currentTarget.email.value,
                 password: e.currentTarget.password.value,
-                remember_me: true,
+                remember_me: e.currentTarget.remember_me.checked
             });
             setIsLoading(false);
 
             router.push('/dashboard');
         } catch (error: any) {
-            alert(error.response.data);
+            alert(error.response.data.message);
             setIsLoading(false);
         }
     }
@@ -66,7 +66,7 @@ const LoginForm = () => {
                             <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="example@gmail.com" />
                         </div>
 
-                        <div className="relative mb-6">
+                        <div className="relative mb-4">
                             <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
                             <input type={isPasswordVisible ? "text" : "password"} name="password" id="password" placeholder="Enter Password" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
 
@@ -81,9 +81,15 @@ const LoginForm = () => {
                             </div>
                         </div>
 
+                        {/* Remember Me */}
+                        <div className="flex items-center mb-4">
+                            <input defaultChecked type="checkbox" id="remember_me" name="remember_me" className="text-primary-600 border-gray-300 dark:border-gray-600 focus:ring-primary-600 dark:focus:ring-primary-600 rounded" />
+                            <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-900 dark:text-white">Remember me</label>
+                        </div>
+
                         <button type="submit" className="mb-4 w-full bg-primary bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 dark:bg-slate-400 dark:hover:bg-slate-300 transition-all text-white hover:bg-primary/80 dark:text-black">Sign in</button>
 
-                        <Link href='/google' className="flex items-center justify-center mb-4 w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-slate-700 dark:focus:ring-primary-800 border dark:border-slate-400 transition-all hover:bg-slate-100 dark:text-slate-300">
+                        <Link href={process.env.NEXT_PUBLIC_AUTH_BASE_URL + '/google'} type="button" className="flex items-center justify-center mb-4 w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-slate-700 dark:focus:ring-primary-800 border dark:border-slate-400 transition-all hover:bg-slate-100 dark:text-slate-300">
                             <Image src={GoogleIcon} alt="google icon" width={20} height={20} className="inline-block mr-2" />
                             <p className="text-black dark:text-slate-300">Continue with Google</p>
                         </Link>

@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { FiHome, FiPlayCircle, FiBarChart2, FiFileText, FiShoppingCart, FiDollarSign, FiPhone, FiSettings } from 'react-icons/fi';
+import { FiHome, FiPlayCircle, FiBarChart2, FiFileText, FiShoppingCart, FiDollarSign, FiPhone, FiSettings, FiFolder } from 'react-icons/fi';
 import Link from 'next/link';
 import Image from 'next/image'
 import logo_2 from '@/assets/logo_2.svg'
@@ -64,7 +64,7 @@ const Sidebar = () => {
         <SidebarButton href="/dashboard/pricing" label="Upgrade" icon={<FiShoppingCart />} />
         <SidebarButton href="/dashboard/buy-features" label="Buy Features" icon={<FiDollarSign />} /> */}
         {/* <SidebarButton href="/dashboard/contact" label="Contact Us" icon={<FiPhone />} /> */}
-        <SidebarButton href="/dashboard/settings" label="Settings" icon={<FiSettings />} />
+        <SidebarButton href="/dashboard/settings/user" label="Settings" icon={<FiSettings />} />
       </div>
 
       <hr className="mt-4 w-full" />
@@ -116,7 +116,13 @@ const Sidebar = () => {
             <h3 className="font-bold">Project Role: </h3>
             <p>{activeProject?.role}</p>
           </span>
+
+          <Link href="/dashboard/settings/project" className="mt-2 block w-full sm:text-sm font-semibold text-white border p-2 text-center rounded-md hover:bg-white hover:text-primary transition-all">
+            Manage Project
+          </Link>
         </div>
+
+
       </div>
     </div>
   );

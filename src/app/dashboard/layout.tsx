@@ -52,9 +52,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
                     // if activeFilter is empty object, set it to default values
                     if (Object.keys(activeFilter).length === 0) {
-                        const defaultFilter = projects[0].filters.reduce((acc: any, filter: any) => {
-                            acc[filter.name] = 'ALL';
-                            return acc;
+                        const defaultFilter = Object.keys(projects[0].filters).map((key) => {
+                            return {
+                                [key]: ""
+                            }
+                        }).reduce((acc, curr) => {
+                            return { ...acc, ...curr }
                         }, {});
 
                         setActiveFilter(defaultFilter);

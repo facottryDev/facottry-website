@@ -4,6 +4,8 @@ import { userStore } from '@/lib/store'
 import { axios_admin } from "@/lib/axios"
 import Modal from 'react-modal';
 import { useState } from "react";
+import ToggleSwitch from "@/components/global/ToggleTheme";
+import UserDropdown from "@/components/dashboard/UserDropdown";
 
 export default function ProjectOwnerSettings() {
     const company = userStore(state => state.company);
@@ -26,8 +28,14 @@ export default function ProjectOwnerSettings() {
             const filter = {
                 name: String(data.filterName).toUpperCase(),
                 values: String(data.filterValues).toUpperCase().split(',').map((value: string) => value.trim()),
-                priority: Number(data.filterPriority),
+                default: String(data.filterDefault).toUpperCase(),
             };
+
+            // Default value must be present in values
+            if (!filter.values.includes(filter.default)) {
+                alert("Default value must be present in values");
+                return;
+            }
 
             const result = await axios_admin.post("/filter/add", { filter, projectID: activeProject?.projectID });
             alert(result.data.message);
@@ -48,7 +56,7 @@ export default function ProjectOwnerSettings() {
             const filter = {
                 name: String(data.filterName).toUpperCase(),
                 values: String(data.filterValues).toUpperCase().split(',').map((value: string) => value.trim()),
-                priority: Number(data.filterPriority),
+                default: String(data.filterDefault).toUpperCase(),
             };
 
             const result = await axios_admin.post("/filter/update", { filter, projectID: activeProject?.projectID });
@@ -175,18 +183,28 @@ export default function ProjectOwnerSettings() {
     }
 
     return (
-        <div className="p-4 bg-white rounded-lg dark:bg-darkblue">
-            <div className="pb-6 dark:border-gray-500">
-                <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-slate-200">Project Settings</h2>
+        <div className="bg-bggray rounded-lg p-8 dark:bg-darkblue">
+            <nav className="flex justify-between">
+                <div className="flex items-center mr-10 space-x-4">
+                    <h1 className="text-2xl font-bold">Manage Project</h1>
+                </div>
 
-                <hr className="my-4 border-gray-900/10 dark:border-gray-500" />
+                <div className="flex items-center gap-6">
+                    <ToggleSwitch />
+                    <UserDropdown />
+                </div>
+            </nav>
+
+            <hr className="my-4 border-gray-900/10 dark:border-gray-500" />
+
+            <div className="pb-6 dark:border-gray-500">
 
                 <div className="flex flex-col">
                     <label htmlFor="companyname" className="block text-sm font-bold leading-6 text-gray-900 dark:text-slate-200">
                         Project Details
                     </label>
 
-                    <form className="p-5 border rounded-lg mt-2" onSubmit={updateProjectDetails}>
+                    <form className="p-5 bg-white border rounded-lg mt-2" onSubmit={updateProjectDetails}>
                         <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                             <div className="sm:col-span-3">
                                 <label htmlFor="projectID" className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
@@ -269,15 +287,15 @@ export default function ProjectOwnerSettings() {
                                 }
                             }
                         >
-                            <div className="flex flex-col items-center justify-center bg-white">
+                            <div className="flex  flex-col items-center justify-center bg-white">
                                 <h1 className="font-bold text-lg">Add New Filter</h1>
 
                                 <form className="flex flex-col w-[50vw] max-w-sm bg-white " onSubmit={handleAddFilters}>
                                     <label htmlFor="filterName" className="mt-4">Filter Name</label>
                                     <input id="filterName" name="filterName" type="text" className="w-full p-2 mt-2 border rounded-md" required onKeyDown={(e) => e.stopPropagation()} />
 
-                                    <label htmlFor="filterPriority" className="mt-4">Priority (Higher value = More Priority)</label>
-                                    <input id="filterPriority" name="filterPriority" type="number" className="w-full p-2 mt-2 border rounded-md" defaultValue={50} required onKeyDown={(e) => e.stopPropagation()} />
+                                    <label htmlFor="filterDefault" className="mt-4">Default Value</label>
+                                    <input id="filterDefault" name="filterDefault" type="text" className="w-full p-2 mt-2 border rounded-md" required onKeyDown={(e) => e.stopPropagation()} />
 
                                     <label htmlFor="filterValues" className="mt-4">Values (Comma Separated)</label>
                                     <textarea id="filterValues" name="filterValues" className="w-full mt-2 p-2 border rounded-md" required onKeyDown={(e) => e.stopPropagation()} />
@@ -288,19 +306,22 @@ export default function ProjectOwnerSettings() {
                         </Modal>
                     </label>
 
-                    <div className="border rounded-lg p-4 items-center mt-2 gap-2 justify-between text-sm ">
-                        {activeProject?.filters && activeProject.filters.length > 0 ? (
-                            <div className="flex flex-col border rounded-lg p-4 mt-2 gap-2 ">
-                                {activeProject?.filters
-                                    .sort((a: Filter, b: Filter) => b.priority - a.priority)
-                                    .map((filter: Filter, index: number) => (
+                    <div className="border bg-white rounded-lg p-4 items-center mt-2 gap-2 justify-between text-sm ">
+                        {Object.keys(activeProject?.filters).length > 0 ? (
+                            <div className="flex flex-col mt-2 gap-2 ">
+                                {Object.keys(activeProject?.filters)
+                                    .map((key, index) => (
                                         <div key={index} className="flex justify-between">
-                                            <div key={index} className="flex gap-2">
-                                                <h3 className="font-semibold">{index+1}. {filter.name} ({filter.priority}):
+                                            <div key={index} className="flex items-center gap-2">
+                                                <h3 className="font-semibold">{index + 1}. {key}:
                                                 </h3>
-                                                <div className="flex gap-1">
-                                                    {filter.values.map((value: string, i: number) => (
-                                                        <p className="border cursor-pointer px-1 rounded-md" key={i}>{value}</p>
+                                                <div className="flex gap-2">
+                                                    {activeProject?.filters[key].values.map((value: string, i: number) => (
+                                                        value === activeProject?.filters[key].default ? (
+                                                            <span key={i} className="px-2 py-1 text-sm text-white bg-primary rounded-md">{value}</span>
+                                                        ) : (
+                                                            <span key={i} className="px-2 py-1 text-sm text-gray-900 bg-gray-100 rounded-md">{value}</span>
+                                                        )
                                                     ))}
                                                 </div>
                                             </div>
@@ -310,7 +331,7 @@ export default function ProjectOwnerSettings() {
                                                     type="button"
                                                     className="flex items-center text-sm font-semibold leading-6 text-primary dark:text-primary400 hover:underline"
                                                     onClick={
-                                                        () => setEditFilterModal(filter.name)
+                                                        () => setEditFilterModal(key)
                                                     }
                                                 >
                                                     <IoPencilSharp className="w-5 h-5 mr-2" />
@@ -318,7 +339,7 @@ export default function ProjectOwnerSettings() {
                                                 </button>
 
                                                 <Modal
-                                                    isOpen={EditFilterModal === filter.name}
+                                                    isOpen={EditFilterModal === key}
                                                     onRequestClose={() => setEditFilterModal('')}
                                                     contentLabel="Update Filter Modal"
                                                     style={
@@ -343,14 +364,16 @@ export default function ProjectOwnerSettings() {
 
                                                         <form className="flex flex-col w-[50vw] max-w-sm bg-white " onSubmit={handleUpdateFilters}>
                                                             <label htmlFor="filterName" className="mt-4">Filter Name</label>
-                                                            <input id="filterName" readOnly value={filter.name} name="filterName" type="text" className="w-full p-2 mt-2 border rounded-md bg-gray-100" required onKeyDown={(e) => e.stopPropagation()} />
+                                                            <input id="filterName" readOnly value={key} name="filterName" type="text" className="w-full p-2 mt-2 border rounded-md bg-gray-100" required onKeyDown={(e) => e.stopPropagation()} />
 
-                                                            <label htmlFor="filterPriority" className="mt-4">Priority (Higher value = More Priority)</label>
-                                                            <input id="filterPriority" defaultValue={filter.priority} name="filterPriority" type="number" className="w-full p-2 mt-2 border rounded-md" onKeyDown={(e) => e.stopPropagation()} />
+                                                            <label htmlFor="filterDefault" className="mt-4">Default Value</label>
+                                                            <input id="filterDefault" name="filterDefault" type="text"
+                                                                defaultValue={activeProject?.filters[key].default}
+                                                                className="w-full p-2 mt-2 border rounded-md" required onKeyDown={(e) => e.stopPropagation()} />
 
                                                             <label htmlFor="filterValues" className="mt-4">Values (Comma Separated)</label>
                                                             <textarea id="filterValues" name="filterValues" defaultValue={
-                                                                filter.values.join(", ")
+                                                                activeProject?.filters[key].values.join(", ")
                                                             } className="w-full mt-2 p-2 border rounded-md" required onKeyDown={(e) => e.stopPropagation()} />
 
                                                             <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Save Changes</button>
@@ -363,7 +386,7 @@ export default function ProjectOwnerSettings() {
                                                     className="flex items-center text-sm font-semibold leading-6 text-red-600 dark:text-red-400 hover:underline"
                                                     onClick={() => {
                                                         if (window.confirm('Are you sure?')) {
-                                                            handleDeleteFilters(filter.name);
+                                                            handleDeleteFilters(key);
                                                         }
                                                     }}
 
@@ -446,9 +469,9 @@ export default function ProjectOwnerSettings() {
                     </div>
 
                     {/* Modify User Box */}
-                    <div className="border rounded-lg p-4 items-center mt-2 gap-2 justify-between max-h-[400px] overflow-y-scroll">
+                    <div className="border bg-white rounded-lg p-4 items-center mt-2 gap-2 justify-between max-h-[400px] overflow-y-scroll">
                         {activeProject?.owners.map((item, index) => (
-                            <div key={index} className="flex justify-between">
+                            <div key={index} className="flex justify-between items-center">
                                 <h2 className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
                                     {index + 1}. {item}
                                 </h2>
@@ -457,7 +480,7 @@ export default function ProjectOwnerSettings() {
                                     <select
                                         id={item}
                                         name={item}
-                                        className="w-full bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                                        className="p-2 border bg-bggray w-full rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                                         defaultValue={"owner"}
                                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                             if (window.confirm('Are you sure?')) {

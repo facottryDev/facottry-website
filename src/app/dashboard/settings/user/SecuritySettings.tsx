@@ -28,8 +28,8 @@ export default function SecuritySettings() {
                             <label htmlFor="email" className="block mb-1 text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
                                 Password
                             </label>
-                            <Link href={'/auth/reset-password'} className="flex items-center gap-2 text-sm font-semibold text-primary">
-                                Change Password
+                            <Link href={'/auth/password/update'} className="flex items-center gap-2 text-sm font-semibold text-primary">
+                                Update Password
                                 <MdEdit />
                             </Link>
                         </div>
