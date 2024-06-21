@@ -24,7 +24,7 @@ const Filter = ({ }: Props) => {
 
     return (
         <form onSubmit={handleSubmit} className="bg-white border flex flex-col items-center gap-5 border-gray-100 w-full rounded-lg p-6 mb-4 text-sm">
-            <div onSubmit={handleSubmit} className="flex gap-4 justify-between">
+            <div onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-y-2 gap-x-8">
                 {Object.keys(allFilters).map((key, index) => {
                     return (
                         <div key={index} className="flex items-center">

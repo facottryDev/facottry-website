@@ -16,6 +16,7 @@ const Playground = (props: Props) => {
 
     const activeProject = userStore(state => state.activeProject);
 
+
     const getMapping = async () => {
         if (!activeProject) return;
 

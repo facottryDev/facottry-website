@@ -64,7 +64,7 @@ const Sidebar = () => {
         <SidebarButton href="/dashboard/pricing" label="Upgrade" icon={<FiShoppingCart />} />
         <SidebarButton href="/dashboard/buy-features" label="Buy Features" icon={<FiDollarSign />} /> */}
         {/* <SidebarButton href="/dashboard/contact" label="Contact Us" icon={<FiPhone />} /> */}
-        <SidebarButton href="/dashboard/settings/user" label="Settings" icon={<FiSettings />} />
+        <SidebarButton href="/dashboard/settings/project" label="Project Settings" icon={<FiSettings />} />
       </div>
 
       <hr className="mt-4 w-full" />
@@ -116,13 +116,7 @@ const Sidebar = () => {
             <h3 className="font-bold">Project Role: </h3>
             <p>{activeProject?.role}</p>
           </span>
-
-          <Link href="/dashboard/settings/project" className="mt-2 block w-full sm:text-sm font-semibold text-white border p-2 text-center rounded-md hover:bg-white hover:text-primary transition-all">
-            Manage Project
-          </Link>
         </div>
-
-
       </div>
     </div>
   );
