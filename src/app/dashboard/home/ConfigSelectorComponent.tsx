@@ -26,15 +26,12 @@ const ConfigSelectorComponent = (props: Props) => {
                         <tr>
                             <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Name</th>
                             <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Description</th>
-                            <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Created At</th>
                             <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Updated At</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {props.configList?.sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map((config, index) => {
-                            const createdAtDate = new Date(config.createdAt);
+                        {props.configList?.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).map((config, index) => {
                             const updatedAtDate = new Date(config.updatedAt);
-                            const formattedCreatedAt = `${createdAtDate.toLocaleDateString()}, ${createdAtDate.toLocaleTimeString()}`;
                             const formattedUpdatedAt = `${updatedAtDate.toLocaleDateString()}, ${updatedAtDate.toLocaleTimeString()}`;
                             const currentSelection = props.selectedConfigs[props.type];
 
@@ -47,9 +44,6 @@ const ConfigSelectorComponent = (props: Props) => {
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{config.desc}</p>
-                                    </td>
-                                    <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">{formattedCreatedAt}</p>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{formattedUpdatedAt}</p>
