@@ -10,12 +10,12 @@ import { globalStore } from "@/lib/store"
 import CreateMappings from "./CreateMapping"
 import ModifyMapping from "./ManageMappings"
 import ManageConfigs from "./ManageConfigs"
-import ManageFilters from "./ManageFilters"
+import MacroSettings from "./MacroSettings"
 
-const tabs = ['Manage Filters', 'Manage Configs', 'Create Mappings', 'Manage Mappings']
+const tabs = ['Macro Settings', 'Manage Configs', 'Create Mappings', 'Manage Mappings']
 
 const Dashboard = () => {
-  const [selectedTab, setSelectedTab] = React.useState(localStorage.getItem('selectedDashboardTab') || 'Create Mappings' as string);
+  const [selectedTab, setSelectedTab] = React.useState(localStorage.getItem('selectedDashboardTab') || 'Macro Settings' as string);
   const sidebar = globalStore(state => state.sidebar);
   const setSidebar = globalStore(state => state.setSidebar);
 
@@ -55,7 +55,7 @@ const Dashboard = () => {
 
             <div className="mx-auto">
               <select
-                className="text-sm font-medium text-center text-gray-500 dark:text-gray-400 mx-auto mt-1 lg:hidden block w-full p-2 border border-gray-300 rounded-md"
+                className="cursor-pointer text-sm font-medium text-center text-gray-500 dark:text-gray-400 mx-auto mt-1 lg:hidden block w-full p-2 border border-gray-300 rounded-md"
                 value={selectedTab}
                 onChange={(e) => setSelectedTab(e.target.value)}
               >
@@ -91,8 +91,8 @@ const Dashboard = () => {
 
         <hr className="w-full mt-4" />
 
-        {selectedTab === 'Manage Filters' && (
-          <ManageFilters />
+        {selectedTab === 'Macro Settings' && (
+          <MacroSettings />
         )}
 
         {selectedTab === 'Manage Configs' && (

@@ -239,8 +239,8 @@ const ConfigTableComponent = (props: Props) => {
                                                             </div>
                                                         </div>
 
-                                                        <button type="submit" className="mt-4 px-4 py-2 text-white bg-primary rounded-md hover:bg-primary600">Save</button>
-                                                        <button type="button" className="w-full mt-2 px-4 pt-2 text-primary font-semibold hover:text-primary600" onClick={handleClone}>Save As New Config</button>
+                                                        <button type="submit" className="font-medium text-center text-sm border p-2 rounded-md shadow-sm hover:bg-gray-100 transition-all">Save</button>
+                                                        <button type="button" className="font-medium text-center hover:text-gray-500 text-sm mt-4 rounded-md transition-all" onClick={handleClone}>Save As New Config</button>
                                                     </form>
                                                 </div>
                                             </Modal>
@@ -313,7 +313,7 @@ const ConfigTableComponent = (props: Props) => {
                             </div>
                         </div>
 
-                        <button type="submit" className="mt-4 px-4 py-2 text-white bg-primary rounded-md hover:bg-primary600">Create</button>
+                        <button type="submit" className="font-medium text-center text-sm border p-2 rounded-md shadow-sm hover:bg-gray-100 transition-all">Create</button>
                     </form>
                 </div>
             </Modal>

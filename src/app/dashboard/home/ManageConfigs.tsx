@@ -3,7 +3,6 @@ import { useEffect, useState } from "react"
 import { axios_config } from "@/lib/axios"
 import { userStore } from "@/lib/store";
 import ConfigTableComponent from "./ConfigEditorComponent";
-import ConfigTypeComponent from "./ConfigTypeComponent";
 
 type Props = {}
 
@@ -33,11 +32,6 @@ const ManageConfigs = (props: Props) => {
         <div>
             {userRole && (userRole === 'owner' || userRole === 'editor') && (
                 <div className="grid grid-cols-1 gap-10 w-full justify-around">
-                    <section className="w-full border rounded-md mt-8">
-                        <h1 className="text-lg font-bold text-center my-4">Manage Config Types</h1>
-                        <ConfigTypeComponent />
-                    </section>
-
                     <section className="w-full border rounded-md mt-8">
                         <h1 className="text-lg font-bold text-center my-4">App Config</h1>
                         <ConfigTableComponent type='app' configList={configs?.appConfigs} getConfigs={getConfigs} />

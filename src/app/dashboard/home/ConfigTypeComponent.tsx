@@ -128,7 +128,7 @@ const ConfigTypeComponent = (props: Props) => {
                             <input id="configtype" name="configtype" type="text" className="w-full p-2 mt-2 border rounded-md" required onKeyDown={(e) => e.stopPropagation()} />
                         </div>
 
-                        <button type="submit" className="font-medium text-center text-sm border mt-4 p-2 w-fit rounded-md shadow-sm hover:bg-gray-100 transition-all">Submit</button>
+                        <button type="submit" className="font-medium text-center text-sm border mt-4 px-5 py-2 w-fit rounded-md shadow-sm hover:bg-gray-100 transition-all">Submit</button>
                     </form>
                 </div>
             </Modal>
