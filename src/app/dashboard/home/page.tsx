@@ -1,7 +1,6 @@
 'use client'
 import Sidebar from "@/components/dashboard/Sidebar"
 import React from 'react'
-import Link from "next/link"
 import Image from "next/image"
 import ToggleSwitch from "@/components/global/ToggleTheme"
 import UserDropdown from "@/components/dashboard/UserDropdown"
@@ -9,14 +8,16 @@ import logo_2 from '@/assets/logo_2.svg'
 import logo_dark_2 from '@/assets/logo_dark_2.svg'
 import { globalStore } from "@/lib/store"
 import CreateMappings from "./CreateMapping"
-import ModifyMapping from "./ModifyMapping"
+import ModifyMapping from "./ManageMappings"
 import ManageConfigs from "./ManageConfigs"
+import ManageFilters from "./ManageFilters"
 
-const tabs = ['Manage Configs', 'Create Mappings', 'Manage Mappings']
+const tabs = ['Manage Filters', 'Manage Configs', 'Create Mappings', 'Manage Mappings']
 
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = React.useState(localStorage.getItem('selectedDashboardTab') || 'Create Mappings' as string);
   const sidebar = globalStore(state => state.sidebar);
+  const setSidebar = globalStore(state => state.setSidebar);
 
   React.useEffect(() => {
     localStorage.setItem('selectedDashboardTab', selectedTab);
@@ -30,7 +31,9 @@ const Dashboard = () => {
         <nav className="flex justify-between">
           <div className="flex items-center mr-10 space-x-4">
             {!sidebar && (
-              <Link href={'/'} className="">
+              <button onClick={() => {
+                setSidebar(true);
+              }}>
                 <Image
                   src={logo_2}
                   alt="FacOTTry"
@@ -45,7 +48,7 @@ const Dashboard = () => {
                   height={50}
                   className="hidden dark:block"
                 />
-              </Link>
+              </button>
             )}
 
             <h1 className="text-2xl font-bold">Dashboard</h1>
@@ -87,6 +90,10 @@ const Dashboard = () => {
         </nav>
 
         <hr className="w-full mt-4" />
+
+        {selectedTab === 'Manage Filters' && (
+          <ManageFilters />
+        )}
 
         {selectedTab === 'Manage Configs' && (
           <ManageConfigs />

@@ -1,5 +1,4 @@
 'use client'
-import AllMappings from "@/components/dashboard/AllMappings"
 import { activeFilterStore, userStore } from "@/lib/store";
 import { useEffect, useState } from 'react'
 import { axios_config } from "@/lib/axios"
@@ -43,7 +42,8 @@ const ModifyMapping = (props: Props) => {
 
         try {
             const mapping = await axios_config.post('/mapping/all', {
-                projectID: activeProject?.projectID
+                projectID: activeProject?.projectID,
+                filter: activeFilter
             });
 
             if (mapping.data.code === "FOUND") {
@@ -67,7 +67,7 @@ const ModifyMapping = (props: Props) => {
 
             {allMappings && (
                 <div className="flex flex-col border rounded-md mt-8">
-                    <h1 className="text-lg font-bold text-center my-4">Select Filter</h1>
+                    <h1 className="text-lg font-bold text-center my-4">Active Mappings</h1>
                     <table className="table-auto">
                         <thead>
                             <tr>
@@ -76,12 +76,12 @@ const ModifyMapping = (props: Props) => {
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="bg-white">
                             {allMappings.map((mapping: any, index: number) => (
                                 <tr key={index}>
                                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
                                         {Object.entries(mapping.filter).map(([key, value], keyIndex) => (
-                                            <div key={keyIndex}> {key}: {value}</div>
+                                            <div key={keyIndex}> {key}: {value as React.ReactNode}</div>
                                         ))}
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 text-sm">

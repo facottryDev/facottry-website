@@ -57,17 +57,12 @@ const CreateMappings = (props: Props) => {
 
     return (
         <div className="flex flex-col w-full items-center justify-center">
-            <div className="w-full">
-                <h1 className="text-lg font-bold text-center my-4">Select Filter</h1>
-                <Filter />
-            </div>
+            <Filter />
 
-            <h1 className="text-lg font-bold text-center my-4">Select Configs</h1>
             <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-10 justify-around w-full">
 
-                <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
-                    <p className="font-bold text-lg my-2 uppercase">App Configs</p>
-
+                <section className="w-full border rounded-md mt-8">
+                <h1 className="text-lg font-bold text-center my-4">App Config</h1>
                     <ConfigSelectorComponent
                         configList={configs?.appConfigs}
                         type='app'
@@ -76,8 +71,8 @@ const CreateMappings = (props: Props) => {
                     />
                 </section>
 
-                <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
-                    <p className="font-bold text-lg my-2 uppercase">Player Configs</p>
+                <section className="w-full border rounded-md mt-8">
+                    <p className="text-lg font-bold text-center my-4">Player Configs</p>
 
                     <ConfigSelectorComponent
                         configList={configs?.playerConfigs}
@@ -88,8 +83,8 @@ const CreateMappings = (props: Props) => {
                 </section>
 
                 {configs?.types.map((type) => (
-                    type !== 'app' && type !== 'player' && (<section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
-                        <p className="font-bold text-lg my-2 uppercase">{type} Configs</p>
+                    type !== 'app' && type !== 'player' && (<section className="w-full border rounded-md mt-8">
+                        <p className="text-lg font-bold text-center my-4">{type} Configs</p>
 
                         <ConfigSelectorComponent
                             configList={configs?.customConfigs.filter((config) => config.type === type)}
@@ -101,7 +96,7 @@ const CreateMappings = (props: Props) => {
                 ))}
             </div>
 
-            <button className="px-4 py-2 mt-8 text-white bg-primary rounded-md hover:bg-primary600" onClick={handleUpdateMapping}>Create Mapping</button>
+            <button className="font-medium border my-4 p-2 px-3 rounded-md shadow-sm hover:bg-gray-100 transition-all" onClick={handleUpdateMapping}>Create Mapping</button>
         </div>
     )
 }

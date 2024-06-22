@@ -6,6 +6,7 @@ import Image from 'next/image'
 import logo_2 from '@/assets/logo_2.svg'
 import logo_dark_2 from '@/assets/logo_dark_2.svg'
 import { userStore, globalStore } from "@/lib/store";
+import { IoClose } from "react-icons/io5";
 
 const SidebarButton = ({ href, label, icon, target }: {
   href: string;
@@ -25,6 +26,7 @@ const Sidebar = () => {
   const setActiveProject = userStore(state => state.setActiveProject);
   const company = userStore(state => state.company);
   const sidebar = globalStore(state => state.sidebar);
+  const setSidebar = globalStore(state => state.setSidebar);
 
   const handleProjectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const projectID = e.target.value;
@@ -36,7 +38,7 @@ const Sidebar = () => {
 
   return (
     <div className={`${sidebar ? 'block' : 'hidden'} bg-white p-8 pl-5 dark:bg-darkblue`}>
-      <Link href={'/'} className="flex gap-2 items-center mb-8">
+      <button onClick={()=>{setSidebar(false)}} className="flex gap-2 items-center mb-8">
         <Image
           src={logo_2}
           alt="FacOTTry"
@@ -54,7 +56,7 @@ const Sidebar = () => {
         <p className="font-extrabold text-2xl text-black dark:text-white">
           Fac<span className="text-primary">OTT</span>ry
         </p>
-      </Link>
+      </button>
 
       <div className="font-medium text-slate-700 dark:text-white">
         <SidebarButton href="/dashboard/home" label="Dashboard" icon={<FiHome />} />

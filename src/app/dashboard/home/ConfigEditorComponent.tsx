@@ -132,134 +132,136 @@ const ConfigTableComponent = (props: Props) => {
     }
 
     return (
-        <section className="p-6 text-sm flex flex-col rounded-md items-center justify-center dark:text-white dark:bg-darkblue300 gap-4 bg-white">
-            <div className="w-full border rounded-md h-96 overflow-y-auto">
-                <table className="min-w-full leading-normal">
-                    <thead>
-                        <tr>
-                            <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Name</th>
-                            <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Description</th>
-                            <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Created At</th>
-                            <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Updated At</th>
-                            <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Modify</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {props.configList?.sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map((config, index) => {
-                            const createdAtDate = new Date(config.createdAt);
-                            const updatedAtDate = new Date(config.updatedAt);
-                            const formattedCreatedAt = `${createdAtDate.toLocaleDateString()}, ${createdAtDate.toLocaleTimeString()}`;
-                            const formattedUpdatedAt = `${updatedAtDate.toLocaleDateString()}, ${updatedAtDate.toLocaleTimeString()}`;
+        <section className="text-sm flex flex-col items-center justify-center dark:text-white dark:bg-darkblue300">
+            <div className="w-full border bg-white">
+                <div className="overflow-y-auto h-80">
+                    <table className="min-w-full leading-normal">
+                        <thead className="sticky top-0">
+                            <tr>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Name</th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Description</th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Created At</th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Updated At</th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {props.configList?.sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map((config, index) => {
+                                const createdAtDate = new Date(config.createdAt);
+                                const updatedAtDate = new Date(config.updatedAt);
+                                const formattedCreatedAt = `${createdAtDate.toLocaleDateString()}, ${createdAtDate.toLocaleTimeString()}`;
+                                const formattedUpdatedAt = `${updatedAtDate.toLocaleDateString()}, ${updatedAtDate.toLocaleTimeString()}`;
 
-                            return (
-                                <tr key={index}>
-                                    <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap font-bold">{config.name}</p>
-                                    </td>
-                                    <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">{config.desc}</p>
-                                    </td>
-                                    <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">{formattedCreatedAt}</p>
-                                    </td>
-                                    <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">{formattedUpdatedAt}</p>
-                                    </td>
-                                    <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                                        <div className="flex">
-                                            <button className="ml-2 p-2 rounded-full bg-primary400 text-white hover:bg-primary transition-all" onClick={
-                                                () => {
-                                                    setconfigModal(config.configID)
-                                                }
-                                            }>
-                                                <IoPencilSharp />
-                                            </button>
+                                return (
+                                    <tr key={index}>
+                                        <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                                            <p className="text-gray-900 whitespace-no-wrap font-bold">{config.name}</p>
+                                        </td>
+                                        <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                                            <p className="text-gray-900 whitespace-no-wrap">{config.desc}</p>
+                                        </td>
+                                        <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                                            <p className="text-gray-900 whitespace-no-wrap">{formattedCreatedAt}</p>
+                                        </td>
+                                        <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                                            <p className="text-gray-900 whitespace-no-wrap">{formattedUpdatedAt}</p>
+                                        </td>
+                                        <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                                            <div className="flex">
+                                                <button className="ml-2 p-2 rounded-full bg-primary400 text-white hover:bg-primary transition-all" onClick={
+                                                    () => {
+                                                        setconfigModal(config.configID)
+                                                    }
+                                                }>
+                                                    <IoPencilSharp />
+                                                </button>
 
-                                            <button className="ml-2 p-2 rounded-full bg-red-400 text-white hover:bg-red-500 transition-all" onClick={
-                                                () => {
-                                                    if (window.confirm('Are you sure?')) {
-                                                        handleDelete(config.configID);
+                                                <button className="ml-2 p-2 rounded-full bg-red-400 text-white hover:bg-red-500 transition-all" onClick={
+                                                    () => {
+                                                        if (window.confirm('Are you sure?')) {
+                                                            handleDelete(config.configID);
+                                                        }
+                                                    }
+                                                }>
+                                                    <IoTrashBin />
+                                                </button>
+                                            </div>
+
+                                            <Modal
+                                                isOpen={configModal === config.configID}
+                                                onRequestClose={() => setconfigModal("")}
+                                                contentLabel="Edit Config Modal"
+                                                style={
+                                                    {
+                                                        overlay: {
+                                                            backgroundColor: 'rgba(0, 0, 0, 0.75)'
+                                                        },
+                                                        content: {
+                                                            width: 'calc(100% - 4rem)', // 100% width minus padding
+                                                            height: 'max-content', // Height of the modal
+                                                            margin: 'auto',
+                                                            padding: '2rem', // Padding around the content
+                                                            boxSizing: 'border-box', // Include padding in the width and height calculations
+                                                            borderRadius: '10px',
+                                                            backgroundColor: 'white',
+                                                            display: 'flex',
+                                                            flexDirection: 'column'
+                                                        }
                                                     }
                                                 }
-                                            }>
-                                                <IoTrashBin />
-                                            </button>
-                                        </div>
-
-                                        <Modal
-                                            isOpen={configModal === config.configID}
-                                            onRequestClose={() => setconfigModal("")}
-                                            contentLabel="Edit Config Modal"
-                                            style={
-                                                {
-                                                    overlay: {
-                                                        backgroundColor: 'rgba(0, 0, 0, 0.75)'
-                                                    },
-                                                    content: {
-                                                        width: 'calc(100% - 4rem)', // 100% width minus padding
-                                                        height: 'max-content', // Height of the modal
-                                                        margin: 'auto',
-                                                        padding: '2rem', // Padding around the content
-                                                        boxSizing: 'border-box', // Include padding in the width and height calculations
-                                                        borderRadius: '10px',
-                                                        backgroundColor: 'white',
-                                                        display: 'flex',
-                                                        flexDirection: 'column'
-                                                    }
-                                                }
-                                            }
-                                        >
-                                            <div className="flex flex-col items-center justify-center bg-white">
-                                                <div className="flex justify-between w-full px-4">
-                                                    <h1 className="font-bold uppercase text-lg">Edit Config</h1>
-                                                    <button className="p-2 rounded-full bg-red-400 text-white hover:bg-red-500 transition-all" onClick={() => setconfigModal('')}>
-                                                        <IoClose />
-                                                    </button>
-                                                </div>
-
-                                                <form className="flex w-full flex-col bg-white" onSubmit={handleEdit}>
-                                                    <input type="hidden" name="configID" value={config.configID} />
-
-                                                    {/* Flex container for the form content */}
-                                                    <div className="flex p-4 flex-col md:flex-row w-full">
-
-                                                        {/* Left side */}
-                                                        <div className="flex flex-col">
-                                                            <label htmlFor="ConfigName" className="">Name*</label>
-                                                            <input id="ConfigName" name="ConfigName" type="text" className="w-full p-2 border rounded-md" defaultValue={config.name} onKeyDown={(e) => e.stopPropagation()} />
-
-                                                            <label htmlFor="ConfigDesc" className="mt-4">Description</label>
-                                                            <input type="text" id="ConfigDesc" name="ConfigDesc" className="w-full p-2 border rounded-md" defaultValue={config.desc} onKeyDown={(e) => e.stopPropagation()} />
-                                                        </div>
-
-                                                        {/* Divider */}
-                                                        <div className="hidden md:block mx-8 bg-gray-200 w-px h-auto"></div>
-
-                                                        {/* Right side */}
-                                                        <div className="flex-1">
-                                                            <label htmlFor="ConfigParams" className="mt-2 md:mt-0">Params (JSON)*</label>
-                                                            <textarea id="ConfigParams" name="ConfigParams" className="w-full p-2 border rounded-md" rows={20} defaultValue={
-                                                                JSON.stringify(config.params, null, 2)
-                                                            } onKeyDown={(e) => e.stopPropagation()} />
-                                                        </div>
+                                            >
+                                                <div className="flex flex-col items-center justify-center bg-white">
+                                                    <div className="flex justify-between w-full px-4">
+                                                        <h1 className="font-bold uppercase text-lg">Edit Config</h1>
+                                                        <button className="p-2 rounded-full bg-red-400 text-white hover:bg-red-500 transition-all" onClick={() => setconfigModal('')}>
+                                                            <IoClose />
+                                                        </button>
                                                     </div>
 
-                                                    <button type="submit" className="mt-4 px-4 py-2 text-white bg-primary rounded-md hover:bg-primary600">Save</button>
-                                                    <button type="button" className="w-full mt-2 px-4 pt-2 text-primary font-semibold hover:text-primary600" onClick={handleClone}>Save As New Config</button>
-                                                </form>
-                                            </div>
-                                        </Modal>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                                                    <form className="flex w-full flex-col bg-white" onSubmit={handleEdit}>
+                                                        <input type="hidden" name="configID" value={config.configID} />
+
+                                                        {/* Flex container for the form content */}
+                                                        <div className="flex p-4 flex-col md:flex-row w-full">
+
+                                                            {/* Left side */}
+                                                            <div className="flex flex-col">
+                                                                <label htmlFor="ConfigName" className="">Name*</label>
+                                                                <input id="ConfigName" name="ConfigName" type="text" className="w-full p-2 border rounded-md" defaultValue={config.name} onKeyDown={(e) => e.stopPropagation()} />
+
+                                                                <label htmlFor="ConfigDesc" className="mt-4">Description</label>
+                                                                <input type="text" id="ConfigDesc" name="ConfigDesc" className="w-full p-2 border rounded-md" defaultValue={config.desc} onKeyDown={(e) => e.stopPropagation()} />
+                                                            </div>
+
+                                                            {/* Divider */}
+                                                            <div className="hidden md:block mx-8 bg-gray-200 w-px h-auto"></div>
+
+                                                            {/* Right side */}
+                                                            <div className="flex-1">
+                                                                <label htmlFor="ConfigParams" className="mt-2 md:mt-0">Params (JSON)*</label>
+                                                                <textarea id="ConfigParams" name="ConfigParams" className="w-full p-2 border rounded-md" rows={20} defaultValue={
+                                                                    JSON.stringify(config.params, null, 2)
+                                                                } onKeyDown={(e) => e.stopPropagation()} />
+                                                            </div>
+                                                        </div>
+
+                                                        <button type="submit" className="mt-4 px-4 py-2 text-white bg-primary rounded-md hover:bg-primary600">Save</button>
+                                                        <button type="button" className="w-full mt-2 px-4 pt-2 text-primary font-semibold hover:text-primary600" onClick={handleClone}>Save As New Config</button>
+                                                    </form>
+                                                </div>
+                                            </Modal>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <button onClick={
                 () => setconfigModal('ac')
-            } className="font-semibold px-4 py-2 rounded-full bg-primary text-white hover:bg-primary600 transition-all">
+            } className="font-medium border my-4 p-2 rounded-md shadow-sm hover:bg-gray-100 transition-all">
                 Create New Config
             </button>
 
