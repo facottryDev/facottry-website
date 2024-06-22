@@ -1,26 +1,22 @@
 type TableColumn = any;
 type TableRow = any;
 
-type appConfig = {
-  configID: string;
-  projectID: string;
-  name: string;
-  desc: string;
-  params: string;
-  createdAt: string;
-  updatedAt: string;
-  demo_url: string;
+type configs = {
+  appConfigs: config[];
+  playerConfigs: config[];
+  customConfigs: config[];
+  types: string[];
 };
 
-type playerConfig = {
+type config = {
   configID: string;
   projectID: string;
   name: string;
+  type: string;
   desc: string;
   params: string;
   createdAt: string;
   updatedAt: string;
-  demo_url: string;
 };
 
 type User = {
@@ -55,6 +51,7 @@ type Project = {
   editors: string[];
   viewers: string[];
   filters: Filter;
+  configTypes: string[];
 };
 
 type Filter = any;

@@ -13,6 +13,7 @@ export default function ProjectOwnerSettings() {
     const [role, setRole] = useState("viewer");
     const [AcceptRequestModal, setAcceptRequestModal] = useState(false);
     const [AddFilterModal, setAddFilterModal] = useState(false);
+    const [AddConfigTypeModal, setAddConfigTypeModal] = useState(false);
     const [InviteUserModal, setInviteUserModal] = useState(false);
     const [inviteData, setInviteData] = useState({ email: "", role: "" });
     const [EditFilterModal, setEditFilterModal] = useState('');
@@ -180,6 +181,24 @@ export default function ProjectOwnerSettings() {
     const inviteUser = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         alert(`Not Implemented Yet`);
+    }
+
+    const handleAddConfigType = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const configType = formData.get("configtype") as string;
+
+        try {
+            await axios_admin.post('/project/config-type/add', {
+                projectID: activeProject?.projectID,
+                configType
+            })
+            alert("Config Type Added Successfully");
+            window.location.reload();
+        } catch (error: any) {
+            console.error(error)
+            alert(error.response.data.message)
+        }
     }
 
     return (
@@ -403,6 +422,72 @@ export default function ProjectOwnerSettings() {
                         )}
                     </div>
                 </div>
+
+                {/* Manage Config Types */}
+                <div>
+                    <div className="flex gap-2 mt-4">
+                        <label className="block text-sm font-bold leading-6 text-gray-900 dark:text-slate-200">
+                            Manage Config Types
+                        </label>
+
+                        <button className="flex items-center text-sm font-semibold leading-6 text-primary hover:underline" onClick={() =>
+                            setAddConfigTypeModal(true)
+                        }>
+                            Add New
+                        </button>
+                    </div>
+
+                    <div className="border bg-white rounded-lg p-4 items-center mt-2 gap-2 justify-between">
+                        {activeProject?.configTypes.map((config, index) => (
+                            <div key={index} className="flex justify-between">
+                                <h2 className="block text-sm font-medium leading-6 text-gray-900 dark:text-slate-200">
+                                    {index + 1}. {config}
+                                </h2>
+
+                                <button
+                                    type="button"
+                                    className="flex items-center text-sm font-semibold leading-6 text-red-600 dark:text-red-400 hover:underline"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+
+                    <Modal
+                        isOpen={AddConfigTypeModal}
+                        onRequestClose={() => setAddConfigTypeModal(false)}
+                        contentLabel="Add Config Type Modal"
+                        style={
+                            {
+                                overlay: {
+                                    backgroundColor: 'rgba(0, 0, 0, 0.75)'
+                                },
+                                content: {
+                                    width: 'max-content',
+                                    height: 'max-content',
+                                    maxHeight: '80%',
+                                    margin: 'auto',
+                                    padding: '2rem',
+                                    borderRadius: '10px',
+                                    backgroundColor: 'white'
+                                }
+                            }
+                        }
+                    >
+                        <div className="flex  flex-col items-center justify-center bg-white">
+                            <h1 className="font-bold text-lg">Add Config Type</h1>
+
+                            <form className="flex flex-col w-[50vw] max-w-sm bg-white " onSubmit={handleAddConfigType}>
+                                <label htmlFor="configtype" className="mt-4">Enter Value</label>
+                                <input id="configtype" name="configtype" type="text" className="w-full p-2 mt-2 border rounded-md" required onKeyDown={(e) => e.stopPropagation()} />
+
+                                <button type="submit" className="mt-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">Submit</button>
+                            </form>
+                        </div>
+                    </Modal>
+                </div>
+
 
                 {/* Manage Project Users */}
                 <div>
