@@ -75,7 +75,7 @@ const Sidebar = () => {
         <select
           id="project"
           name="project"
-          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
           onChange={handleProjectChange}
           value={activeProject?.projectID}
         >
@@ -89,11 +89,11 @@ const Sidebar = () => {
         </select>
 
         {/* Add new project button */}
-        <Link href="/dashboard/project" className="mt-4 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm text-center hover:bg-primary600 hover:text-white transition-all">
-          Add New Project
+        <Link href="/dashboard/project" className="mt-4 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm text-center hover:bg-gray-100 transition-all">
+          Add Project
         </Link>
 
-        <div className="bg-primary700 p-4 rounded-md mt-4 text-sm flex flex-col gap-2 text-white">
+        <div className="bg-gray-800 p-4 rounded-md mt-4 text-sm flex flex-col gap-2 text-white">
           <span>
             <h3 className="font-bold">Project ID: </h3>
             <p>{activeProject?.projectID}</p>

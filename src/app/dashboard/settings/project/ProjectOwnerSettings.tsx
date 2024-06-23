@@ -271,7 +271,7 @@ export default function ProjectOwnerSettings() {
                                     <select
                                         id={item}
                                         name={item}
-                                        className="p-2 border bg-bggray w-full rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                                        className="p-2 border bg-bggray w-full rounded-md shadow-sm focus:outline-none  focus:border-gray-400 cursor-pointer transition-all sm:text-sm"
                                         defaultValue={"owner"}
                                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                             if (window.confirm('Are you sure?')) {
@@ -311,7 +311,7 @@ export default function ProjectOwnerSettings() {
                                     <select
                                         id={item}
                                         name={item}
-                                        className="w-full bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                                        className="p-2 border bg-bggray w-full rounded-md shadow-sm focus:outline-none  focus:border-gray-400 cursor-pointer transition-all sm:text-sm"
                                         defaultValue={"editor"}
                                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                             if (window.confirm('Are you sure?')) {
@@ -351,7 +351,7 @@ export default function ProjectOwnerSettings() {
                                     <select
                                         id={item}
                                         name={item}
-                                        className="w-full bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                                        className="p-2 border bg-bggray w-full rounded-md shadow-sm focus:outline-none  focus:border-gray-400 cursor-pointer transition-all sm:text-sm"
                                         defaultValue={"viewer"}
                                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                             if (window.confirm('Are you sure?')) {
@@ -363,6 +363,7 @@ export default function ProjectOwnerSettings() {
                                         <option value="editor">Editor</option>
                                         <option value="viewer">Viewer</option>
                                     </select>
+
                                     <button
                                         type="button"
                                         className="flex items-center text-red-600 dark:text-red-400 hover:underline"

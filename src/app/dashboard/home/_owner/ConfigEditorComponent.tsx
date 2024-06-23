@@ -1,13 +1,10 @@
 'use client'
-import ConfigButton from "@/components/dashboard/ThemeRadioButton"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { axios_config } from "@/lib/axios"
-import { userStore, activeFilterStore } from "@/lib/store";
-import Filter from "@/components/dashboard/Filter"
+import { userStore } from "@/lib/store";
 import { fetchConfigs } from "@/lib/fetch"
-import { FiPlusCircle } from "react-icons/fi"
 import Modal from 'react-modal';
-import { IoClose, IoCopy, IoPencilSharp, IoTrashBin } from "react-icons/io5";
+import { IoClose, IoPencilSharp, IoTrashBin } from "react-icons/io5";
 
 type Props = {
     configList: config[] | undefined;

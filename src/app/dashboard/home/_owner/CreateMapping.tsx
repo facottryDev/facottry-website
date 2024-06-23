@@ -33,7 +33,6 @@ const CreateMappings = (props: Props) => {
         getConfigs();
     }, [activeProject])
 
-
     // Function to handle update of mapping
     const handleUpdateMapping = async () => {
 
@@ -60,7 +59,6 @@ const CreateMappings = (props: Props) => {
             <Filter />
 
             <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-10 justify-around w-full">
-
                 <section className="w-full border rounded-md mt-8">
                 <h1 className="text-lg font-bold text-center my-4">App Config</h1>
                     <ConfigSelectorComponent
