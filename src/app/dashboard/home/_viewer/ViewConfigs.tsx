@@ -47,8 +47,8 @@ const ViewConfigs = (props: Props) => {
         />
       </section>
 
-      {configs?.types.map((type) => (
-        type !== 'app' && type !== 'player' && (<section className="w-full border rounded-md mt-8">
+      {configs?.types.map((type, index) => (
+        type !== 'app' && type !== 'player' && (<section key={index} className="w-full border rounded-md mt-8">
           <p className="text-lg font-bold text-center my-4">{type} Configs</p>
 
           <ConfigViewerComponent

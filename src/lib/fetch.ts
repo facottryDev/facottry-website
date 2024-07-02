@@ -1,5 +1,5 @@
 "use client";
-import { axios_admin, axios_config, axios_user } from "@/lib/axios";
+import { axios_admin, axios_config } from "@/lib/axios";
 
 export const fetchConfigs = async (projectID: string | undefined) => {
   if (projectID === undefined) {
