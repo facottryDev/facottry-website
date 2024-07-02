@@ -3,7 +3,7 @@ import Filter from "@/components/dashboard/Filter"
 import Sidebar from "@/components/dashboard/Sidebar"
 import UserDropdown from "@/components/dashboard/UserDropdown"
 import ToggleSwitch from "@/components/global/ToggleTheme"
-import { axios_config } from "@/lib/axios"
+import { axios_scale } from "@/lib/axios"
 import { activeFilterStore, globalStore, userStore } from "@/lib/store"
 import React, { useEffect, useState } from 'react'
 import { JSONTree } from 'react-json-tree'
@@ -17,7 +17,6 @@ const tabs = ['SDK Demo', 'Site Examples']
 const Playground = (props: Props) => {
     const [activeFilter, setActiveFilter] = activeFilterStore(state => [state.activeFilter, state.setActiveFilter]);
     const [activeMapping, setActiveMapping] = useState<any>();
-
     const activeProject = userStore(state => state.activeProject);
     const [selectedTab, setSelectedTab] = React.useState(localStorage.getItem('selectedPlaygroundTab') || 'SDK Response' as string);
     const sidebar = globalStore(state => state.sidebar);
@@ -31,10 +30,12 @@ const Playground = (props: Props) => {
         if (!activeProject) return;
 
         try {
-            const mapping = await axios_config.post('/mapping/scale', {
+            const mapping = await axios_scale.post('/get-mapping', {
                 projectID: activeProject?.projectID,
                 filter: activeFilter
             });
+
+            console.log(mapping.data);
 
             setActiveMapping(mapping.data.mappings);
         } catch (error) {
@@ -123,7 +124,9 @@ const Playground = (props: Props) => {
                 </div>
 
                 {/* JSON viewer */}
-                <div>
+                <div className="w-full border rounded-md mt-8">
+                    <h1 className="text-lg font-bold text-center my-4">JSON Response</h1>
+
                     <JSONTree data={activeMapping} />
                 </div>
             </div>
