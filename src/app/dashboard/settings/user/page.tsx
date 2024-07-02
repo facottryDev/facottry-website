@@ -7,7 +7,11 @@ import React, { useState } from 'react';
 import CompanyEmployeeSettings from "./CompanyEmployeeSettings";
 import CompanyOwnerSettings from "./CompanyOwnerSettings";
 import SecuritySettings from "./SecuritySettings";
-import { userStore } from "@/lib/store";
+import { globalStore, userStore } from "@/lib/store";
+import Link from "next/link";
+import Image from "next/image";
+import logo_2 from '@/assets/logo_2.svg'
+import logo_dark_2 from '@/assets/logo_dark_2.svg'
 
 const tabs = [
     {
@@ -25,12 +29,13 @@ const tabs = [
 ]
 
 const Settings = () => {
-    const [selectedTab, setSelectedTab] = useState(localStorage.getItem('selectedTab') || 'account' as string);
+    const [selectedTab, setSelectedTab] = useState(localStorage.getItem('selectedSettingTab') || 'account' as string);
     const company = userStore(state => state.company);
+    const sidebar = globalStore(state => state.sidebar);
 
     // Store selectedTab in local storage
     React.useEffect(() => {
-        localStorage.setItem('selectedTab', selectedTab);
+        localStorage.setItem('selectedSettingTab', selectedTab);
     }, [selectedTab]);
 
     return (
@@ -40,6 +45,25 @@ const Settings = () => {
             <div className="w-full bg-bggray p-8 mx-auto">
                 <nav className="flex justify-between">
                     <div className="flex items-center mr-10 space-x-4">
+                        {!sidebar && (
+                            <Link href={'/'} className="">
+                                <Image
+                                    src={logo_2}
+                                    alt="FacOTTry"
+                                    width={50}
+                                    height={50}
+                                    className="dark:hidden"
+                                />
+                                <Image
+                                    src={logo_dark_2}
+                                    alt="FacOTTry"
+                                    width={50}
+                                    height={50}
+                                    className="hidden dark:block"
+                                />
+                            </Link>
+                        )}
+
                         <h1 className="text-2xl font-bold">Settings</h1>
 
                         <div className="text-sm font-medium text-center text-gray-500 dark:text-gray-400 dark:border-gray-700 mx-auto mt-1">
@@ -69,7 +93,7 @@ const Settings = () => {
                     {selectedTab === 'account' && <AccountSettings />}
                     {selectedTab === 'company' && company?.role === 'owner' && <CompanyOwnerSettings />}
                     {selectedTab === 'company' && company?.role === 'employee' && <CompanyEmployeeSettings />}
-                    
+
                     {selectedTab === 'security' && <SecuritySettings />}
                 </div>
             </div>

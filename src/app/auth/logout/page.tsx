@@ -23,6 +23,11 @@ const Logout = () => {
                 setCompany(null);
                 setActiveFilter({});
 
+                //clear local storage
+                localStorage.removeItem('selectedDashboardTab');
+                localStorage.removeItem('selectedSettingTab');
+                localStorage.removeItem('selectedPlaygroundTab');
+
                 router.push('/auth/login');
             } catch (error: any) {
                 console.log(error.response.data);

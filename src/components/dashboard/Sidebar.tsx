@@ -6,6 +6,7 @@ import Image from 'next/image'
 import logo_2 from '@/assets/logo_2.svg'
 import logo_dark_2 from '@/assets/logo_dark_2.svg'
 import { userStore, globalStore } from "@/lib/store";
+import { IoClose } from "react-icons/io5";
 
 const SidebarButton = ({ href, label, icon, target }: {
   href: string;
@@ -25,6 +26,7 @@ const Sidebar = () => {
   const setActiveProject = userStore(state => state.setActiveProject);
   const company = userStore(state => state.company);
   const sidebar = globalStore(state => state.sidebar);
+  const setSidebar = globalStore(state => state.setSidebar);
 
   const handleProjectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const projectID = e.target.value;
@@ -36,7 +38,7 @@ const Sidebar = () => {
 
   return (
     <div className={`${sidebar ? 'block' : 'hidden'} bg-white p-8 pl-5 dark:bg-darkblue`}>
-      <Link href={'/'} className="flex gap-2 items-center mb-8">
+      <button onClick={()=>{setSidebar(false)}} className="flex gap-2 items-center mb-8">
         <Image
           src={logo_2}
           alt="FacOTTry"
@@ -54,7 +56,7 @@ const Sidebar = () => {
         <p className="font-extrabold text-2xl text-black dark:text-white">
           Fac<span className="text-primary">OTT</span>ry
         </p>
-      </Link>
+      </button>
 
       <div className="font-medium text-slate-700 dark:text-white">
         <SidebarButton href="/dashboard/home" label="Dashboard" icon={<FiHome />} />
@@ -64,7 +66,7 @@ const Sidebar = () => {
         <SidebarButton href="/dashboard/pricing" label="Upgrade" icon={<FiShoppingCart />} />
         <SidebarButton href="/dashboard/buy-features" label="Buy Features" icon={<FiDollarSign />} /> */}
         {/* <SidebarButton href="/dashboard/contact" label="Contact Us" icon={<FiPhone />} /> */}
-        <SidebarButton href="/dashboard/settings/user" label="Settings" icon={<FiSettings />} />
+        <SidebarButton href="/dashboard/settings/project" label="Project Settings" icon={<FiSettings />} />
       </div>
 
       <hr className="mt-4 w-full" />
@@ -73,7 +75,7 @@ const Sidebar = () => {
         <select
           id="project"
           name="project"
-          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
           onChange={handleProjectChange}
           value={activeProject?.projectID}
         >
@@ -87,11 +89,11 @@ const Sidebar = () => {
         </select>
 
         {/* Add new project button */}
-        <Link href="/dashboard/project" className="mt-4 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm text-center hover:bg-primary600 hover:text-white transition-all">
-          Add New Project
+        <Link href="/dashboard/project" className="mt-4 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm text-center hover:bg-gray-100 transition-all">
+          Add Project
         </Link>
 
-        <div className="bg-primary700 p-4 rounded-md mt-4 text-sm flex flex-col gap-2 text-white">
+        <div className="bg-gray-800 p-4 rounded-md mt-4 text-sm flex flex-col gap-2 text-white">
           <span>
             <h3 className="font-bold">Project ID: </h3>
             <p>{activeProject?.projectID}</p>
@@ -116,13 +118,7 @@ const Sidebar = () => {
             <h3 className="font-bold">Project Role: </h3>
             <p>{activeProject?.role}</p>
           </span>
-
-          <Link href="/dashboard/settings/project" className="mt-2 block w-full sm:text-sm font-semibold text-white border p-2 text-center rounded-md hover:bg-white hover:text-primary transition-all">
-            Manage Project
-          </Link>
         </div>
-
-
       </div>
     </div>
   );
