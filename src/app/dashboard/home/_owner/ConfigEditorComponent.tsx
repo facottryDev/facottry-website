@@ -116,6 +116,8 @@ const ConfigTableComponent = (props: Props) => {
                 params: JSON.parse(e.target.ConfigParams.value)
             }
 
+            console.log(data)
+
             if (!data.projectID) return alert('No active project found!');
 
             await axios_config.post('/add-config', data);
@@ -123,8 +125,8 @@ const ConfigTableComponent = (props: Props) => {
             alert('Config created successfully');
             setconfigModal('');
         } catch (error: any) {
-            console.log(error.response)
-            alert(error.response.data.message + "!" + "\n" + `Name: ${error.response.data.name}`)
+            console.log(error.response.data)
+            alert(error.response.data.message);
         }
     }
 

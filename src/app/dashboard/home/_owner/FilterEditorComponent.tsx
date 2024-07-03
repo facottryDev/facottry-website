@@ -25,11 +25,7 @@ const FilterEditorComponent = (props: Props) => {
                 default: String(data.filterDefault).toUpperCase(),
             };
 
-            // Default value must be present in values
-            if (!filter.values.includes(filter.default)) {
-                alert("Default value must be present in values");
-                return;
-            }
+            console.log(filter)
 
             const result = await axios_admin.post("/filter/add", { filter, projectID: activeProject?.projectID });
             alert(result.data.message);

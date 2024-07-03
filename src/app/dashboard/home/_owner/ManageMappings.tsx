@@ -87,7 +87,7 @@ const ModifyMapping = (props: Props) => {
                                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
                                         <div>App Config: {mapping.appConfig.name}</div>
                                         <div>Player Config: {mapping.playerConfig.name}</div>
-                                        {Object.keys(mapping.customConfig).map((key, keyIndex) => (
+                                        {mapping.customConfig && Object.keys(mapping.customConfig).map((key, keyIndex) => (
                                             <div key={keyIndex}> {key}: {mapping.customConfig[key].name}</div>
                                         ))}
                                     </td>
