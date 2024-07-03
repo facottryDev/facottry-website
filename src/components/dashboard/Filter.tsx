@@ -62,7 +62,7 @@ const Filter = ({ }: Props) => {
                             <div key={index} className="flex items-center justify-between">
                                 <label className="mr-4 font-semibold">{key}:</label>
                                 <Select
-                                    closeMenuOnSelect={false}
+                                    closeMenuOnSelect={true}
                                     components={animatedComponents}
                                     isMulti
                                     options={options}

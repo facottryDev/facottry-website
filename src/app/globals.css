@@ -28,8 +28,8 @@
 
   /* Styles for the active tab */
   .tab-button-active {
-    background-color: #ffffff; /* Active tab has a white background */
-    border-color: #007bff; /* Blue border for the active tab */
+    background-color: #ffffff; 
+    border-color: #2768A4; 
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3); /* Slightly more pronounced shadow */
   }
 
