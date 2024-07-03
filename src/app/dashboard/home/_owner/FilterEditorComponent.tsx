@@ -62,16 +62,16 @@ const FilterEditorComponent = (props: Props) => {
         try {
             const result = await axios_admin.post("/filter/delete", { filterName, projectID: activeProject?.projectID });
             alert(result.data.message);
-            window.location.reload();
         } catch (error: any) {
             console.log(error);
             alert(error.response.data.message);
         }
     }
+    
     return (
         <div className="text-sm flex flex-col items-center justify-center dark:text-white dark:bg-darkblue300">
             <div className="w-full border bg-white">
-                <div className="overflow-y-auto h-72">
+                <div className="overflow-y-auto">
                     <table className="min-w-full">
                         <thead className="sticky top-0">
                             <tr>
@@ -99,7 +99,7 @@ const FilterEditorComponent = (props: Props) => {
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
                                         <div className="flex">
-                                            <button className="p-2 rounded-full bg-blue-400 text-white hover:bg-blue-500 transition-all" onClick={() => setEditFilterModal(key)}>
+                                            <button className="p-2 rounded-full  text-white bg-primary600 hover:bg-primary700 transition-all" onClick={() => setEditFilterModal(key)}>
                                                 <IoPencilSharp />
                                             </button>
 
@@ -146,7 +146,7 @@ const FilterEditorComponent = (props: Props) => {
                                                 </div>
                                             </Modal>
 
-                                            <button className="ml-2 p-2 rounded-full bg-red-400 text-white hover:bg-red-500 transition-all" onClick={
+                                            <button className="ml-2 p-2 rounded-full bg-black text-white hover:bg-gray-700 transition-all" onClick={
                                                 () => {
                                                     if (window.confirm('Are you sure?')) {
                                                         handleDeleteFilters(key);
@@ -164,7 +164,7 @@ const FilterEditorComponent = (props: Props) => {
                 </div>
             </div>
 
-            <button className="font-medium text-center text-sm border my-4 p-2 rounded-md shadow-sm hover:bg-gray-100 transition-all" onClick={() =>
+            <button className="font-medium  text-white text-center text-sm border my-4 p-2 rounded-md shadow-sm bg-primary600 hover:bg-primary700 transition-all" onClick={() =>
                 setAddFilterModal(true)
             }>
                 Create New Filter

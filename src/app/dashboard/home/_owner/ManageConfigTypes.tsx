@@ -4,15 +4,10 @@ import FilterEditorComponent from "./FilterEditorComponent"
 
 type Props = {}
 
-const MacroSettings = (props: Props) => {
+const ManageConfigTypes = (props: Props) => {
 
     return (
         <div className="">
-            <section className="w-full border rounded-md mt-8">
-                <h1 className="text-lg font-bold text-center my-4">Manage Filters</h1>
-                <FilterEditorComponent />
-            </section>
-
             <section className="w-full border rounded-md mt-8">
                 <h1 className="text-lg font-bold text-center my-4">Manage Config Types</h1>
                 <ConfigTypeComponent />
@@ -21,4 +16,4 @@ const MacroSettings = (props: Props) => {
     )
 }
 
-export default MacroSettings
+export default ManageConfigTypes

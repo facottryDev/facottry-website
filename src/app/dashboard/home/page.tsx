@@ -10,11 +10,12 @@ import { globalStore, userStore } from "@/lib/store"
 import CreateMappings from "./_owner/CreateMapping"
 import ModifyMapping from "./_owner/ManageMappings"
 import ManageConfigs from "./_owner/ManageConfigs"
-import MacroSettings from "./_owner/MacroSettings"
+import FilterSettings from "./_owner/FilterSettings"
 import ViewConfigs from "./_viewer/ViewConfigs"
 import ViewMappings from "./_viewer/ViewMappings"
+import ManageConfigTypes from "./_owner/ManageConfigTypes"
 
-const ownerTabs = ['Macro Settings', 'Manage Configs', 'Create Mappings', 'Manage Mappings']
+const ownerTabs = ['Manage Filters', 'Config Types', 'Manage Configs', 'Create Mappings', 'Modify Mappings']
 const viewerTabs = ['View Configs', 'View Mappings']
 
 const Dashboard = () => {
@@ -24,6 +25,8 @@ const Dashboard = () => {
 
   const activeProject = userStore(state => state.activeProject);
   const userRole = activeProject?.role;
+
+  const roleTab = (userRole === 'owner' || userRole === 'editor') ? ownerTabs : viewerTabs;
 
   React.useEffect(() => {
     localStorage.setItem('selectedDashboardTab', selectedTab);
@@ -58,67 +61,6 @@ const Dashboard = () => {
             )}
 
             <h1 className="text-2xl font-bold">Dashboard</h1>
-
-            {userRole === 'owner' || userRole === 'editor' ? (
-              <div className="mx-auto">
-                <select
-                  className="cursor-pointer text-sm font-medium text-center text-gray-500 dark:text-gray-400 mx-auto mt-1 lg:hidden block w-full p-2 border border-gray-300 rounded-md"
-                  value={selectedTab}
-                  onChange={(e) => setSelectedTab(e.target.value)}
-                >
-                  {ownerTabs.map((tab, index) => (
-                    <option key={index} value={tab}>
-                      {tab}
-                    </option>
-                  ))}
-                </select>
-
-                <div className="hidden lg:block text-sm font-medium text-center text-gray-500 dark:text-gray-400 dark:border-gray-700">
-                  <ul className="flex space-x-6 ml-4">
-                    {ownerTabs.map((tab, index) => (
-                      <li key={index}>
-                        <button
-                          onClick={() => setSelectedTab(tab)}
-                          className={`inline-block py-2 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 focus:text-primary transition-all focus:border-primary duration-300 ${selectedTab === tab ? 'text-primary border-primary' : ''}`}
-                        >
-                          {tab}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ) : (
-              <div className="mx-auto">
-                <select
-                  className="cursor-pointer text-sm font-medium text-center text-gray-500 dark:text-gray-400 mx-auto mt-1 lg:hidden block w-full p-2 border border-gray-300 rounded-md"
-                  value={selectedTab}
-                  onChange={(e) => setSelectedTab(e.target.value)}
-                >
-                  {viewerTabs.map((tab, index) => (
-                    <option key={index} value={tab}>
-                      {tab}
-                    </option>
-                  ))}
-                </select>
-
-                <div className="hidden lg:block text-sm font-medium text-center text-gray-500 dark:text-gray-400 dark:border-gray-700">
-                  <ul className="flex space-x-6 ml-4">
-                    {viewerTabs.map((tab, index) => (
-                      <li key={index}>
-                        <button
-                          onClick={() => setSelectedTab(tab)}
-                          className={`inline-block py-2 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 focus:text-primary transition-all focus:border-primary duration-300 ${selectedTab === tab ? 'text-primary border-primary' : ''}`}
-                        >
-                          {tab}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )
-            }
           </div>
 
           <div className="flex items-center gap-6">
@@ -129,8 +71,40 @@ const Dashboard = () => {
 
         <hr className="w-full mt-4" />
 
-        {(userRole === 'owner' || userRole === 'editor') && selectedTab === 'Macro Settings' && (
-          <MacroSettings />
+        <div>
+          <select
+            className="cursor-pointer text-sm font-medium text-center text-gray-500 dark:text-gray-400 mx-auto sm:hidden block w-full p-2 border border-gray-300 rounded-b-md"
+            value={selectedTab}
+            onChange={(e) => setSelectedTab(e.target.value)}
+          >
+            {roleTab.map((tab, index) => (
+              <option key={index} value={tab}>
+                {tab}
+              </option>
+            ))}
+          </select>
+          <div className="hidden sm:block text-sm font-medium text-center text-gray-500 dark:text-gray-400 dark:border-gray-700">
+            <ul className="flex space-x-6">
+              {roleTab.map((tab, index) => (
+                <li key={index}>
+                  <button
+                    onClick={() => setSelectedTab(tab)}
+                    className={`tab-button ${selectedTab === tab ? 'tab-button-active' : ''}`}
+                  >
+                    {tab}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {(userRole === 'owner' || userRole === 'editor') && selectedTab === 'Manage Filters' && (
+          <FilterSettings />
+        )}
+
+        {(userRole === 'owner' || userRole === 'editor') && selectedTab === 'Config Types' && (
+          <ManageConfigTypes />
         )}
 
         {(userRole === 'owner' || userRole === 'editor') && selectedTab === 'Manage Configs' && (
@@ -141,7 +115,7 @@ const Dashboard = () => {
           <CreateMappings />
         )}
 
-        {(userRole === 'owner' || userRole === 'editor') && selectedTab === 'Manage Mappings' && (
+        {(userRole === 'owner' || userRole === 'editor') && selectedTab === 'Modify Mappings' && (
           <ModifyMapping />
         )}
 
