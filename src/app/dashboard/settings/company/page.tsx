@@ -1,10 +1,10 @@
 'use client'
 import ToggleSwitch from "@/components/global/ToggleTheme";
 import UserDropdown from "@/components/dashboard/UserDropdown";
-import AccountSettings from "./AccountSettings";
 import Sidebar from "@/components/dashboard/Sidebar";
 import React, { useState } from 'react';
-import SecuritySettings from "./SecuritySettings";
+import CompanyEmployeeSettings from "./CompanyEmployeeSettings";
+import CompanyOwnerSettings from "./CompanyOwnerSettings";
 import { globalStore, userStore } from "@/lib/store";
 import Link from "next/link";
 import Image from "next/image";
@@ -15,6 +15,10 @@ const tabs = [
     {
         name: 'account',
         label: 'Account',
+    },
+    {
+        name: 'company',
+        label: 'Company',
     },
     {
         name: 'security',
@@ -84,8 +88,8 @@ const Settings = () => {
                 <hr className="w-full mt-4" />
 
                 <div className="mt-8">
-                    {selectedTab === 'account' && <AccountSettings />}
-                    {selectedTab === 'security' && <SecuritySettings />}
+                    {selectedTab === 'company' && company?.role === 'owner' && <CompanyOwnerSettings />}
+                    {selectedTab === 'company' && company?.role === 'employee' && <CompanyEmployeeSettings />}
                 </div>
             </div>
         </section>

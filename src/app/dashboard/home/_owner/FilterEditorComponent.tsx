@@ -90,7 +90,7 @@ const FilterEditorComponent = (props: Props) => {
                                         <div className="flex flex-wrap gap-2">
                                             {activeProject?.filters[key].values.map((value: string, i: number) => (
                                                 value === activeProject?.filters[key].default ? (
-                                                    <span key={i} className="px-2 py-1 text-sm text-white bg-gray-500 rounded-md">{value}</span>
+                                                    <span key={i} className="px-2 py-1 text-sm text-white bg-primary800 rounded-md">{value}</span>
                                                 ) : (
                                                     <span key={i} className="px-2 py-1 text-sm text-gray-900 bg-gray-100 rounded-md">{value}</span>
                                                 )
@@ -146,7 +146,7 @@ const FilterEditorComponent = (props: Props) => {
                                                 </div>
                                             </Modal>
 
-                                            <button className="ml-2 p-2 rounded-full bg-black text-white hover:bg-gray-700 transition-all" onClick={
+                                            <button className="ml-2 p-2 rounded-full bg-primary900 hover:bg-primary700 text-white transition-all" onClick={
                                                 () => {
                                                     if (window.confirm('Are you sure?')) {
                                                         handleDeleteFilters(key);

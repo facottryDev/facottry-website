@@ -1,5 +1,5 @@
 'use client'
-import React from 'react';
+import React, { useState } from 'react';
 import { FiHome, FiPlayCircle, FiBarChart2, FiFileText, FiShoppingCart, FiDollarSign, FiPhone, FiSettings, FiFolder } from 'react-icons/fi';
 import Link from 'next/link';
 import Image from 'next/image'
@@ -27,6 +27,7 @@ const Sidebar = () => {
   const company = userStore(state => state.company);
   const sidebar = globalStore(state => state.sidebar);
   const setSidebar = globalStore(state => state.setSidebar);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const handleProjectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const projectID = e.target.value;
@@ -38,7 +39,7 @@ const Sidebar = () => {
 
   return (
     <div className={`${sidebar ? 'block' : 'hidden'} bg-white p-8 pl-5 dark:bg-darkblue`}>
-      <button onClick={()=>{setSidebar(false)}} className="flex gap-2 items-center mb-8">
+      <button onClick={() => { setSidebar(false) }} className="flex gap-2 items-center mb-8">
         <Image
           src={logo_2}
           alt="FacOTTry"
@@ -93,32 +94,45 @@ const Sidebar = () => {
           Add Project
         </Link>
 
-        <div className="bg-gray-800 p-4 rounded-md mt-4 text-sm flex flex-col gap-2 text-white">
-          <span>
-            <h3 className="font-bold">Project ID: </h3>
-            <p>{activeProject?.projectID}</p>
-          </span>
+        <div className="flex flex-col mt-4 rounded-md text-sm items-center justify-center bg-gray-800 p-4">
+          <button
+            className={`bg-gray-700 text-white px-2 w-full py-1 rounded-md`}
+            onClick={() => setIsCollapsed(!isCollapsed)}
+          >
+            {isCollapsed ? 'Show Details' : 'Hide Details'}
+          </button>
 
-          <span>
-            <h3 className="font-bold">Company: </h3>
-            <p>{company?.name}</p>
-          </span>
+          <div
+            className={`rounded-md mt-2 flex flex-col gap-2 text-white collapsible-content ${isCollapsed ? 'max-h-0 opacity-0' : 'max-h-96 opacity-100'
+              }`}
+          >
+            <span>
+              <h3 className="font-bold">Project ID: </h3>
+              <p>{activeProject?.projectID}</p>
+            </span>
 
-          <span>
-            <h3 className="font-bold">Project Name: </h3>
-            <p>{activeProject?.name}</p>
-          </span>
+            <span>
+              <h3 className="font-bold">Company: </h3>
+              <p>{company?.name}</p>
+            </span>
 
-          <span>
-            <h3 className="font-bold">Project Type: </h3>
-            <p>{activeProject?.type}</p>
-          </span>
+            <span>
+              <h3 className="font-bold">Project Name: </h3>
+              <p>{activeProject?.name}</p>
+            </span>
 
-          <span>
-            <h3 className="font-bold">Project Role: </h3>
-            <p>{activeProject?.role}</p>
-          </span>
+            <span>
+              <h3 className="font-bold">Project Type: </h3>
+              <p>{activeProject?.type}</p>
+            </span>
+
+            <span>
+              <h3 className="font-bold">Project Role: </h3>
+              <p>{activeProject?.role}</p>
+            </span>
+          </div>
         </div>
+
       </div>
     </div>
   );

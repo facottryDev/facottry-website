@@ -38,4 +38,9 @@
     background-color: #ffffff; /* Lighten background on hover */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25); /* Increased shadow on hover */
   }
+
+  .collapsible-content {
+    transition: max-height 0.3s ease-out, opacity 0.3s ease;
+    overflow: hidden;
+  }
 }

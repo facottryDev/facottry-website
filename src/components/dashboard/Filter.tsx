@@ -1,63 +1,93 @@
 import { activeFilterStore, userStore } from "@/lib/store";
 import React from 'react'
+import { IoPencilSharp } from "react-icons/io5";
+import Select from 'react-select'
+import makeAnimated from 'react-select/animated';
 
 type Props = {}
+
 
 const Filter = ({ }: Props) => {
     const [activeFilter, setActiveFilter] = activeFilterStore(state => [state.activeFilter, state.setActiveFilter]);
     const activeProject = userStore(state => state.activeProject);
     const allFilters = activeProject?.filters || [];
+    const animatedComponents = makeAnimated();
+    const [selectedValue, setSelectedValue] = React.useState(activeFilter);
+    const [isFilterEditable, setIsFilterEditable] = React.useState(true);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        const formData = new FormData(e.target as HTMLFormElement);
-        const newFilter: any = {};
+    const handleChange = (selectedOptions: any, { name }: any) => {
+        const allSelected = selectedOptions.some((option: { value: string; }) => option.value === "ALL");
 
-        const keys = Object.keys(allFilters);
-        keys.forEach((key) => {
-            newFilter[key] = formData.get(key) as string;
-        });
+        if (allSelected) {
+            selectedOptions = [{ value: "ALL", label: "ALL" }];
+        } else {
+            selectedOptions = selectedOptions.filter((option: { value: string; }) => option.value !== "ALL");
+        }
 
-        setActiveFilter(newFilter);
-        window.location.reload();
+        const selectedValues = selectedOptions.map((option: { value: string; }) => option.value).join(', ');
+
+        setSelectedValue((prev: any) => ({
+            ...prev,
+            [name]: selectedValues || ''
+        }));
     }
 
     return (
-        <div className="w-full border rounded-md mt-8">
-            <h1 className="text-lg font-bold text-center my-4">Select Filter</h1>
+        <div className="w-fit border rounded-md mt-8">
+            <div className="flex justify-between items-center px-5">
+                <h1 className="text-lg font-bold text-center my-4">Filter</h1>
+                <button className="p-2 rounded-full  text-white bg-primary600 hover:bg-primary700 transition-all" onClick={() => 
+                    setIsFilterEditable(prev => !prev)
+                }>
+                    <IoPencilSharp />
+                </button>
+            </div>
 
-            <form onSubmit={handleSubmit} className="flex bg-white flex-col items-center border-gray-100 w-full border-t text-sm">
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-y-2 gap-x-8 w-full justify-center pt-4 items-center">
+            <div className="flex px-10 py-2 bg-white flex-col items-center border-gray-100 w-full border-t text-sm">
+                <div className="mt-4 flex flex-col gap-2">
                     {Object.keys(allFilters).map((key, index) => {
+                        const options = allFilters[key].values.map((value: any) => ({
+                            value: value,
+                            label: value,
+                        }));
+
+                        options.push({ value: "ALL", label: "ALL" });
+
+                        const defaultValue = activeFilter[key] ? activeFilter[key].split(',').map((value: string) => ({
+                            value: value,
+                            label: value,
+                        })) : [];
+
                         return (
-                            <div key={index} className="flex items-center justify-center">
-                                <label className="mr-2 font-medium">{key}</label>
-                                <select
+                            <div key={index} className="flex items-center justify-between">
+                                <label className="mr-4 font-semibold">{key}:</label>
+                                <Select
+                                    closeMenuOnSelect={false}
+                                    components={animatedComponents}
+                                    isMulti
+                                    options={options}
                                     name={key}
-                                    id={key}
-                                    className="border rounded-lg px-2 py-1"
-                                    defaultValue={activeFilter[key]}
-                                >
-                                    <option className="font-semibold" value="">DEFAULT</option>
-                                    <option value="ALL">ALL</option>
-                                    {allFilters[key].values.map((value: any, index: number) => (
-                                        <option key={index} value={value}>
-                                            {value}
-                                        </option>
-                                    ))}
-                                </select>
+                                    className="min-w-[200px] sm:min-w-[300px] lg:min-w-[400px]"
+                                    onChange={handleChange}
+                                    defaultValue={defaultValue}
+                                    isDisabled={isFilterEditable}
+                                />
                             </div>
-                        )
+                        );
                     })}
                 </div>
 
                 <button
-                    type="submit"
-                    className="font-medium border my-4 p-2 px-3 rounded-md shadow-sm hover:bg-gray-100 transition-all"
+                    onClick={() => {
+                        setActiveFilter(selectedValue);
+                        alert("Filter Updated");
+                    }}
+                    disabled={isFilterEditable}
+                    className="font-medium border my-4 p-2 px-3 rounded-md shadow-sm hover:bg-gray-100 transition-all cursor-pointer disabled:bg-gray-200 disabled:cursor-text disabled:text-gray-500 disabled:border-gray-200"
                 >
                     Apply Filter
                 </button>
-            </form>
+            </div>
         </div>
     )
 }

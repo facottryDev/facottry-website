@@ -59,7 +59,7 @@ const ModifyMapping = (props: Props) => {
 
     useEffect(() => {
         getAllMappings();
-    }, [activeProject])
+    }, [activeProject, activeFilter])
 
     return (
         <div>

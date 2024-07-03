@@ -19,7 +19,7 @@ const ownerTabs = ['Manage Filters', 'Config Types', 'Manage Configs', 'Create M
 const viewerTabs = ['View Configs', 'View Mappings']
 
 const Dashboard = () => {
-  const [selectedTab, setSelectedTab] = React.useState(localStorage.getItem('selectedDashboardTab') || 'Macro Settings' as string);
+  const [selectedTab, setSelectedTab] = React.useState(localStorage.getItem('selectedDashboardTab') || 'Manage Filters' as string);
   const sidebar = globalStore(state => state.sidebar);
   const setSidebar = globalStore(state => state.setSidebar);
 
