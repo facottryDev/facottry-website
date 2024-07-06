@@ -5,7 +5,15 @@ type configs = {
   appConfigs: config[];
   playerConfigs: config[];
   customConfigs: config[];
-  types: string[];
+  configTypes: [
+    {
+      name: string;
+      desc: string;
+      status: string;
+      createdAt: string;
+      updatedAt: string;
+    }
+  ]
 };
 
 type config = {
@@ -51,7 +59,13 @@ type Project = {
   editors: string[];
   viewers: string[];
   filters: Filter;
-  configTypes: string[];
+  configTypes: [{
+    name: string;
+    desc: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+  }]
 };
 
 type Filter = any;

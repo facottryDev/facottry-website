@@ -8,9 +8,18 @@ type Props = {}
 
 const ManageConfigs = (props: Props) => {
     const [configs, setConfigs] = useState<configs>();
+    const [isExpanded, setIsExpanded] = useState<string[]>([]);
 
     const activeProject = userStore(state => state.activeProject);
     const userRole = activeProject?.role;
+
+    const toggleExpansion = (typeName: string) => {
+        if (isExpanded.includes(typeName)) {
+            setIsExpanded(isExpanded.filter(name => name !== typeName));
+        } else {
+            setIsExpanded([...isExpanded, typeName]);
+        }
+    };
 
     const getConfigs = async () => {
         try {
@@ -19,6 +28,7 @@ const ManageConfigs = (props: Props) => {
             });
 
             setConfigs(result.data);
+            console.log(result.data)
         } catch (error: any) {
             return error.response;
         }
@@ -31,24 +41,48 @@ const ManageConfigs = (props: Props) => {
     return (
         <div>
             {userRole && (userRole === 'owner' || userRole === 'editor') && (
-                <div className="grid grid-cols-1 gap-10 w-full justify-around">
-                    <section className="w-full border rounded-md mt-8">
-                        <h1 className="text-lg font-bold text-center my-4">App Config</h1>
-                        <ConfigTableComponent type='app' configList={configs?.appConfigs} getConfigs={getConfigs} />
+                <div className="flex text-sm flex-col w-full justify-around">
+                    <section className="w-full border shadow-sm rounded-md mt-8">
+                        <div onClick={() => toggleExpansion('app')} className="flex w-full px-10 justify-between items-center cursor-pointer">
+                            <h1 className="text-lg font-bold text-center my-4">App Config</h1>
+                            <button className="font-medium border my-4 p-2 px-3 rounded-md shadow-sm hover:bg-gray-100 transition-all" onClick={() => toggleExpansion('app')}>{
+                                isExpanded.includes('app') ? 'Collapse' : 'Expand'
+                            }
+                            </button>
+                        </div>
+                        {isExpanded.includes('app') && (
+                            <ConfigTableComponent type='app' configList={configs?.appConfigs} getConfigs={getConfigs} />
+                        )}
                     </section>
 
-                    <section className="w-full border rounded-md mt-8">
-                        <h1 className="text-lg font-bold text-center my-4">Player Config</h1>
-                        <ConfigTableComponent type='player' configList={configs?.playerConfigs} getConfigs={getConfigs} />
+                    <section className="w-full border shadow-sm rounded-md mt-8">
+                        <div onClick={() => toggleExpansion('player')} className="flex w-full px-10 justify-between cursor-pointer items-center">
+                            <h1 className="text-lg font-bold text-center my-4">Player Config</h1>
+                            <button className="font-medium border my-4 p-2 px-3 rounded-md shadow-sm hover:bg-gray-100 transition-all" onClick={() => toggleExpansion('player')}>{
+                                !isExpanded.includes('player') ? 'Expand' : 'Collapse'
+                            }
+                            </button>
+                        </div>
+                        {isExpanded.includes('player') && (
+                            <ConfigTableComponent type='player' configList={configs?.playerConfigs} getConfigs={getConfigs} />
+                        )}
                     </section>
 
-                    {configs?.types.map((type) => (
-                        type !== 'app' && type !== 'player' && (
-                            <section key={type} className="w-full border rounded-md mt-8">
-                                <h1 className="text-lg font-bold text-center my-4">{type} Configs</h1>
-                                <ConfigTableComponent type={type} configList={
-                                    configs?.customConfigs.filter((config) => config.type === type)
-                                } getConfigs={getConfigs} />
+                    {configs?.configTypes.map((configType) => (
+                        configType.name !== 'app' && configType.name !== 'player' && (
+                            <section key={configType.name} className="w-full shadow-sm border rounded-md mt-8">
+                                <div onClick={() => toggleExpansion(configType.name)} className="flex w-full px-10 justify-between items-center cursor-pointer">
+                                    <h1 className="text-lg font-bold text-center my-4">{configType.name}</h1>
+                                    <button className="font-medium border my-4 p-2 px-3 rounded-md shadow-sm hover:bg-gray-100 transition-all" onClick={() => toggleExpansion(configType.name)}>{
+                                        !isExpanded.includes(configType.name) ? 'Expand' : 'Collapse'
+                                    }
+                                    </button>
+                                </div>
+                                {isExpanded.includes(configType.name) && (
+                                    <ConfigTableComponent type={configType.name} configList={
+                                        configs?.customConfigs.filter((config) => config.type === configType.name)
+                                    } getConfigs={getConfigs} />
+                                )}
                             </section>
                         )
                     ))}

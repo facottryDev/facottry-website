@@ -62,11 +62,11 @@ const ModifyMapping = (props: Props) => {
     }, [activeProject, activeFilter])
 
     return (
-        <div>
+        <div className="flex flex-col justify-center items-center">
             <Filter />
 
             {allMappings && (
-                <div className="flex flex-col border rounded-md mt-8">
+                <div className="flex flex-col w-full border rounded-md mt-8">
                     <h1 className="text-lg font-bold text-center my-4">Active Mappings</h1>
                     <table className="table-auto">
                         <thead>

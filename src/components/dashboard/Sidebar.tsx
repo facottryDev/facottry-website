@@ -6,7 +6,6 @@ import Image from 'next/image'
 import logo_2 from '@/assets/logo_2.svg'
 import logo_dark_2 from '@/assets/logo_dark_2.svg'
 import { userStore, globalStore } from "@/lib/store";
-import { IoClose } from "react-icons/io5";
 
 const SidebarButton = ({ href, label, icon, target }: {
   href: string;

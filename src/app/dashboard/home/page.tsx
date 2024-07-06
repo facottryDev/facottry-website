@@ -84,7 +84,7 @@ const Dashboard = () => {
             ))}
           </select>
           <div className="hidden sm:block text-sm font-medium text-center text-gray-500 dark:text-gray-400 dark:border-gray-700">
-            <ul className="flex space-x-6">
+            <ul className="flex space-x-1">
               {roleTab.map((tab, index) => (
                 <li key={index}>
                   <button

@@ -116,8 +116,6 @@ const ConfigTableComponent = (props: Props) => {
                 params: JSON.parse(e.target.ConfigParams.value)
             }
 
-            console.log(data)
-
             if (!data.projectID) return alert('No active project found!');
 
             await axios_config.post('/add-config', data);
@@ -169,7 +167,7 @@ const ConfigTableComponent = (props: Props) => {
                                                     <IoPencilSharp />
                                                 </button>
 
-                                                <button className="ml-2 p-2 rounded-full bg-red-400 text-white hover:bg-red-500 transition-all" onClick={
+                                                <button className="ml-2 p-2 rounded-full bg-primary900 hover:bg-primary700 text-white transition-all" onClick={
                                                     () => {
                                                         if (window.confirm('Are you sure?')) {
                                                             handleDelete(config.configID);

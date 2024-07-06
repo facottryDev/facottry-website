@@ -43,7 +43,7 @@ const ConfigSelectorComponent = (props: Props) => {
                             return (
                                 <tr key={index} onClick={() => {
                                     handleSelect(config);
-                                }} className={`cursor-pointer hover:bg-gray-100 transition-all ${currentSelection?.configID === config.configID ? 'bg-gray-500 text-white' : 'bg-white text-gray-900'}`}>
+                                }} className={`cursor-pointer transition-all ${currentSelection?.configID === config.configID ? 'bg-primary800 hover:bg-primary700 text-white' : 'bg-white text-gray-900'}`}>
                                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
                                         <p className=" whitespace-no-wrap font-bold">{config.name}</p>
                                     </td>

@@ -1,16 +1,30 @@
 'use client'
 import { IoTrashBin, IoPencilSharp, IoClose } from "react-icons/io5";
-import { userStore } from '@/lib/store'
+import { activeFilterStore, userStore } from '@/lib/store'
 import { axios_admin } from "@/lib/axios"
 import Modal from 'react-modal';
 import { useState } from "react";
+import { toast } from 'react-toastify';
 
 type Props = {}
 
 const FilterEditorComponent = (props: Props) => {
     const [AddFilterModal, setAddFilterModal] = useState(false);
     const [EditFilterModal, setEditFilterModal] = useState('');
-    const activeProject = userStore(state => state.activeProject);
+    const [activeProject, setActiveProject, setProjects] = userStore(state => [state.activeProject, state.setActiveProject, state.setProjects]);
+    const setActiveFilter = activeFilterStore(state => state.setActiveFilter);
+
+    const resetFilters = async () => {
+        const adminResponse = await axios_admin.get('/get-admin');
+        const { projects } = adminResponse.data;
+        setProjects(projects);
+        const currentProject = projects.find((p: any) => p.projectID === activeProject?.projectID);
+        setActiveProject(currentProject);
+
+        setActiveFilter({});
+        const defaultFilter = Object.keys(projects[0].filters).reduce((acc, key) => ({ ...acc, [key]: "" }), {});
+        setActiveFilter(defaultFilter);
+    }
 
     const handleAddFilters = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -25,14 +39,13 @@ const FilterEditorComponent = (props: Props) => {
                 default: String(data.filterDefault).toUpperCase(),
             };
 
-            console.log(filter)
-
             const result = await axios_admin.post("/filter/add", { filter, projectID: activeProject?.projectID });
-            alert(result.data.message);
-            window.location.reload();
+            setAddFilterModal(false);
+            toast.success(result.data.message);
+            resetFilters();
         } catch (error: any) {
             console.log(error);
-            alert(error.response.data.message);
+            toast.error(error.response.data.message);
         }
     }
 
@@ -50,28 +63,30 @@ const FilterEditorComponent = (props: Props) => {
             };
 
             const result = await axios_admin.post("/filter/update", { filter, projectID: activeProject?.projectID });
-            alert(result.data.message);
-            window.location.reload();
+            toast.success(result.data.message);
+            setEditFilterModal('');
+            resetFilters();
         } catch (error: any) {
             console.log(error);
-            alert(error.response.data.message);
+            toast.error(error.response.data.message);
         }
     }
 
     const handleDeleteFilters = async (filterName: string) => {
         try {
             const result = await axios_admin.post("/filter/delete", { filterName, projectID: activeProject?.projectID });
-            alert(result.data.message);
+            toast.success(result.data.message);
+            resetFilters();
         } catch (error: any) {
             console.log(error);
-            alert(error.response.data.message);
+            toast.error(error.response.data.message);
         }
     }
-    
+
     return (
         <div className="text-sm flex flex-col items-center justify-center dark:text-white dark:bg-darkblue300">
             <div className="w-full border bg-white">
-                <div className="overflow-y-auto">
+                <div className="overflow-y-auto max-h-[60vh]">
                     <table className="min-w-full">
                         <thead className="sticky top-0">
                             <tr>
@@ -90,7 +105,7 @@ const FilterEditorComponent = (props: Props) => {
                                         <div className="flex flex-wrap gap-2">
                                             {activeProject?.filters[key].values.map((value: string, i: number) => (
                                                 value === activeProject?.filters[key].default ? (
-                                                    <span key={i} className="px-2 py-1 text-sm text-white bg-primary800 rounded-md">{value}</span>
+                                                    <span key={i} className="px-2 py-1 text-sm text-white bg-primary600 rounded-md">{value}</span>
                                                 ) : (
                                                     <span key={i} className="px-2 py-1 text-sm text-gray-900 bg-gray-100 rounded-md">{value}</span>
                                                 )
