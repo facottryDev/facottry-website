@@ -35,8 +35,6 @@ const Playground = (props: Props) => {
                 filter: activeFilter
             });
 
-            console.log(mapping.data);
-
             setActiveMapping(mapping.data.mappings);
         } catch (error) {
             console.log(error);

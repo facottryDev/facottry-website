@@ -3,6 +3,7 @@ import React from 'react'
 import { IoPencilSharp } from "react-icons/io5";
 import Select from 'react-select'
 import makeAnimated from 'react-select/animated';
+import { toast } from "react-toastify";
 
 type Props = {}
 
@@ -14,7 +15,7 @@ const Filter = ({ }: Props) => {
     const animatedComponents = makeAnimated();
     const [selectedValue, setSelectedValue] = React.useState(activeFilter);
     const [isFilterEditable, setIsFilterEditable] = React.useState(true);
-    const [isCollapsed, setIsCollapsed] = React.useState(true);
+    const [isCollapsed, setIsCollapsed] = React.useState(false);
 
     const handleChange = (selectedOptions: any, { name }: any) => {
         const allSelected = selectedOptions.some((option: { value: string; }) => option.value === "ALL");
@@ -34,16 +35,24 @@ const Filter = ({ }: Props) => {
     }
 
     return (
-        <div className="w-fit min-w-[400px] sm:min-w-[500px] lg:min-w-[600px] border rounded-md mt-8">
-            <div onClick={
-                () => setIsCollapsed(prev => !prev)
-            } className="flex justify-between cursor-pointer items-center px-5">
+        <div className="w-fit min-w-[300px] sm:min-w-[500px] lg:min-w-[600px] border rounded-md mt-8">
+            <div className="flex justify-between items-center px-5">
                 <h1 className="text-lg font-bold text-center my-4">Select Filters</h1>
-                <button className="p-2 rounded-full  text-white bg-primary600 hover:bg-primary700 transition-all" onClick={() =>
-                    setIsFilterEditable(prev => !prev)
-                }>
-                    <IoPencilSharp />
-                </button>
+                <div className="flex items-center justify-center gap-4">
+                    {isCollapsed === false &&
+                        <button className="p-2 rounded-full  text-white bg-primary600 hover:bg-primary700 transition-all" onClick={() =>
+                            setIsFilterEditable(prev => !prev)
+                        }>
+                            <IoPencilSharp />
+                        </button>
+                    }
+                    <button className="font-medium border my-4 p-2 px-3 rounded-md shadow-sm hover:bg-gray-100 transition-all"
+                        onClick={() => setIsCollapsed(prev => !prev)}
+                    >{
+                            isCollapsed === false ? 'Collapse' : 'Expand'
+                        }
+                    </button>
+                </div>
             </div>
 
             {!isCollapsed && <div>
@@ -84,7 +93,7 @@ const Filter = ({ }: Props) => {
                     <button
                         onClick={() => {
                             setActiveFilter(selectedValue);
-                            alert("Filter Updated");
+                            toast.success("Filter Updated");
                         }}
                         disabled={isFilterEditable}
                         className="font-medium border my-4 p-2 px-3 rounded-md shadow-sm hover:bg-gray-100 transition-all cursor-pointer disabled:bg-gray-200 disabled:cursor-text disabled:text-gray-500 disabled:border-gray-200"

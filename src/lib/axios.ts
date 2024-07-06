@@ -1,4 +1,5 @@
 import axios from "axios";
+import { generateScaleHash } from "./scaleAuth";
 
 const axios_auth = axios.create({
   baseURL: process.env.NEXT_PUBLIC_AUTH_BASE_URL,
@@ -27,5 +28,14 @@ axios_config.defaults.headers.post["Content-Type"] = "application/json";
 
 axios_scale.defaults.withCredentials = true;
 axios_scale.defaults.headers.post["Content-Type"] = "application/json";
+axios_scale.interceptors.request.use(
+  function (config) {
+    config.headers["x-client-hash"] = generateScaleHash();
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
 
 export { axios_auth, axios_admin, axios_config, axios_scale };
