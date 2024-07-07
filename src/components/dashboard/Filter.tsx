@@ -35,7 +35,7 @@ const Filter = ({ }: Props) => {
     }
 
     return (
-        <div className="w-fit min-w-[300px] sm:min-w-[500px] lg:min-w-[600px] border rounded-md mt-8">
+        <div className="w-fit text-sm min-w-[300px] sm:min-w-[500px] lg:min-w-[600px] border rounded-md mt-8">
             <div className="flex justify-between items-center px-5">
                 <h1 className="text-lg font-bold text-center my-4">Select Filters</h1>
                 <div className="flex items-center justify-center gap-4">

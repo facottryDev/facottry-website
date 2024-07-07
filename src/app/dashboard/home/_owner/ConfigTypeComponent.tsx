@@ -163,7 +163,7 @@ const ConfigTypeComponent = (props: Props) => {
                 <div>
                     <div className="flex justify-between w-full ">
                         <h1 className="font-bold uppercase text-lg">Create New Type</h1>
-                        <button className="p-2 rounded-full bg-red-400 text-white hover:bg-red-500 transition-all" onClick={() => setAddConfigTypeModal(false)}>
+                        <button className="p-2 rounded-full bg-primary900 hover:bg-primary700 text-white transition-all" onClick={() => setAddConfigTypeModal(false)}>
                             <IoClose />
                         </button>
                     </div>

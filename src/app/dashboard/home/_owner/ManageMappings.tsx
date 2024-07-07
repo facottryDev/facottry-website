@@ -5,6 +5,8 @@ import { axios_config } from "@/lib/axios"
 import React from 'react'
 import { IoPencil, IoTrashBin } from "react-icons/io5";
 import Filter from "@/components/dashboard/Filter";
+import { MdDeleteSweep, MdEditNote, MdGridView } from "react-icons/md";
+import { toast } from "react-toastify";
 
 type Props = {}
 
@@ -13,27 +15,29 @@ const ModifyMapping = (props: Props) => {
     const [allMappings, setAllMappings] = useState<any>();
     const activeProject = userStore(state => state.activeProject);
     const [activeFilter] = activeFilterStore(state => [state.activeFilter]);
+    const [editMappingModal, setEditMappingModal] = useState(false);
 
     const handleEditMapping = async (mapping: any) => {
-        alert(mapping.appConfig.name + ' ' + mapping.playerConfig.name);
+        setEditMappingModal(true);
     }
 
     const handleDeleteMapping = async (mapping: any) => {
         if (!activeProject) {
-            alert('No active project found!');
+            toast.error('No active project found!');
             return;
         }
 
         try {
             await axios_config.post('/delete-mapping', {
-                projectID: activeProject?.projectID,
-                filter: activeFilter
+                projectID: mapping.projectID,
+                filter: mapping.filter,
             });
 
-            alert('Mapping deleted successfully!')
+            toast.success('Mapping deleted successfully!')
+            getAllMappings();
         } catch (error) {
             console.error(error)
-            alert('Error in deleting mapping!')
+            toast.error('Error in deleting mapping!')
         }
     }
 
@@ -52,7 +56,7 @@ const ModifyMapping = (props: Props) => {
                 setAllMappings(undefined);
             }
         } catch (error: any) {
-            alert(error.response.data.message);
+            toast.error(error.response.data.message);
             console.log(error);
         }
     }
@@ -92,15 +96,16 @@ const ModifyMapping = (props: Props) => {
                                         ))}
                                     </td>
                                     <td className="border-b border-gray-200 text-sm">
-                                        <button className="ml-2 p-2 rounded-full bg-primary400 text-white hover:bg-primary transition-all" onClick={() => handleEditMapping(mapping)}>
-                                            <IoPencil />
+                                        <button className="ml-2 p-2 rounded-full bg-primary600 text-white hover:bg-primary700 transition-all" onClick={() => handleEditMapping(mapping)}>
+                                            <MdEditNote fontSize={18} />
                                         </button>
-                                        <button className="ml-2 p-2 rounded-full bg-red-400 text-white hover:bg-red-500 transition-all" onClick={() => {
+
+                                        <button className="ml-2 p-2 rounded-full bg-primary900 hover:bg-primary700 text-white transition-all" onClick={() => {
                                             if (window.confirm('Are you sure?')) {
                                                 handleDeleteMapping(mapping);
                                             }
                                         }}>
-                                            <IoTrashBin />
+                                            <MdDeleteSweep fontSize={18} />
                                         </button>
                                     </td>
                                 </tr>

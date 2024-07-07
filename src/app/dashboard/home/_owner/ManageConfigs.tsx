@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import { axios_config } from "@/lib/axios"
 import { userStore } from "@/lib/store";
-import ConfigTableComponent from "./ConfigEditorComponent";
+import ConfigEditorComponent from "./ConfigEditorComponent";
 
 type Props = {}
 
@@ -51,7 +51,7 @@ const ManageConfigs = (props: Props) => {
                             </button>
                         </div>
                         {isExpanded.includes('app') && (
-                            <ConfigTableComponent type='app' configList={configs?.appConfigs} getConfigs={getConfigs} />
+                            <ConfigEditorComponent type='app' configList={configs?.appConfigs} getConfigs={getConfigs} />
                         )}
                     </section>
 
@@ -64,7 +64,7 @@ const ManageConfigs = (props: Props) => {
                             </button>
                         </div>
                         {isExpanded.includes('player') && (
-                            <ConfigTableComponent type='player' configList={configs?.playerConfigs} getConfigs={getConfigs} />
+                            <ConfigEditorComponent type='player' configList={configs?.playerConfigs} getConfigs={getConfigs} />
                         )}
                     </section>
 
@@ -79,7 +79,7 @@ const ManageConfigs = (props: Props) => {
                                     </button>
                                 </div>
                                 {isExpanded.includes(configType.name) && (
-                                    <ConfigTableComponent type={configType.name} configList={
+                                    <ConfigEditorComponent type={configType.name} configList={
                                         configs?.customConfigs.filter((config) => config.type === configType.name)
                                     } getConfigs={getConfigs} />
                                 )}
