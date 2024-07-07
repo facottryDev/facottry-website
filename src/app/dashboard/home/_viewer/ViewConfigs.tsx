@@ -47,13 +47,13 @@ const ViewConfigs = (props: Props) => {
         />
       </section>
 
-      {configs?.types.map((type, index) => (
-        type !== 'app' && type !== 'player' && (<section key={index} className="w-full border rounded-md mt-8">
-          <p className="text-lg font-bold text-center my-4">{type} Configs</p>
+      {configs?.configTypes.map((type, index) => (
+        type.name !== 'app' && type.name !== 'player' && (<section key={index} className="w-full border rounded-md mt-8">
+          <p className="text-lg font-bold text-center my-4">{type.name} Configs</p>
 
           <ConfigViewerComponent
-            configList={configs?.customConfigs.filter((config) => config.type === type)}
-            type={type}
+            configList={configs?.customConfigs.filter((config) => config.type === type.name)}
+            type={type.name}
           />
         </section>)
       ))}
