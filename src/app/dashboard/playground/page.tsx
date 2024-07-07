@@ -6,7 +6,7 @@ import { globalStore, userStore } from "@/lib/store"
 import Image from "next/image"
 import logo_2 from '@/assets/logo_2.svg'
 import logo_dark_2 from '@/assets/logo_dark_2.svg'
-import { SDKDemo } from "./sdkDemo"
+import { SDKDemo } from "./SDKDemo"
 import SiteExamples from "./SiteExamples"
 
 type Props = {}
@@ -64,9 +64,7 @@ const Playground = (props: Props) => {
                     </div>
                 </nav>
 
-                <hr className="w-full mt-4" />
-
-                <div>
+                <div className="mt-4">
                     <select
                         className="cursor-pointer text-sm font-medium text-center text-gray-500 dark:text-gray-400 mx-auto sm:hidden block w-full p-2 border border-gray-300 rounded-b-md"
                         value={selectedTab}
@@ -84,7 +82,7 @@ const Playground = (props: Props) => {
                                 <li key={index}>
                                     <button
                                         onClick={() => setSelectedTab(tab)}
-                                        className={`tab-button ${selectedTab === tab ? 'tab-button-active' : ''}`}
+                                        className={` tab-button lg:w-[200px] ${selectedTab === tab ? 'tab-button-active' : ''}`}
                                     >
                                         {tab}
                                     </button>
@@ -93,6 +91,8 @@ const Playground = (props: Props) => {
                         </ul>
                     </div>
                 </div>
+
+                <hr className="w-full mt-2" />
 
                 {selectedTab === 'SDK Demo' && (
                     <SDKDemo />

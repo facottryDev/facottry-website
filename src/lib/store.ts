@@ -48,6 +48,8 @@ type GlobalStore = {
   sideDetailsCollapsed: boolean;
   dashboardTab: string;
   playgroundTab: string;
+  projectSettingTab: string;
+  setProjectSettingTab: (projectSettingTab: string) => void;
   setPlaygroundTab: (playgroundTab: string) => void;
   setDashboardTab: (dashboardTab: string) => void;
   setDetailsCollapsed: (sideDetailsCollapsed: boolean) => void;
@@ -59,6 +61,8 @@ export const globalStore = create(persist<GlobalStore>((set) => ({
   sideDetailsCollapsed: false,
   dashboardTab: 'Manage Filters',
   playgroundTab: 'SDK Demo',
+  projectSettingTab: 'Basic Details',
+  setProjectSettingTab: (projectSettingTab: string) => set({ projectSettingTab }),
   setPlaygroundTab: (playgroundTab: string) => set({ playgroundTab }),
   setDashboardTab: (dashboardTab: string) => set({ dashboardTab }),
   setDetailsCollapsed: (sideDetailsCollapsed: boolean) => set({ sideDetailsCollapsed }),

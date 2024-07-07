@@ -18,12 +18,11 @@
     background-color: #f5f5f5; /* Tab background */
     border: none;
     border-bottom: 2px solid transparent; /* Invisible border by default */
-    border-bottom-left-radius: 8px; /* Rounded bottom-left corner */
-    border-bottom-right-radius: 8px; /* Rounded bottom-right corner */
+    border-radius: 4px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
     cursor: pointer;
     transition: all 0.3s ease; /* Smooth transition for hover and focus */
-  }
+}
 
   /* Styles for the active tab */
   .tab-button-active {

@@ -19,7 +19,7 @@ const ownerTabs = ['Manage Filters', 'Config Types', 'Manage Configs', 'Create M
 const viewerTabs = ['View Configs', 'View Mappings']
 
 const Dashboard = () => {
-  const [selectedTab, setSelectedTab, sidebar, setSidebar] = globalStore(state => [state.dashboardTab, state.setDashboardTab, state.sidebar, state.setSidebar]);  
+  const [selectedTab, setSelectedTab, sidebar, setSidebar] = globalStore(state => [state.dashboardTab, state.setDashboardTab, state.sidebar, state.setSidebar]);
 
   const activeProject = userStore(state => state.activeProject);
   const userRole = activeProject?.role;
@@ -63,9 +63,7 @@ const Dashboard = () => {
           </div>
         </nav>
 
-        <hr className="w-full mt-4" />
-
-        <div>
+        <div className="mt-4">
           <select
             className="cursor-pointer text-sm font-medium text-center text-gray-500 dark:text-gray-400 mx-auto sm:hidden block w-full p-2 border border-gray-300 rounded-b-md"
             value={selectedTab}
@@ -83,7 +81,7 @@ const Dashboard = () => {
                 <li key={index}>
                   <button
                     onClick={() => setSelectedTab(tab)}
-                    className={`tab-button ${selectedTab === tab ? 'tab-button-active' : ''}`}
+                    className={`tab-button lg:w-[200px] ${selectedTab === tab ? 'tab-button-active' : ''}`}
                   >
                     {tab}
                   </button>
@@ -93,33 +91,37 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {(userRole === 'owner' || userRole === 'editor') && selectedTab === 'Manage Filters' && (
-          <FilterSettings />
-        )}
+        <hr className="w-full mt-2" />
 
-        {(userRole === 'owner' || userRole === 'editor') && selectedTab === 'Config Types' && (
-          <ManageConfigTypes />
-        )}
+        <div className="">
+          {(userRole === 'owner' || userRole === 'editor') && selectedTab === 'Manage Filters' && (
+            <FilterSettings />
+          )}
 
-        {(userRole === 'owner' || userRole === 'editor') && selectedTab === 'Manage Configs' && (
-          <ManageConfigs />
-        )}
+          {(userRole === 'owner' || userRole === 'editor') && selectedTab === 'Config Types' && (
+            <ManageConfigTypes />
+          )}
 
-        {(userRole === 'owner' || userRole === 'editor') && selectedTab === 'Create Mappings' && (
-          <CreateMappings />
-        )}
+          {(userRole === 'owner' || userRole === 'editor') && selectedTab === 'Manage Configs' && (
+            <ManageConfigs />
+          )}
 
-        {(userRole === 'owner' || userRole === 'editor') && selectedTab === 'Modify Mappings' && (
-          <ModifyMapping />
-        )}
+          {(userRole === 'owner' || userRole === 'editor') && selectedTab === 'Create Mappings' && (
+            <CreateMappings />
+          )}
 
-        {userRole === 'viewer' && selectedTab === 'View Configs' && (
-          <ViewConfigs />
-        )}
+          {(userRole === 'owner' || userRole === 'editor') && selectedTab === 'Modify Mappings' && (
+            <ModifyMapping />
+          )}
 
-        {userRole === 'viewer' && selectedTab === 'View Mappings' && (
-          <ViewMappings />
-        )}
+          {userRole === 'viewer' && selectedTab === 'View Configs' && (
+            <ViewConfigs />
+          )}
+
+          {userRole === 'viewer' && selectedTab === 'View Mappings' && (
+            <ViewMappings />
+          )}
+        </div>
 
       </div>
     </div>
