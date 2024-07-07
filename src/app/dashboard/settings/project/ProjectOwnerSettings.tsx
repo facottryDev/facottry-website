@@ -69,7 +69,7 @@ export default function ProjectOwnerSettings() {
 
 
                 {/* Modify User Box */}
-                
+
             </div>
 
             {/* Manage Project Join Requests */}
@@ -208,6 +208,5 @@ export default function ProjectOwnerSettings() {
                 </button>
             </div>
         </div>
-        </div >
     )
 }
