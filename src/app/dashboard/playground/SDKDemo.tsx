@@ -22,8 +22,8 @@ export const SDKDemo = (props: Props) => {
             });
 
             setActiveMapping(mapping.data.mappings);
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            console.log(error.data);
         }
     }
 
