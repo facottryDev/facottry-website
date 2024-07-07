@@ -3,13 +3,14 @@ import { axios_auth, axios_admin } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { userStore, activeFilterStore } from "@/lib/store";
+import { Loader } from "@/components/global/Loader";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
 
     const [activeFilter, setActiveFilter] = activeFilterStore(state => [state.activeFilter, state.setActiveFilter]);
-    
+
     const { activeProject, setActiveProject, setCompany, setProjects, setUser } = userStore(state => ({
         activeProject: state.activeProject,
         setActiveProject: state.setActiveProject,
@@ -49,7 +50,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }, []);
 
     if (isLoading) {
-        return <div> Loading... </div>
+        return (
+            <Loader />
+        )
     } else {
         return (
             <main>

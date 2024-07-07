@@ -3,6 +3,7 @@ import { axios_auth, axios_admin } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { userStore } from "@/lib/store";
+import { Loader } from "@/components/global/Loader";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(true);
@@ -39,7 +40,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }, [])
 
     if (isLoading) {
-        return <div> Loading... </div>
+        return (
+            <Loader />
+        )
     } else {
         return (
             <main>{children}</main>

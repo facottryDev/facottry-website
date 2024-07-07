@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { axios_auth } from "@/lib/axios"
 import { activeFilterStore, userStore } from "@/lib/store"
+import { Loader } from "@/components/global/Loader"
 
 const Logout = () => {
     const router = useRouter();
@@ -16,7 +17,7 @@ const Logout = () => {
         const logout = async () => {
             try {
                 await axios_auth.get('/logout');
-                
+
                 setProjects([]);
                 setActiveProject(null);
                 setUser(null);
@@ -39,7 +40,7 @@ const Logout = () => {
     }, [])
 
     return (
-        <div>Logging out...</div>
+        <Loader />
     )
 }
 
