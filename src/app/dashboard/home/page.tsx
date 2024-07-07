@@ -19,18 +19,12 @@ const ownerTabs = ['Manage Filters', 'Config Types', 'Manage Configs', 'Create M
 const viewerTabs = ['View Configs', 'View Mappings']
 
 const Dashboard = () => {
-  const [selectedTab, setSelectedTab] = React.useState(localStorage.getItem('selectedDashboardTab') || 'Manage Filters' as string);
-  const sidebar = globalStore(state => state.sidebar);
-  const setSidebar = globalStore(state => state.setSidebar);
+  const [selectedTab, setSelectedTab, sidebar, setSidebar] = globalStore(state => [state.dashboardTab, state.setDashboardTab, state.sidebar, state.setSidebar]);  
 
   const activeProject = userStore(state => state.activeProject);
   const userRole = activeProject?.role;
 
   const roleTab = (userRole === 'owner' || userRole === 'editor') ? ownerTabs : viewerTabs;
-
-  React.useEffect(() => {
-    localStorage.setItem('selectedDashboardTab', selectedTab);
-  }, [selectedTab]);
 
   return (
     <div className="flex min-h-screen dark:bg-darkblue300">

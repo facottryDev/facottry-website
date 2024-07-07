@@ -6,6 +6,7 @@ type FilterStore = {
   setActiveFilter: (item: Filter) => void;
 };
 
+
 export const activeFilterStore = create(
   persist<FilterStore>(
     (set) => ({
@@ -27,11 +28,6 @@ type UserStore = {
   setProjects: (projects: Project[]) => void;
 };
 
-type GlobalStore = {
-  sidebar: boolean;
-  setSidebar: (sidebar: boolean) => void;
-};
-
 export const userStore = create(
   persist<UserStore>((set) => ({
     user: null,
@@ -47,7 +43,24 @@ export const userStore = create(
   { name: "user" })
 );
 
+type GlobalStore = {
+  sidebar: boolean;
+  sideDetailsCollapsed: boolean;
+  dashboardTab: string;
+  playgroundTab: string;
+  setPlaygroundTab: (playgroundTab: string) => void;
+  setDashboardTab: (dashboardTab: string) => void;
+  setDetailsCollapsed: (sideDetailsCollapsed: boolean) => void;
+  setSidebar: (sidebar: boolean) => void;
+};
+
 export const globalStore = create(persist<GlobalStore>((set) => ({
   sidebar: true,
+  sideDetailsCollapsed: false,
+  dashboardTab: 'Manage Filters',
+  playgroundTab: 'SDK Demo',
+  setPlaygroundTab: (playgroundTab: string) => set({ playgroundTab }),
+  setDashboardTab: (dashboardTab: string) => set({ dashboardTab }),
+  setDetailsCollapsed: (sideDetailsCollapsed: boolean) => set({ sideDetailsCollapsed }),
   setSidebar: (sidebar) => set({ sidebar }),
 }), { name: "global" }));

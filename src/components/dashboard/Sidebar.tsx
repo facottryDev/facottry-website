@@ -6,6 +6,8 @@ import Image from 'next/image'
 import logo_2 from '@/assets/logo_2.svg'
 import logo_dark_2 from '@/assets/logo_dark_2.svg'
 import { userStore, globalStore } from "@/lib/store";
+import Select from 'react-select'
+import makeAnimated from 'react-select/animated';
 
 const SidebarButton = ({ href, label, icon, target }: {
   href: string;
@@ -20,21 +22,22 @@ const SidebarButton = ({ href, label, icon, target }: {
 );
 
 const Sidebar = () => {
-  const allProjects = userStore(state => state.projects);
-  const activeProject = userStore(state => state.activeProject);
-  const setActiveProject = userStore(state => state.setActiveProject);
-  const company = userStore(state => state.company);
-  const sidebar = globalStore(state => state.sidebar);
-  const setSidebar = globalStore(state => state.setSidebar);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const { projects: allProjects, activeProject, setActiveProject, company } = userStore(state => ({ projects: state.projects, activeProject: state.activeProject, setActiveProject: state.setActiveProject, company: state.company }));
+  const animatedComponents = makeAnimated();
 
-  const handleProjectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const projectID = e.target.value;
-    const project = allProjects.find((item) => item.projectID === projectID);
-    if (project) {
-      setActiveProject(project);
-    }
+  const { sidebar, setSidebar, sideDetailsCollapsed: sidebarCollapsed, setDetailsCollapsed: setSidebarCollapsed } = globalStore(state => ({ sidebar: state.sidebar, setSidebar: state.setSidebar, sideDetailsCollapsed: state.sideDetailsCollapsed, setDetailsCollapsed: state.setDetailsCollapsed }));
+
+  const handleProjectChange = (selectedOption: any) => {
+    const project = allProjects.find((item) => item.projectID === selectedOption.value) || null;
+    if(project) setActiveProject(project);
   }
+
+  const ProjectOptions = allProjects
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((item) => ({
+      value: item.projectID,
+      label: `${item.name} - ${item.type}`,
+    }));
 
   return (
     <div className={`${sidebar ? 'block' : 'hidden'} bg-white p-8 pl-5 dark:bg-darkblue`}>
@@ -67,26 +70,20 @@ const Sidebar = () => {
         <SidebarButton href="/dashboard/buy-features" label="Buy Features" icon={<FiDollarSign />} /> */}
         {/* <SidebarButton href="/dashboard/contact" label="Contact Us" icon={<FiPhone />} /> */}
         <SidebarButton href="/dashboard/settings/project" label="Project Settings" icon={<FiSettings />} />
+        <SidebarButton href="/dashboard/settings/company" label="Company Settings" icon={<FiSettings />} />
       </div>
 
       <hr className="mt-4 w-full" />
 
       <div className="mt-4">
-        <select
-          id="project"
-          name="project"
-          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
+        <Select
+          options={ProjectOptions}
           onChange={handleProjectChange}
-          value={activeProject?.projectID}
-        >
-          {allProjects
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map((item) => (
-              <option key={item.projectID} value={item.projectID}>
-                {item.name} - {item.type}
-              </option>
-            ))}
-        </select>
+          value={ProjectOptions.find(option => option.value === activeProject?.projectID)}
+          closeMenuOnSelect={true}
+          components={animatedComponents}
+        />
+
 
         {/* Add new project button */}
         <Link href="/dashboard/project" className="mt-4 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm text-center hover:bg-gray-100 transition-all">
@@ -96,13 +93,13 @@ const Sidebar = () => {
         <div className="flex flex-col mt-4 rounded-md text-sm items-center justify-center bg-gray-800 p-4">
           <button
             className={`bg-gray-700 text-white px-2 w-full py-1 rounded-md`}
-            onClick={() => setIsCollapsed(!isCollapsed)}
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
           >
-            {isCollapsed ? 'Show Details' : 'Hide Details'}
+            {sidebarCollapsed ? 'Show Details' : 'Hide Details'}
           </button>
 
           <div
-            className={`rounded-md mt-2 flex flex-col gap-2 text-white collapsible-content ${isCollapsed ? 'max-h-0 opacity-0' : 'max-h-96 opacity-100'
+            className={`rounded-md mt-2 flex flex-col gap-2 text-white collapsible-content ${sidebarCollapsed ? 'max-h-0 opacity-0' : 'max-h-96 opacity-100'
               }`}
           >
             <span>

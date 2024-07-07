@@ -13,17 +13,9 @@ import logo_dark_2 from '@/assets/logo_dark_2.svg'
 
 const tabs = [
     {
-        name: 'account',
-        label: 'Account',
-    },
-    {
         name: 'company',
         label: 'Company',
-    },
-    {
-        name: 'security',
-        label: 'Security',
-    },
+    }
 ]
 
 const Settings = () => {

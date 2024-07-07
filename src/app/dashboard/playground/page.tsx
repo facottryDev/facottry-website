@@ -1,49 +1,25 @@
 'use client'
-import Filter from "@/components/dashboard/Filter"
 import Sidebar from "@/components/dashboard/Sidebar"
 import UserDropdown from "@/components/dashboard/UserDropdown"
 import ToggleSwitch from "@/components/global/ToggleTheme"
-import { axios_scale } from "@/lib/axios"
-import { activeFilterStore, globalStore, userStore } from "@/lib/store"
-import React, { useEffect, useState } from 'react'
-import { JSONTree } from 'react-json-tree'
+import { globalStore, userStore } from "@/lib/store"
 import Image from "next/image"
 import logo_2 from '@/assets/logo_2.svg'
 import logo_dark_2 from '@/assets/logo_dark_2.svg'
+import { SDKDemo } from "./sdkDemo"
+import SiteExamples from "./SiteExamples"
 
 type Props = {}
-const tabs = ['SDK Demo', 'Site Examples']
+const ownerTabs = ['SDK Demo', 'Site Examples']
+const viewerTabs = ['SDK Demo', 'Site Examples']
 
 const Playground = (props: Props) => {
-    const [activeFilter, setActiveFilter] = activeFilterStore(state => [state.activeFilter, state.setActiveFilter]);
-    const [activeMapping, setActiveMapping] = useState<any>();
     const activeProject = userStore(state => state.activeProject);
-    const [selectedTab, setSelectedTab] = React.useState(localStorage.getItem('selectedPlaygroundTab') || 'SDK Response' as string);
-    const sidebar = globalStore(state => state.sidebar);
-    const setSidebar = globalStore(state => state.setSidebar);
+    const userRole = activeProject?.role;
 
-    React.useEffect(() => {
-        localStorage.setItem('selectedPlaygroundTab', selectedTab);
-    }, [selectedTab]);
+    const roleTab = (userRole === 'owner' || userRole === 'editor') ? ownerTabs : viewerTabs;
 
-    const getMapping = async () => {
-        if (!activeProject) return;
-
-        try {
-            const mapping = await axios_scale.post('/get-mapping', {
-                projectID: activeProject?.projectID,
-                filter: activeFilter
-            });
-
-            setActiveMapping(mapping.data.mappings);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    useEffect(() => {
-        getMapping();
-    }, [activeFilter, activeProject])
+    const [selectedTab, setSelectedTab, sidebar, setSidebar] = globalStore(state => [state.playgroundTab, state.setPlaygroundTab, state.sidebar, state.setSidebar]);
 
     return (
         <div className="flex min-h-screen dark:bg-darkblue300">
@@ -79,34 +55,7 @@ const Playground = (props: Props) => {
 
                         <h1 className="text-2xl font-bold">Playground</h1>
 
-                        <div className="mx-auto">
-                            <select
-                                className="text-sm font-medium text-center text-gray-500 dark:text-gray-400 mx-auto mt-1 lg:hidden block w-full p-2 border border-gray-300 rounded-md"
-                                value={selectedTab}
-                                onChange={(e) => setSelectedTab(e.target.value)}
-                            >
-                                {tabs.map((tab, index) => (
-                                    <option key={index} value={tab}>
-                                        {tab}
-                                    </option>
-                                ))}
-                            </select>
 
-                            <div className="hidden lg:block text-sm font-medium text-center text-gray-500 dark:text-gray-400 dark:border-gray-700">
-                                <ul className="flex space-x-6 ml-4">
-                                    {tabs.map((tab, index) => (
-                                        <li key={index}>
-                                            <button
-                                                onClick={() => setSelectedTab(tab)}
-                                                className={`inline-block py-2 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 focus:text-primary transition-all focus:border-primary duration-300 ${selectedTab === tab ? 'text-primary border-primary' : ''}`}
-                                            >
-                                                {tab}
-                                            </button>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
                     </div>
 
                     <div className="flex items-center gap-6">
@@ -117,16 +66,40 @@ const Playground = (props: Props) => {
 
                 <hr className="w-full mt-4" />
 
-                <div className="flex flex-col w-full mt-8 items-center justify-center">
-                    <Filter />
+                <div>
+                    <select
+                        className="cursor-pointer text-sm font-medium text-center text-gray-500 dark:text-gray-400 mx-auto sm:hidden block w-full p-2 border border-gray-300 rounded-b-md"
+                        value={selectedTab}
+                        onChange={(e) => setSelectedTab(e.target.value)}
+                    >
+                        {roleTab.map((tab, index) => (
+                            <option key={index} value={tab}>
+                                {tab}
+                            </option>
+                        ))}
+                    </select>
+                    <div className="hidden sm:block text-sm font-medium text-center text-gray-500 dark:text-gray-400 dark:border-gray-700">
+                        <ul className="flex space-x-1">
+                            {roleTab.map((tab, index) => (
+                                <li key={index}>
+                                    <button
+                                        onClick={() => setSelectedTab(tab)}
+                                        className={`tab-button ${selectedTab === tab ? 'tab-button-active' : ''}`}
+                                    >
+                                        {tab}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
 
-                {/* JSON viewer */}
-                <div className="w-full border rounded-md mt-8">
-                    <h1 className="text-lg font-bold text-center my-4">JSON Response</h1>
-
-                    <JSONTree data={activeMapping} />
-                </div>
+                {selectedTab === 'SDK Demo' && (
+                    <SDKDemo />
+                )}
+                {selectedTab === 'Site Examples' && (
+                    <SiteExamples />
+                )}
             </div>
         </div>
     )
