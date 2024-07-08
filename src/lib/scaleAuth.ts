@@ -7,8 +7,6 @@ export const generateScaleHash = () => {
   const randomizer = Math.floor(Math.random() * 10);
   const permanentSalt = process.env.NEXT_PUBLIC_SCALE_SALT;
 
-  console.log(permanentSalt)
-
   const temporarySalt = `${currentHour}${currentMinute}`;
   const dataToHash = `${permanentSalt}${temporarySalt}${randomizer}`;
   const generatedHash = crypto
